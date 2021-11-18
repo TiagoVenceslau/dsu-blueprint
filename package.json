@@ -1,0 +1,52 @@
+{
+  "name": "ts-workspace",
+  "version": "1.1.0-no-ci",
+  "description": "template for ts projects",
+  "main": "./build/index.js",
+  "scripts": {
+    "start:dev": "nodemon",
+    "start": "npm run build && node lib/index.js",
+    "build": "rimraf ./lib && tsc",
+    "build:prod": "rimraf ./lib && tsc && npm run minify",
+    "minify": "npm install gulp gulp-babel gulp-rename gulp-concat gulp-sourcemaps gulp-typescript gulp-uglify @babel/preset-env && npx gulp && npm uninstall gulp gulp-babel gulp-rename gulp-sourcemaps gulp-typescript gulp-uglify gulp-concat",
+    "test": "jest --coverage",
+    "prepare-release": "npm run build:prod && npm run docs",
+    "release": "./bin/tag-release.sh",
+    "clean-publish": "npx clean-publish",
+    "coverage": "npm test && npm install jest-coverage-badges && jest-coverage-badges --input \"./workdocs/coverage/coverage-summary.json\" --output \"./workdocs/badges\" && npm uninstall jest-coverage-badges",
+    "docs": "npm run coverage && npx rimraf ./docs/* && cp -r ./workdocs/assets ./docs/assets && npm install better-docs taffydb && npx markdown-include ./mdCompile.json && npx jsdoc -c jsdocs.json -t ./node_modules/better-docs && cd docs && ./../workdocs/bin/correct_windows_names.sh . && cd .. && npm remove better-docs taffydb"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TiagoVenceslau/ts-workspace.git"
+  },
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
+  },
+  "keywords": [
+    "template",
+    "ts"
+  ],
+  "author": "TiagoVenceslau",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/TiagoVenceslau/ts-workspace/issues"
+  },
+  "homepage": "https://github.com/TiagoVenceslau/ts-workspace#readme",
+  "devDependencies": {
+    "@babel/preset-env": "^7.16.4",
+    "@types/jest": "^26.0.24",
+    "@types/node": "^16.0.1",
+    "jest": "^27.0.6",
+    "jsdoc": "^3.6.7",
+    "markdown-include": "^0.4.3",
+    "nodemon": "^2.0.10",
+    "np": "^7.5.0",
+    "rimraf": "^3.0.2",
+    "ts-jest": "^27.0.3",
+    "ts-node": "^10.0.0",
+    "typescript": "^4.3.5"
+  },
+  "dependencies": {}
+}
