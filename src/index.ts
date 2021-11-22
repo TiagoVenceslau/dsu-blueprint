@@ -1,5 +1,5 @@
 /**
- * @module ts-workspace
+ * @module dsu-blueprint
  */
 
-export * from './hello';
+export * from './utils';

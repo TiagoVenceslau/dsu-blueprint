@@ -26,8 +26,9 @@
     "npm": ">=6.0.0"
   },
   "keywords": [
-    "template",
-    "ts"
+    "OpenDSU",
+    "Typescript",
+
   ],
   "author": "TiagoVenceslau",
   "license": "MIT",
