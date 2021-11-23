@@ -100,5 +100,7 @@ export interface DSUStorage extends DSU {
 }
 
 export enum KeySSIType {
-    TEST = "test"
+    SEED = "seed",
+    ARRAY = "array",
+    CONST = "const"
 }

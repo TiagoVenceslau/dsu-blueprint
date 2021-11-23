@@ -37,7 +37,7 @@
   "homepage": "https://github.com/TiagoVenceslau/dsu-blueprint#readme",
   "devDependencies": {
     "@babel/preset-env": "^7.16.4",
-    "@tvenceslau/db-decorators": "0.0.5",
+    "@tvenceslau/db-decorators": "0.0.6",
     "@tvenceslau/decorator-validation": "1.5.7",
     "@types/jest": "^26.0.24",
     "@types/node": "^16.0.1",
