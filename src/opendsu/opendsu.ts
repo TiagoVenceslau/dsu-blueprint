@@ -1,16 +1,16 @@
-import {critical} from "@tvenceslau/db-decorators/lib";
+import {LoggedError, LOGGER_LEVELS} from "@tvenceslau/db-decorators/lib";
+import {OpenDSU} from "./types";
 
+let openDSU: OpenDSU;
 
-
-let openDSU;
-
-if (!openDSU){
-    try{
-        // @ts-ignore
-        openDSU = require('opendsu');
-    } catch (e){
-        critical(`Could not load OpenDSU`);
+export function getOpenDSU(){
+    if (!openDSU){
+        try{
+            openDSU = require('opendsu');
+        } catch (e) {
+            throw new LoggedError(`Could not load OpenDSU`, LOGGER_LEVELS.CRITICAL)
+        }
     }
-}
 
-export const opendsu = openDSU;
+    return openDSU;
+}

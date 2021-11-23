@@ -25,9 +25,23 @@ export interface KeySSI{
     load(subtype: string, dlDomain: string, subtypeSpecificString: string, control: string, vn: string, hint: string): void;
 }
 
+export interface SeedSSI extends KeySSI{
+
+}
+
+export interface ArraySSI extends KeySSI{
+
+}
+
+export interface WalletSSI extends KeySSI{
+
+}
+
 export type GenericCallback<T> = (err?: Err, result?: T, ...args: any[]) => void;
 
 export type KeySSICallback = GenericCallback<KeySSI>;
+
+export type SimpleDSUCallback = GenericCallback<DSU>;
 
 export type DSUIOOptions = {
     embedded?: boolean,
@@ -43,8 +57,12 @@ export const DefaultIOOptions: DSUIOOptions = {
     recursive: true
 }
 
+export interface DSUHandler{}
+export interface DSUFactory{}
+
 export type IoOptionsOrCallback<T> = DSUIOOptions | GenericCallback<T>;
 export type IoOptionsOrErrCallback = DSUIOOptions | ErrCallback;
+export type IoOptionsOrDSUCallback = DSUIOOptions | SimpleDSUCallback;
 
 export interface DSU {
     directAccessEnabled: boolean;
@@ -94,6 +112,24 @@ export interface DSU {
     extractFolder(fsPath: string, dsuPath: string, options?: IoOptionsOrErrCallback, callback?: ErrCallback): void;
 }
 
+export interface Resolver {
+    createDSU(keySSI: KeySSI, options?: IoOptionsOrDSUCallback, callback?: SimpleDSUCallback): void;
+    createDSUForExistingSSI(keySSI: KeySSI, options?: IoOptionsOrDSUCallback, callback?: SimpleDSUCallback): void;
+    getDSUHandler(keySSI: KeySSI) : DSUHandler;
+    invalidateDSUCache(keySSI: KeySSI): void;
+    loadDSU(keySSI: KeySSI, options?: IoOptionsOrDSUCallback, callback?: SimpleDSUCallback): void;
+    registerDSUFactory(type: string, factory: DSUFactory): void;
+}
+
+export interface Keyssi{
+    createArraySSI(domain: string, args?: string[], vn?: string, hint?: string): ArraySSI;
+    createTemplateSeedSSI(domain: string, specificString?: string, control?: string, vn?: string, hint?: string): SeedSSI;
+    createTemplateWalletSSI(domain: string, credentials?: string[], hint?: string): WalletSSI;
+    createTemplateKeySSI(ssiType: string, domain: string, specificString?: string, control?: string, vn?: string, hint?: string): KeySSI;
+    createSeedSSI(domain: string, vn?: string | KeySSICallback, hint?: string | KeySSICallback, callback?: KeySSICallback): SeedSSI;
+    parse(ssiString: string, options?: {}): KeySSI
+}
+
 export interface DSUStorage extends DSU {
     getObject(path: string, callback: ObjectCallback): void;
     setObject(path: string, data: any, callback: ErrCallback): void;
@@ -102,5 +138,6 @@ export interface DSUStorage extends DSU {
 export enum KeySSIType {
     SEED = "seed",
     ARRAY = "array",
-    CONST = "const"
+    CONST = "const",
+    WALLET = "wallet"
 }
