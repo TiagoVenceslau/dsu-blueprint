@@ -1,2 +1,1 @@
-export * from './types';
-export * from './opendsuRepository';
+export * from './repository';

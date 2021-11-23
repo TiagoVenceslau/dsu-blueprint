@@ -1,5 +1,5 @@
 import {DSUModel} from "../model";
-import {AsyncRepositoryImp, DbKey, errorCallback, LoggedError, ModelCallback} from "@tvenceslau/db-decorators/lib";
+import {AsyncRepositoryImp, errorCallback, LoggedError, ModelCallback} from "@tvenceslau/db-decorators/lib";
 import {KeySSI} from "../opendsu/types";
 
 export type DSUKey = string | KeySSI;
