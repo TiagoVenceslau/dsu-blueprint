@@ -3,7 +3,7 @@ import {dsu, DSU} from "./decorators";
 import {KeySSIType} from "../opendsu/types";
 import {constructFromObject} from "@tvenceslau/db-decorators/lib";
 
-@DSU(undefined, KeySSIType.SEED)
+@DSU(undefined, KeySSIType.SEED, [])
 export class SeedDSU extends DSUModel{
 
 }

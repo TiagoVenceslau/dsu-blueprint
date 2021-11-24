@@ -71,8 +71,8 @@ export interface DSU {
 
     // From Docs
     getCreationSSI(plain?: boolean): string
-    getKeySSIAsObject(keySSIType?: string, callback?: KeySSICallback): void
-    getKeySSIAsString(keySSIType?: string, callback?: GenericCallback<string>): void
+    getKeySSIAsObject(keySSIType?: string | KeySSICallback, callback?: KeySSICallback): void
+    getKeySSIAsString(keySSIType?: string | GenericCallback<string>, callback?: GenericCallback<string>): void
 
     // Mounting
     // getManifest(): void

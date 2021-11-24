@@ -43,6 +43,10 @@ export abstract class OpenDSURepository<T extends DSUModel> extends AsyncReposit
         });
     }
 
+    _create(model?: T, ...args: any[]){
+        super._create(undefined, model, ...args);
+    }
+
     delete(key?: DSUKey, ...args: any[]): void {
 
     }
