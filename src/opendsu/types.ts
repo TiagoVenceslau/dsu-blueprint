@@ -18,23 +18,23 @@ export interface KeySSI{
     getDSURepresentationName(): string;
     getHint(): string;
     getIdentifier(plain?: boolean): string;
-    getName(): string;
+    getTypeName(): string;
     getRelatedType(ssiType: string, callback: KeySSICallback): void;
     getSpecificationString(): string;
     getVn(): string;
     load(subtype: string, dlDomain: string, subtypeSpecificString: string, control: string, vn: string, hint: string): void;
 }
 
-export interface SeedSSI extends KeySSI{
+export interface SeedSSI extends KeySSI {
 
 }
 
-export interface ArraySSI extends KeySSI{
+export interface ArraySSI extends KeySSI {
 
 }
 
-export interface WalletSSI extends KeySSI{
-
+export interface WalletSSI extends KeySSI {
+    getWritableDSU(): DSU;
 }
 
 export type GenericCallback<T> = (err?: Err, result?: T, ...args: any[]) => void;
@@ -50,6 +50,10 @@ export type DSUIOOptions = {
     recursive?: boolean
 }
 
+export type DSUAnchoringOptions = {
+    dsuTypeSSI?: string
+}
+
 export const DefaultIOOptions: DSUIOOptions = {
     embedded: false,
     encrypt: true,
@@ -63,6 +67,10 @@ export interface DSUFactory{}
 export type IoOptionsOrCallback<T> = DSUIOOptions | GenericCallback<T>;
 export type IoOptionsOrErrCallback = DSUIOOptions | ErrCallback;
 export type IoOptionsOrDSUCallback = DSUIOOptions | SimpleDSUCallback;
+
+export type AnchoringOptsOrCallback<T> = DSUAnchoringOptions | GenericCallback<T>;
+export type AnchoringOptsOrErrCallback = DSUAnchoringOptions | ErrCallback;
+export type AnchoringOptsOrDSUCallback = DSUAnchoringOptions | SimpleDSUCallback;
 
 export interface DSU {
     directAccessEnabled: boolean;
@@ -113,11 +121,11 @@ export interface DSU {
 }
 
 export interface Resolver {
-    createDSU(keySSI: KeySSI, options?: IoOptionsOrDSUCallback, callback?: SimpleDSUCallback): void;
-    createDSUForExistingSSI(keySSI: KeySSI, options?: IoOptionsOrDSUCallback, callback?: SimpleDSUCallback): void;
+    createDSU(keySSI: KeySSI, options?: AnchoringOptsOrDSUCallback, callback?: SimpleDSUCallback): void;
+    createDSUForExistingSSI(keySSI: KeySSI, options?: AnchoringOptsOrDSUCallback, callback?: SimpleDSUCallback): void;
     getDSUHandler(keySSI: KeySSI) : DSUHandler;
     invalidateDSUCache(keySSI: KeySSI): void;
-    loadDSU(keySSI: KeySSI, options?: IoOptionsOrDSUCallback, callback?: SimpleDSUCallback): void;
+    loadDSU(keySSI: KeySSI, options?: AnchoringOptsOrDSUCallback, callback?: SimpleDSUCallback): void;
     registerDSUFactory(type: string, factory: DSUFactory): void;
 }
 

@@ -1,24 +1,24 @@
 import {DSUModel} from "./DSUModel";
-import {dsu, DSU} from "./decorators";
+import {dsu, DSUBlueprint} from "./decorators";
 import {KeySSIType} from "../opendsu/types";
 import {constructFromObject} from "@tvenceslau/db-decorators/lib";
 
-@DSU(undefined, KeySSIType.SEED, [])
+@DSUBlueprint(undefined, KeySSIType.SEED)
 export class SeedDSU extends DSUModel{
 
 }
 
-@DSU(undefined, KeySSIType.WALLET)
+@DSUBlueprint(undefined, KeySSIType.WALLET)
 export class WalletDSU extends DSUModel{
 
 }
 
-@DSU(undefined, KeySSIType.ARRAY)
+@DSUBlueprint(undefined, KeySSIType.ARRAY)
 export class ArrayDSU extends DSUModel{
 
 }
 
-@DSU(undefined, KeySSIType.SEED)
+@DSUBlueprint(undefined, KeySSIType.SEED)
 export class DbDsuBlueprint extends DSUModel{
 
     @dsu<SeedDSU>(SeedDSU)

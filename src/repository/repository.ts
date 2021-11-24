@@ -15,15 +15,18 @@ export type DSUKey = string | KeySSI;
 export type DSUCallback<T extends DSUModel> = (err?: Err, model?: T, dsu?: DSU, keySSI?: KeySSI, ...args: any[]) => void;
 
 export abstract class OpenDSURepository<T extends DSUModel> extends AsyncRepositoryImp<T>{
+    protected fallbackDomain: string;
 
-    constructor(clazz: {new (): T}){
+
+    constructor(clazz: {new (): T}, domain: string = "default"){
         super(clazz);
+        this.fallbackDomain = domain;
     }
 
     create(model?: T, ...args: any[]): void {
         const callback: DSUCallback<T> = args.pop();
         if (!callback)
-            throw new LoggedError(`Missing callback`, LOGGER_LEVELS.ERROR);
+            throw new LoggedError(`Missing callback`);
         if (!model)
             return errorCallback(`Missing Model`, callback);
 
@@ -33,12 +36,12 @@ export abstract class OpenDSURepository<T extends DSUModel> extends AsyncReposit
 
         info(`Creating {0} DSU from model {1}`, this.clazz, model.toString())
 
-        createFromDecorators<T>(model, (err: Err, newModel, dsu, keySSI) => {
+        createFromDecorators<T>(model, this.fallbackDomain, ...args, (err: Err, newModel: T | undefined, dsu: DSU | undefined, keySSI: KeySSI | undefined) => {
             if (err)
                 return callback(err);
             if (!newModel || !dsu || !keySSI)
                 return errorCallback(`Missing Arguments...`, callback);
-            info(`{0} DSU created. Resulting Model: {1}, KeySSI: {2}`, this.clazz, newModel.toString(), keySSI?.getIdentifier());
+            info(`{0} DSU created. Resulting Model: {1}, KeySSI: {2}`, this.clazz, newModel.toString(), keySSI.getIdentifier());
             callback(undefined, newModel, dsu, keySSI);
         });
     }

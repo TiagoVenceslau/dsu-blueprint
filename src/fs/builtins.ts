@@ -1,10 +1,10 @@
-import {dsu, DSU, dsuFile, DSUModel, DbDsuBlueprint} from "../model";
+import {dsu, DSUBlueprint, dsuFile, DSUModel, DbDsuBlueprint} from "../model";
 import {KeySSIType} from "../opendsu/types";
 import {constructFromObject} from "@tvenceslau/db-decorators/lib";
 import {fromCache} from "../repository";
 import {addFileFS, addFolderFS, dsuFS} from "./decorators";
 
-@DSU(undefined, KeySSIType.SEED)
+@DSUBlueprint(undefined, KeySSIType.SEED)
 export class IdDsuBlueprint extends DSUModel{
 
     @dsuFile()
@@ -22,7 +22,7 @@ export class IdDsuBlueprint extends DSUModel{
     }
 }
 
-@DSU(undefined, KeySSIType.ARRAY)
+@DSUBlueprint(undefined, KeySSIType.ARRAY)
 export class ParticipantDsuBlueprint extends DSUModel{
 
     @fromCache<IdDsuBlueprint>(IdDsuBlueprint, true)
@@ -34,7 +34,7 @@ export class ParticipantDsuBlueprint extends DSUModel{
     }
 }
 
-@DSU(undefined, KeySSIType.WALLET)
+@DSUBlueprint(undefined, KeySSIType.WALLET)
 export class BuildDsuBlueprint extends DSUModel{
 
     @addFileFS("bin/init", "init.file")
@@ -55,7 +55,7 @@ export class BuildDsuBlueprint extends DSUModel{
     }
 }
 
-@DSU(undefined, KeySSIType.SEED)
+@DSUBlueprint(undefined, KeySSIType.SEED)
 export class SSAppDsuBlueprint extends DSUModel{
 
     // @ts-ignore

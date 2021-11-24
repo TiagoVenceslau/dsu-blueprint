@@ -1,5 +1,5 @@
 import {LoggedError, LOGGER_LEVELS} from "@tvenceslau/db-decorators/lib";
-import {Keyssi, OpenDSU, Resolver} from "./types";
+import {DSUAnchoringOptions, Keyssi, KeySSIType, OpenDSU, Resolver} from "./types";
 
 let openDSU: OpenDSU;
 
@@ -39,4 +39,13 @@ export function getKeySsiSpace(){
         }
 
     return keyssi;
+}
+
+export function getAnchoringOptionsByDSUType(type: KeySSIType): DSUAnchoringOptions | undefined {
+    switch(type){
+        case KeySSIType.WALLET:
+            return {dsuTypeSSI: KeySSIType.SEED};
+        default:
+            return undefined;
+    }
 }

@@ -29,8 +29,8 @@ export class ArrayDSURepository extends OpenDSURepository<ArrayDSU>{
         super(ArrayDSU);
     }
 
-    create(model: ArrayDSU, callback: DSUCallback<ArrayDSU>) {
-        super.create(model, callback);
+    create(model: ArrayDSU, ...args: any[]) {
+        super.create(model, ...args);
     }
 
     delete(key: DSUKey, callback: ErrCallback) {
@@ -51,8 +51,8 @@ export class WalletDSURepository extends OpenDSURepository<WalletDSU>{
         super(WalletDSU);
     }
 
-    create(model: WalletDSU, callback: DSUCallback<WalletDSU>) {
-        super.create(model, callback);
+    create(model: WalletDSU, ...args: any[]) {
+        super.create(model, ...args);
     }
 
     delete(key: DSUKey, callback: ErrCallback) {

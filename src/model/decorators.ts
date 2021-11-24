@@ -1,5 +1,5 @@
 import {model, ModelKeys} from "@tvenceslau/decorator-validation/lib";
-import {KeySSIType} from "../opendsu/types";
+import {DSUAnchoringOptions, KeySSIType} from "../opendsu/types";
 import {DsuKeys} from "./constants";
 import {DSUModel} from "./DSUModel";
 
@@ -11,13 +11,16 @@ const getDSUModelKey = (key: string) => DsuKeys.REFLECT + key;
  * @prop {string | undefined} [domain] the DSU domain. default to undefined. when undefined, its the repository that controls the domain;
  * @prop {KeySSIType} [keySSIType] the KeySSI type used to anchor the DSU
  * @prop {string[] | undefined} [specificKeyArgs]  OpenDSU related arguments, specific to each KeySSI implementation. {@link getKeySSIFactory}
+ * @prop {DSUAnchoringOptions | undefined} [options] defaults to undefined. decides if batchMode is meant to be used for this DSU
  * @prop {boolean} [batchMode] defaults to true. decides if batchMode is meant to be used for this DSU
  * @prop {string[]} [props] any object properties that must be passed to the KeySSI generation function (eg: for Array SSIs)
- * @decorator DSU
+ * @decorator DSUBlueprint
  * @namespace decorators
  * @memberOf model
  */
-export const DSU = (domain: string | undefined = undefined, keySSIType: KeySSIType = KeySSIType.SEED, specificKeyArgs: string[] | undefined = undefined, batchMode: boolean = true, ...props: string[]) => (original: Function) => {
+export const DSUBlueprint = (domain: string | undefined = undefined, keySSIType: KeySSIType = KeySSIType.SEED, specificKeyArgs: string[] | undefined = undefined, options: DSUAnchoringOptions | undefined = undefined, batchMode: boolean = true, ...props: string[]) => (original: Function) => {
+    if (!options)
+
     return model(ModelKeys.MODEL, {
         dsu: {
             domain: domain,
