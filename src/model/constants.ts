@@ -5,3 +5,8 @@ export const DsuKeys = {
     DSU: 'dsu',
     DSU_FILE: 'dsuFile'
 }
+
+export const DSUOperation = {
+    CREATION: "creation",
+    EDITING: "editing"
+}

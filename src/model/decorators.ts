@@ -1,7 +1,11 @@
 import {model, ModelKeys} from "@tvenceslau/decorator-validation/lib";
-import {DSUAnchoringOptions, KeySSIType} from "../opendsu/types";
-import {DsuKeys} from "./constants";
+import {DSU, DSUAnchoringOptions, KeySSI, KeySSIType} from "../opendsu/types";
+import {DsuKeys, DSUOperation} from "./constants";
 import {DSUModel} from "./DSUModel";
+import {getDSUOperationsRegistry} from "../repository/registry";
+import {DSUCallback, OpenDSURepository} from "../repository";
+import DBModel from "@tvenceslau/db-decorators/lib/model/DBModel";
+import {criticalCallback, Err, ModelCallback} from "@tvenceslau/db-decorators/lib";
 
 const getDSUModelKey = (key: string) => DsuKeys.REFLECT + key;
 
@@ -25,6 +29,7 @@ export const DSUBlueprint = (domain: string | undefined = undefined, keySSIType:
         dsu: {
             domain: domain,
             keySSIType: keySSIType,
+            batchMode: batchMode,
             specificKeyArgs: specificKeyArgs,
             props: props && props.length ? props : undefined
         }
@@ -48,11 +53,22 @@ export function dsu<T extends DSUModel>(dsu: {new(): T}, derive: boolean = false
         Reflect.defineMetadata(
             getDSUModelKey(DsuKeys.DSU),
             {
+                dsu: target.constructor.name,
+                derive: derive,
+                operation: DSUOperation.CREATION,
                 mountPath: mountPath ? mountPath : propertyKey
             },
             target,
             propertyKey
         );
+
+        getDSUOperationsRegistry().register(function(this: OpenDSURepository<T>, model: T, decorators: any[], callback: ModelCallback<T>): void {
+            this.create(model, (err: Err, newModel: T, dsu: DSU, keySSI: KeySSI) => {
+                if (err)
+                    return callback(err);
+                callback(undefined, newModel, dsu, keySSI);
+            });
+        }, DSUOperation.CREATION, target, propertyKey);
     }
 }
 
@@ -69,10 +85,20 @@ export function dsuFile(dsuFilePath: string = DsuKeys.DEFAULT_DSU_PATH) {
         Reflect.defineMetadata(
             getDSUModelKey(DsuKeys.DSU_FILE),
             {
-                dsuFilePath: dsuFilePath
+                dsuFilePath: dsuFilePath,
+                grouping: dsuFilePath,
+                operation: DSUOperation.EDITING
             },
             target,
             propertyKey
         );
+
+        getDSUOperationsRegistry().register(function(this: OpenDSURepository<DBModel>, obj: any, dsu: DSU, keySSI: KeySSI, callback: DSUCallback<DBModel>): void {
+            dsu.writeFile(dsuFilePath, JSON.stringify(obj), (err: Err) => {
+                if (err)
+                    return criticalCallback(err, callback);
+                callback(undefined, obj, dsu, keySSI);
+            })
+        }, DSUOperation.EDITING, target, propertyKey);
     }
 }

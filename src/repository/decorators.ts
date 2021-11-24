@@ -1,4 +1,4 @@
-import {DsuKeys} from "../model/constants";
+import {DsuKeys, DSUOperation} from "../model/constants";
 import {DSUModel} from "../model";
 
 const getDSUModelKey = (key: string) => DsuKeys.REFLECT + key;
@@ -18,7 +18,8 @@ export function fromCache<T extends DSUModel>(model: {new(): T}, derive: boolean
         Reflect.defineMetadata(
             getDSUModelKey(DsuKeys.FROM_CACHE),
             {
-                dsuFilePath: dsuFilePath ? dsuFilePath : propertyKey
+                dsuFilePath: dsuFilePath ? dsuFilePath : propertyKey,
+                operation: DSUOperation.EDITING
             },
             target,
             propertyKey

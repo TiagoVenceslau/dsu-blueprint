@@ -1,5 +1,5 @@
 import {DSUCallback, DSUKey, OpenDSURepository} from "./repository";
-import {ArrayDSU, SeedDSU, WalletDSU} from "../model";
+import {ArrayDSU, DbDsuBlueprint, SeedDSU, WalletDSU} from "../model";
 import {ErrCallback} from "../opendsu/types";
 
 export class SeedDSURepository extends OpenDSURepository<SeedDSU>{
@@ -64,6 +64,28 @@ export class WalletDSURepository extends OpenDSURepository<WalletDSU>{
     }
 
     update(key: DSUKey, model: WalletDSU, callback: DSUCallback<WalletDSU>) {
+        super.update(key, model, callback);
+    }
+}
+
+export class DbDSURepository extends OpenDSURepository<DbDsuBlueprint>{
+    constructor(){
+        super(DbDsuBlueprint);
+    }
+
+    create(model: DbDsuBlueprint, callback: DSUCallback<DbDsuBlueprint>) {
+        super.create(model, callback);
+    }
+
+    delete(key: DSUKey, callback: ErrCallback) {
+        super.delete(key, callback);
+    }
+
+    read(key: DSUKey, callback: DSUCallback<DbDsuBlueprint>) {
+        super.read(key, callback);
+    }
+
+    update(key: DSUKey, model: DbDsuBlueprint, callback: DSUCallback<DbDsuBlueprint>) {
         super.update(key, model, callback);
     }
 }

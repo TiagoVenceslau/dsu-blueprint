@@ -27,5 +27,6 @@ export class DbDsuBlueprint extends DSUModel{
     constructor(blueprint?: DbDsuBlueprint | {}) {
         super();
         constructFromObject<DbDsuBlueprint>(this, blueprint);
+        this.data = new SeedDSU(this.data);
     }
 }

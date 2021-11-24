@@ -1,10 +1,9 @@
 import {DSUModel} from "../model";
 import {
-    AsyncRepositoryImp,
+    AsyncRepositoryImp, debug,
     Err,
     errorCallback,
-    info,
-    LoggedError, LOGGER_LEVELS,
+    LoggedError,
     ModelCallback
 } from "@tvenceslau/db-decorators/lib";
 import {DSU, KeySSI} from "../opendsu/types";
@@ -34,20 +33,20 @@ export abstract class OpenDSURepository<T extends DSUModel> extends AsyncReposit
         if (errs)
             return callback(errs.toString());
 
-        info(`Creating {0} DSU from model {1}`, this.clazz, model.toString())
+        debug(`Creating {0} DSU from model {1}`, this.clazz.name, model.toString())
 
         createFromDecorators<T>(model, this.fallbackDomain, ...args, (err: Err, newModel: T | undefined, dsu: DSU | undefined, keySSI: KeySSI | undefined) => {
             if (err)
                 return callback(err);
             if (!newModel || !dsu || !keySSI)
                 return errorCallback(`Missing Arguments...`, callback);
-            info(`{0} DSU created. Resulting Model: {1}, KeySSI: {2}`, this.clazz, newModel.toString(), keySSI.getIdentifier());
+            debug(`{0} DSU created. Resulting Model: {1}, KeySSI: {2}`, this.clazz.name, newModel.toString(), keySSI.getIdentifier());
             callback(undefined, newModel, dsu, keySSI);
         });
     }
 
-    _create(model?: T, ...args: any[]){
-        super._create(undefined, model, ...args);
+    createPrefix(model?: T, ...args: any[]){
+        super.createPrefix(undefined, model, ...args);
     }
 
     delete(key?: DSUKey, ...args: any[]): void {
