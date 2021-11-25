@@ -2,10 +2,10 @@ import {model, ModelKeys} from "@tvenceslau/decorator-validation/lib";
 import {DSU, DSUAnchoringOptions, KeySSI, KeySSIType} from "../opendsu/types";
 import {DsuKeys, DSUOperation} from "./constants";
 import {DSUModel} from "./DSUModel";
-import {getDSUOperationsRegistry} from "../repository/registry";
+import {getDSUOperationsRegistry, getRepoRegistry} from "../repository/registry";
 import {DSUCallback, OpenDSURepository} from "../repository";
 import DBModel from "@tvenceslau/db-decorators/lib/model/DBModel";
-import {criticalCallback, Err, ModelCallback} from "@tvenceslau/db-decorators/lib";
+import {criticalCallback, CriticalError, Err, ModelCallback} from "@tvenceslau/db-decorators/lib";
 
 const getDSUModelKey = (key: string) => DsuKeys.REFLECT + key;
 
@@ -23,8 +23,7 @@ const getDSUModelKey = (key: string) => DsuKeys.REFLECT + key;
  * @memberOf model
  */
 export const DSUBlueprint = (domain: string | undefined = undefined, keySSIType: KeySSIType = KeySSIType.SEED, specificKeyArgs: string[] | undefined = undefined, options: DSUAnchoringOptions | undefined = undefined, batchMode: boolean = true, ...props: string[]) => (original: Function) => {
-    if (!options)
-
+    getRepoRegistry().register(original.name);
     return model(ModelKeys.MODEL, {
         dsu: {
             domain: domain,
@@ -62,8 +61,13 @@ export function dsu<T extends DSUModel>(dsu: {new(): T}, derive: boolean = false
             propertyKey
         );
 
+        getRepoRegistry().register<OpenDSURepository<T>>(dsu);
+
         getDSUOperationsRegistry().register(function(this: OpenDSURepository<T>, model: T, decorators: any[], callback: ModelCallback<T>): void {
-            this.create(model, (err: Err, newModel: T, dsu: DSU, keySSI: KeySSI) => {
+            const repo = getRepoRegistry().get<OpenDSURepository<T>>(model.constructor.name)
+            if (!repo)
+                throw new CriticalError(`Cannot find ${model.constructor.name} repository`);
+            repo.create(model, (err: Err, newModel: T, dsu: DSU, keySSI: KeySSI) => {
                 if (err)
                     return callback(err);
                 callback(undefined, newModel, dsu, keySSI);

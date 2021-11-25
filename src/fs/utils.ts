@@ -2,9 +2,9 @@ import {DSU, DSUStorage, ObjectCallback} from "../opendsu/types";
 import {Callback, Err} from "@tvenceslau/db-decorators/lib";
 
 export function impersonateDSUStorage(originalDsu: DSU): DSUStorage {
-    const dsu = originalDsu as DSUStorage;
+    const dsu: DSUStorage = originalDsu as DSUStorage;
     dsu.directAccessEnabled = false;
-    dsu.enableDirectAccess = (callback) => callback();
+    dsu.enableDirectAccess = (callback: Callback) => callback();
 
     const setObject = function(path: string, data: any, callback: Callback) {
         try {

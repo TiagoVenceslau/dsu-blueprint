@@ -8,14 +8,16 @@ import {
 } from "@tvenceslau/db-decorators/lib";
 import {DSU, KeySSI} from "../opendsu/types";
 import {createFromDecorators} from "./utils";
+import DBModel from "@tvenceslau/db-decorators/lib/model/DBModel";
 
 export type DSUKey = string | KeySSI;
 
-export type DSUCallback<T extends DSUModel> = (err?: Err, model?: T, dsu?: DSU, keySSI?: KeySSI, ...args: any[]) => void;
+export type DSUCallback<T extends DBModel> = (err?: Err, model?: T, dsu?: DSU, keySSI?: KeySSI, ...args: any[]) => void;
 
-export abstract class OpenDSURepository<T extends DSUModel> extends AsyncRepositoryImp<T>{
+export type DSUMultipleCallback<T extends DBModel> = (err?: Err, model?: T[], dsu?: DSU[], keySSI?: KeySSI[], ...args: any[]) => void;
+
+export class OpenDSURepository<T extends DSUModel> extends AsyncRepositoryImp<T>{
     protected fallbackDomain: string;
-
 
     constructor(clazz: {new (): T}, domain: string = "default"){
         super(clazz);
@@ -35,7 +37,7 @@ export abstract class OpenDSURepository<T extends DSUModel> extends AsyncReposit
 
         debug(`Creating {0} DSU from model {1}`, this.clazz.name, model.toString())
 
-        createFromDecorators<T>(model, this.fallbackDomain, ...args, (err: Err, newModel: T | undefined, dsu: DSU | undefined, keySSI: KeySSI | undefined) => {
+        createFromDecorators.call(this, model, this.fallbackDomain, ...args, (err: Err, newModel: T | undefined, dsu: DSU | undefined, keySSI: KeySSI | undefined) => {
             if (err)
                 return callback(err);
             if (!newModel || !dsu || !keySSI)
