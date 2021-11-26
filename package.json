@@ -27,7 +27,12 @@
   },
   "keywords": [
     "OpenDSU",
-    "Typescript"
+    "Typescript",
+    "Javascript",
+    "Blueprint",
+    "Build",
+    "Engine",
+    "Decorator"
   ],
   "author": "TiagoVenceslau",
   "license": "MIT",
@@ -37,8 +42,8 @@
   "homepage": "https://github.com/TiagoVenceslau/dsu-blueprint#readme",
   "devDependencies": {
     "@babel/preset-env": "^7.16.4",
-    "@tvenceslau/db-decorators": "0.0.12",
-    "@tvenceslau/decorator-validation": "1.5.7",
+    "@tvenceslau/db-decorators": "0.0.14",
+    "@tvenceslau/decorator-validation": "1.6.2",
     "@types/jest": "^26.0.24",
     "@types/node": "^16.0.1",
     "jest": "^27.0.6",

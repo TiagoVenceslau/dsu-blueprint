@@ -14,8 +14,8 @@ export type SeedSSISpecificArgs = [specificString: string, control: string, vn: 
 
 export type DSUFactoryMethod = (keySSI: KeySSI, options?: AnchoringOptsOrDSUCallback, callback?: SimpleDSUCallback) => void;
 
-export type DSUCreationHandler = <T extends DSUModel>(this: OpenDSURepository<T>, model: T, props: {}, callback: DSUCallback<T>) => void;
+export type DSUCreationHandler = <T extends DSUModel>(this: OpenDSURepository<T>, model: T, decorators: any[], callback: DSUCallback<T>) => void;
 
-export type DSUEditingHandler = <T extends DSUModel>(this: OpenDSURepository<T>, dsu: DSU, keySSI: KeySSI, callback: DSUCallback<T>) => void;
+export type DSUEditingHandler = <T extends DSUModel>(this: OpenDSURepository<T>, model: T, dsu: DSU, keySSI: KeySSI, callback: DSUCallback<T>) => void;
 
 export type DSUOperationHandler = DSUCreationHandler | DSUEditingHandler;

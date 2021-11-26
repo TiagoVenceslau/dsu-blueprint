@@ -3,7 +3,12 @@ import {DSU, DSUAnchoringOptions, KeySSI, KeySSIType} from "../opendsu/types";
 import {DsuKeys, DSUOperation} from "./constants";
 import {DSUModel} from "./DSUModel";
 import {getDSUOperationsRegistry, getRepoRegistry} from "../repository/registry";
-import {DSUCallback, OpenDSURepository} from "../repository";
+import {
+    DSUCallback,
+    DSUCreationHandler,
+    DSUEditingHandler,
+    OpenDSURepository
+} from "../repository";
 import DBModel from "@tvenceslau/db-decorators/lib/model/DBModel";
 import {criticalCallback, CriticalError, Err, ModelCallback} from "@tvenceslau/db-decorators/lib";
 
@@ -63,16 +68,18 @@ export function dsu<T extends DSUModel>(dsu: {new(): T}, derive: boolean = false
 
         getRepoRegistry().register<OpenDSURepository<T>>(dsu);
 
-        getDSUOperationsRegistry().register(function(this: OpenDSURepository<T>, model: T, decorators: any[], callback: ModelCallback<T>): void {
+        const handler: DSUCreationHandler = function<T extends DSUModel>(this: OpenDSURepository<T>, model: T, decorators: any[], callback: ModelCallback<T>): void {
             const repo = getRepoRegistry().get<OpenDSURepository<T>>(model.constructor.name)
             if (!repo)
-                throw new CriticalError(`Cannot find ${model.constructor.name} repository`);
+                    throw new CriticalError(`Cannot find ${model.constructor.name} repository`);
             repo.create(model, (err: Err, newModel: T, dsu: DSU, keySSI: KeySSI) => {
                 if (err)
                     return callback(err);
                 callback(undefined, newModel, dsu, keySSI);
             });
-        }, DSUOperation.CREATION, target, propertyKey);
+        }
+
+        getDSUOperationsRegistry().register(handler, DSUOperation.CREATION, target, propertyKey);
     }
 }
 
@@ -97,12 +104,14 @@ export function dsuFile(dsuFilePath: string = DsuKeys.DEFAULT_DSU_PATH) {
             propertyKey
         );
 
-        getDSUOperationsRegistry().register(function(this: OpenDSURepository<DBModel>, obj: any, dsu: DSU, keySSI: KeySSI, callback: DSUCallback<DBModel>): void {
+        const handler: DSUEditingHandler = function<T extends DBModel>(this: OpenDSURepository<T>, obj: any, dsu: DSU, keySSI: KeySSI, callback: DSUCallback<T>): void {
             dsu.writeFile(dsuFilePath, JSON.stringify(obj), (err: Err) => {
                 if (err)
                     return criticalCallback(err, callback);
                 callback(undefined, obj, dsu, keySSI);
             })
-        }, DSUOperation.EDITING, target, propertyKey);
+        }
+
+        getDSUOperationsRegistry().register(handler, DSUOperation.EDITING, target, propertyKey);
     }
 }

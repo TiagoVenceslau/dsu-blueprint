@@ -1,8 +1,9 @@
-import {CriticalError, IRegistry} from "@tvenceslau/db-decorators/lib";
 import {DSUOperationHandler} from "./types";
 import {DSU} from "../opendsu";
 import {OpenDSURepository} from "./repository";
 import {DSUModel} from "../model";
+import {IRegistry} from "@tvenceslau/decorator-validation/lib/utils/registry";
+import {all, CriticalError} from "@tvenceslau/db-decorators/lib";
 
 export class DSUOperationRegistry implements IRegistry<DSUOperationHandler>{
     private cache: { [indexer: string]: any } = {};
@@ -11,6 +12,7 @@ export class DSUOperationRegistry implements IRegistry<DSUOperationHandler>{
         try{
             return this.cache[targetName][propKey][operation];
         } catch (e){
+            all(e);
             return undefined;
         }
     }
@@ -30,9 +32,9 @@ export class DSUOperationRegistry implements IRegistry<DSUOperationHandler>{
 let actingDSUOperationsRegistry: IRegistry<DSUOperationHandler>;
 
 /**
- * Returns the current {@link DSUOperationsRegistry}
+ * Returns the current {@link DSUOperationRegistry}
  * @function getDSUOperationsRegistry
- * @return IRegistry<DSUOperationHandler>, defaults to {@link DSUOperationsRegistry}
+ * @return IRegistry<DSUOperationHandler>, defaults to {@link DSUOperationRegistry}
  * @memberOf repository
  */
 export function getDSUOperationsRegistry(): IRegistry<DSUOperationHandler> {
@@ -58,6 +60,7 @@ export class DSURegistry implements IRegistry<DSU>{
         try{
             return this.cache[name].dsu;
         } catch (e){
+            all(e);
             return undefined;
         }
     }
@@ -102,7 +105,7 @@ export class RepositoryRegistry implements IRegistry<OpenDSURepo>{
     private cache: { [indexer: string]: any } = {};
 
     get<OpenDSURepo>(clazz: {new(): DSUModel} | string): OpenDSURepo | undefined {
-        const name = typeof clazz === 'string' ? clazz : clazz.constructor.name;
+        const name = typeof clazz === 'string' ? clazz : (clazz.constructor ? clazz.constructor.name : clazz.name);
         try{
             return this.cache[name].instance || this.instantiateRepo(clazz as {new(): DSUModel});
         } catch (e){
@@ -111,7 +114,8 @@ export class RepositoryRegistry implements IRegistry<OpenDSURepo>{
     }
 
     private instantiateRepo(clazz: {new(): DSUModel}, repo?: OpenDSURepoFactory): OpenDSURepository<DSUModel>{
-        const name = clazz.constructor.name;
+        const name = clazz.constructor ? clazz.constructor.name : clazz.name;
+        // ModelRegistry.
         try {
             const instance = repo ? new repo() : new OpenDSURepository<DSUModel>(clazz);
             this.cache[name] = {
@@ -126,7 +130,7 @@ export class RepositoryRegistry implements IRegistry<OpenDSURepo>{
 
     // @ts-ignore
     register<OpenDSURepo>(clazz: {new(): DSUModel} | string, repo?: OpenDSURepoFactory, isCustom: boolean = false): void {
-        const name = clazz.constructor.name;
+        const name = typeof clazz === 'string' ? clazz : (clazz.constructor ? clazz.constructor.name : clazz.name);
         if (!this.cache[name] || isCustom)
             this.cache[name] = {
                 repo: repo,

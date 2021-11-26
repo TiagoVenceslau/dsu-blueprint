@@ -1,5 +1,5 @@
-import {IRegistry} from "@tvenceslau/db-decorators/lib";
 import {DSUModel} from "./DSUModel";
+import {IRegistry} from "@tvenceslau/decorator-validation/lib/utils/registry";
 
 export type DSUModelFactory = {new(): DSUModel}
 

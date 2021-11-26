@@ -1,5 +1,7 @@
 import {DsuKeys, DSUOperation} from "../model/constants";
 import {DSUModel} from "../model";
+import {repository} from "@tvenceslau/db-decorators/lib/repository/decorators";
+import {RepositoryKeys} from "@tvenceslau/db-decorators/lib/repository/constants";
 
 const getDSUModelKey = (key: string) => DsuKeys.REFLECT + key;
 
@@ -24,5 +26,18 @@ export function fromCache<T extends DSUModel>(model: {new(): T}, derive: boolean
             target,
             propertyKey
         );
+    }
+}
+
+/**
+ * Defines a class as a DSU Repository (makes it injectable)
+ *
+ * @decorator dsuRepository
+ * @namespace decorators
+ * @memberOf model
+ */
+export function dsuRepository(...args: any[]){
+    return (original: Function) => {
+        return repository(...args)(original);
     }
 }

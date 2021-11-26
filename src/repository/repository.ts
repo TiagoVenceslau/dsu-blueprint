@@ -1,6 +1,6 @@
 import {DSUModel} from "../model";
 import {
-    AsyncRepositoryImp, debug,
+    AsyncRepositoryImp, criticalCallback, debug,
     Err,
     errorCallback,
     LoggedError,
@@ -29,7 +29,7 @@ export class OpenDSURepository<T extends DSUModel> extends AsyncRepositoryImp<T>
         if (!callback)
             throw new LoggedError(`Missing callback`);
         if (!model)
-            return errorCallback(`Missing Model`, callback);
+            return errorCallback(new Error(`Missing Model`), callback);
 
         const errs = model.hasErrors();
         if (errs)
@@ -38,10 +38,8 @@ export class OpenDSURepository<T extends DSUModel> extends AsyncRepositoryImp<T>
         debug(`Creating {0} DSU from model {1}`, this.clazz.name, model.toString())
 
         createFromDecorators.call(this, model, this.fallbackDomain, ...args, (err: Err, newModel: T | undefined, dsu: DSU | undefined, keySSI: KeySSI | undefined) => {
-            if (err)
-                return callback(err);
-            if (!newModel || !dsu || !keySSI)
-                return errorCallback(`Missing Arguments...`, callback);
+            if (err || !newModel || !dsu || !keySSI)
+                return callback(err || new LoggedError(`Missing Arguments...`));
             debug(`{0} DSU created. Resulting Model: {1}, KeySSI: {2}`, this.clazz.name, newModel.toString(), keySSI.getIdentifier());
             callback(undefined, newModel, dsu, keySSI);
         });

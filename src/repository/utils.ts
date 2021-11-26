@@ -50,7 +50,7 @@ export function getKeySSIFactory(type: KeySSIType): (...args: any[]) => KeySSI{
 export function createFromDecorators<T extends DSUModel>(this: OpenDSURepository<T>, model: T, fallbackDomain: string, ...args: (any | DSUCallback<T>)[]){
     const callback: DSUCallback<T> = args.pop();
     if (!callback)
-        throw new LoggedError(`Missing callback`);
+        throw new CriticalError(`Missing callback`);
 
     const splitDecorators: {creation?: {}[], editing?: {}[]} | undefined = splitDSUDecorators<T>(model);
 
@@ -63,15 +63,15 @@ export function createFromDecorators<T extends DSUModel>(this: OpenDSURepository
 
     const {creation, editing} = splitDecorators;
 
-    handleCreationPropertyDecorators.call(this, model, creation || [], ...args, (err: Err) => {
+     handleCreationPropertyDecorators.call(this, model, creation || [],  (err: Err, models: T[], dsus?: DSU[], keySSIs?:[]) => {
         if (err)
             return callback(err);
 
-        handleDSUClassDecorators.call(this, model, fallbackDomain, ...args, (err: Err, updatedModel?: T, dsu?: DSUModel, keySSI?: KeySSI, isBatchMode: boolean = false) => {
+        handleDSUClassDecorators.call(this, model, fallbackDomain, ...args, (err: Err, updatedModel?: T, dsu?: DSU, keySSI?: KeySSI, isBatchMode: boolean = false) => {
             if (err || !updatedModel || !dsu || !keySSI)
                 return callback(err || new CriticalError("Invalid Results"));
 
-            const cb = function(err: Err, ...args: any[]){
+            const cb = function(err: Err, ...argz: any[]){
                 if (err)
                     return isBatchMode ? dsu.cancelBatch(() => {
                         criticalCallback(err, callback);
@@ -81,13 +81,16 @@ export function createFromDecorators<T extends DSUModel>(this: OpenDSURepository
                         return dsu.cancelBatch(() =>{
                             criticalCallback(e, callback);
                         });
-                    callback(undefined, ...args);
-                }) : callback(undefined, ...args);
+                    callback(undefined, ...argz);
+                }) : callback(undefined, ...argz);
             }
 
-            handleEditingPropertyDecorators.call(this, updatedModel, dsu, editing || [], (err: Err, otherModel: T, otherDSU: DSUModel, otherKeySSI: KeySSI) => {
+            if (isBatchMode)
+                dsu.beginBatch();
+
+            handleEditingPropertyDecorators.call(this, updatedModel, dsu, editing || [], (err: Err, otherModel: T, otherDSU: DSU, otherKeySSI: KeySSI) => {
                 if (err || !otherModel || !otherDSU || !otherKeySSI)
-                    return cb(err || new CriticalError("Invalid Results"));
+                    return cb(err || new Error("Invalid Results"));
                 cb(undefined, otherModel, otherDSU, otherKeySSI);
             });
         });
@@ -197,7 +200,7 @@ export function handleCreationPropertyDecorators<T extends DSUModel>(this: OpenD
         if (!decorator)
             return callback(undefined, ...Object.values(accumulator));
 
-        let handler: DSUCreationHandler | undefined = dsuOperationsRegistry.get(decorator.props.dsu, decorator.prop, decorator.props.operation);
+        let handler: DSUCreationHandler | undefined = dsuOperationsRegistry.get(decorator.props.dsu, decorator.prop, decorator.props.operation) as DSUCreationHandler;
 
         if (!handler)
             return criticalCallback(`No handler found for ${decorator.props.dsu} - ${decorator.prop} - ${decorator.props.operation}`, callback);
@@ -220,7 +223,7 @@ export function handleCreationPropertyDecorators<T extends DSUModel>(this: OpenD
     });
 }
 
-export function handleEditingPropertyDecorators<T extends DSUModel>(this: OpenDSURepository<T>, model: T, dsu: DSUModel, decorators: any[], ...args: (any | DSUCallback<T>)[]){
+export function handleEditingPropertyDecorators<T extends DSUModel>(this: OpenDSURepository<T>, model: T, dsu: DSU, decorators: any[], ...args: (any | DSUCallback<T>)[]){
     const callback: DSUCallback<T> = args.pop();
     if (!callback)
         throw new LoggedError(`Missing callback`);
