@@ -1,4 +1,4 @@
-import {Err} from "@tvenceslau/db-decorators/lib";
+import {Callback, Err} from "@tvenceslau/db-decorators/lib";
 
 export type ObjectCallback = (err?: Err, object?: any) => void;
 export type ErrCallback = (err?: Err) => void;
@@ -139,6 +139,13 @@ export interface Keyssi{
     createTemplateKeySSI(ssiType: string, domain: string, specificString?: string, control?: string, vn?: string, hint?: string): KeySSI;
     createSeedSSI(domain: string, vn?: string | KeySSICallback, hint?: string | KeySSICallback, callback?: KeySSICallback): SeedSSI;
     parse(ssiString: string, options?: {}): KeySSI
+}
+
+export interface HttpDSU{
+    fetch(url: string, options?: {}): Promise<any>;
+    doGet(url: string, options: {} | undefined, callback: Callback): void;
+    doPost(url: string, options: {} | undefined, callback: Callback): void;
+    doPut(url: string, options: {} | undefined, callback: Callback): void;
 }
 
 export interface DSUStorage extends DSU {

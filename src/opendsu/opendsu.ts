@@ -1,5 +1,5 @@
 import {CriticalError} from "@tvenceslau/db-decorators/lib";
-import {DSUAnchoringOptions, Keyssi, KeySSIType, OpenDSU, Resolver} from "./types";
+import {DSUAnchoringOptions, HttpDSU, Keyssi, KeySSIType, OpenDSU, Resolver} from "./types";
 
 /**
  * Handles the integration with the OpenDSU Framework
@@ -61,6 +61,32 @@ export function getKeySsiSpace(): Keyssi{
         }
 
     return keyssi;
+}
+let $$Cache: any = undefined;
+
+export function get$$(){
+    if (!$$Cache)
+        try {
+            // @ts-ignore
+            $$Cache = $$;
+        } catch (e){
+            throw new CriticalError(`Could not load DSU $$ Space: ${e.message | e}`);
+        }
+
+    return $$Cache;
+}
+
+let httpDSU: any = undefined;
+
+export function getHttp(){
+    if (!httpDSU)
+        try {
+            httpDSU =  getOpenDSU().loadApi('http') as HttpDSU;
+        } catch (e){
+            throw new CriticalError(`Could not load DSU Http Space: ${e.message | e}`);
+        }
+
+    return httpDSU;
 }
 
 export function getAnchoringOptionsByDSUType(type: KeySSIType, ...args: any[]): DSUAnchoringOptions | undefined {

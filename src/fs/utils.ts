@@ -1,5 +1,6 @@
 import {DSU, DSUStorage, ObjectCallback} from "../opendsu/types";
 import {Callback, Err} from "@tvenceslau/db-decorators/lib";
+import {get$$} from "../opendsu";
 
 export function impersonateDSUStorage(originalDsu: DSU): DSUStorage {
     const dsu: DSUStorage = originalDsu as DSUStorage;
@@ -75,4 +76,32 @@ export function jsonStringifyReplacer(key: string, value: any){
     if (key === 'serialNumbers')
         return value.join(', ');
     return value;
+}
+
+/**
+ * cache of node's fs object
+ * @memberOf utils
+ */
+let  _fileSystem: any = undefined;
+
+export type FsOptions = {encoding?: string, flag: string};
+
+export interface fs {
+    readFile(path: string, options: FsOptions | undefined, callback: Callback): void;
+    readFileSync(path: string, options?: FsOptions): Promise<string>;
+    writeFile(path: string, data: any, options: FsOptions | undefined, callback: Callback): void;
+    writeFileSync(path: string, data: any, options?: FsOptions): Promise<void>;
+}
+
+/**
+ * Caches and returns node's fs object if the environment is right
+ * @return {fs}
+ * @memberOf utils
+ */
+export function getFS(): fs {
+    if (get$$().environmentType !== 'nodejs')
+        throw new Error("Wrong environment for this function. Please make sure you know what you are doing...");
+    if (!_fileSystem)
+        _fileSystem = require('fs');
+    return _fileSystem;
 }

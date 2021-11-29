@@ -14,20 +14,20 @@ const getDSUModelKey = (key: string) => DsuKeys.REFLECT + key;
  * @typedef T extends DSUModel
  * @param {{new: T}} model
  * @param {boolean} [derive] if the received DSU should have its KeySSI derived. defaults to false
- * @param {string} [dsuFilePath] defines the mount path. defaults to the property key
+ * @param {string} [mountPath] defines the mount path. defaults to the property key
  * @param {DSUIOOptions} [mountOptions] options to be passed to OpenDSU for the mounting operation
  *
  * @decorator fromCache
  * @namespace decorators
  * @memberOf model
  */
-export function fromCache<T extends DSUModel>(model: {new(): T}, derive: boolean | number = false, dsuFilePath?: string, mountOptions?: DSUIOOptions) {
+export function fromCache<T extends DSUModel>(model: {new(): T}, derive: boolean | number = false, mountPath?: string, mountOptions?: DSUIOOptions) {
     return (target: T, propertyKey: string) => {
         const metadata: DSUEditMetadata = {
             operation: DSUOperation.EDITING,
             derive: derive,
             options: mountOptions,
-            dsuPath: dsuFilePath ? dsuFilePath : propertyKey,
+            dsuPath: mountPath ? mountPath : propertyKey,
         };
         Reflect.defineMetadata(
             getDSUModelKey(DsuKeys.FROM_CACHE),

@@ -56,13 +56,14 @@ export type DSUCreationMetadata = {
  * @param {{new: T}} dsu
  * @param {boolean | number} [derive] decides if the resulting mount uses the Seed or the Read (or how many times it derives the key)
  * @param {string} [mountPath] defines the mount path, overriding the property name;
+ * @param {DSUIOOptions} [mountOptions] defines the mount path, overriding the property name;
  * @param {any[]} [args] optional KeySSI generation params
  *
  * @decorator dsu
  * @namespace decorators
  * @memberOf model
  */
-export function dsu<T extends DSUModel>(dsu: {new(): T}, derive: boolean | number = false, mountPath?: string, ...args: any[]) {
+export function dsu<T extends DSUModel>(dsu: {new(): T}, derive: boolean | number = false, mountPath?: string, mountOptions?: DSUIOOptions, ...args: any[]) {
     getRepoRegistry().register<OpenDSURepository<T>>(dsu);
     return (target: T, propertyKey: string) => {
         const dsuPath = mountPath ? mountPath : propertyKey;
@@ -81,7 +82,7 @@ export function dsu<T extends DSUModel>(dsu: {new(): T}, derive: boolean | numbe
             propertyKey
         );
 
-        fromCache<T>(dsu, derive, dsuPath)(target, propertyKey);
+        fromCache<T>(dsu, derive, dsuPath, mountOptions)(target, propertyKey);
 
         const handler: DSUCreationHandler = function<T extends DSUModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, model: T, decorator: DSUCreationMetadata, callback: ModelCallback<T>): void {
             const {dsu} = decorator;
@@ -117,7 +118,7 @@ export type DSUEditMetadata = {
  *
  * @param {string} [dsuPath] defines the mount path. defaults to {@link DsuKeys#DEFAULT_DSU_PATH}
  *
- * @decorator dsu
+ * @decorator dsuFile
  * @namespace decorators
  * @memberOf model
  */
