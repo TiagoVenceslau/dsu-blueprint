@@ -3,6 +3,7 @@ import {KeySSIType} from "../opendsu/types";
 import {constructFromObject} from "@tvenceslau/db-decorators/lib";
 import {fromCache} from "../repository";
 import {addFileFS, addFolderFS, dsuFS} from "./decorators";
+import {email} from "@tvenceslau/decorator-validation/lib";
 
 @DSUBlueprint(undefined, KeySSIType.SEED)
 export class IdDsuBlueprint extends DSUModel{
@@ -12,6 +13,7 @@ export class IdDsuBlueprint extends DSUModel{
     @dsuFile()
     id?: string = undefined;
     @dsuFile()
+    @email()
     email?: string = undefined;
     @dsuFile()
     address?: string = undefined;

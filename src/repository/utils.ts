@@ -267,18 +267,17 @@ export function handleEditingPropertyDecorators<T extends DSUModel>(this: OpenDS
         }
         accum.grouped = accum.grouped || {};
         accum.grouped[dec.props.key] = accum.grouped[dec.props.key] || {};
-        accum.grouped[dec.props.key][dec.prop] = accum.grouped[dec.props.key][dec.prop] || {};
 
-        if (accum.grouped[dec.props.key][dec.prop][dec.grouping]){
+        if (accum.grouped[dec.props.key][dec.props.grouping]){
             const newPropValue: {[indexer: string] : any} = {};
             newPropValue[dec.prop] = model[dec.prop];
-            Object.assign(accum.grouped[dec.props.key][dec.prop][dec.grouping], {
-                value: newPropValue
-            });
+            Object.assign(accum.grouped[dec.props.key][dec.props.grouping].value, newPropValue);
         } else {
-            Object.assign({}, dec, {
-                value: model[dec.prop]
-            });
+            const newPropValue: {[indexer: string] : any} = {};
+            newPropValue[dec.prop] = model[dec.prop];
+            accum.grouped[dec.props.key][dec.props.grouping] = Object.assign({}, dec, {
+                    value: newPropValue
+                });
         }
         return accum;
     }, {});
@@ -301,7 +300,13 @@ export function handleEditingPropertyDecorators<T extends DSUModel>(this: OpenDS
         });
     }
 
-    decoratorIterator((splitDecorators.grouped || []).slice(), model, (err: Err, newModel: T) => {
+    const grouped = Object.keys(splitDecorators.grouped || {}).reduce((accum, k) => {
+        // @ts-ignore
+        accum.push(...Object.values(splitDecorators.grouped[k]))
+        return accum;
+    }, []);
+
+    decoratorIterator(grouped, model, (err: Err, newModel: T) => {
         if (err)
             return callback(err);
         decoratorIterator((splitDecorators.single || []).slice(), newModel,(err: Err, newModel: T) => {

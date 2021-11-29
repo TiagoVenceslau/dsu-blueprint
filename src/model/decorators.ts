@@ -115,7 +115,7 @@ export type DSUEditMetadata = {
 
 /**
  *
- * @param {string} [dsuFilePath] defines the mount path. defaults to {@link DsuKeys#DEFAULT_DSU_PATH}
+ * @param {string} [dsuPath] defines the mount path. defaults to {@link DsuKeys#DEFAULT_DSU_PATH}
  *
  * @decorator dsu
  * @namespace decorators
@@ -139,8 +139,9 @@ export function dsuFile(dsuPath: string = DsuKeys.DEFAULT_DSU_PATH) {
         );
 
         const handler: DSUEditingHandler = function<T extends DBModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, obj: any, dsu: DSU, decorator: DSUEditMetadata, callback: DSUCallback<T>): void {
-            const {dsuPath} = decorator;
-            dsu.writeFile(dsuPath, JSON.stringify(obj), (err: Err) => {
+            const {value, props} = decorator;
+            const {dsuPath} = props;
+            dsu.writeFile(dsuPath, JSON.stringify(value), (err: Err) => {
                 if (err)
                     return criticalCallback(err, callback);
                 callback(undefined, obj, dsu);

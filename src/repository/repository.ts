@@ -9,6 +9,7 @@ import {
 import {DSU, KeySSI} from "../opendsu/types";
 import {createFromDecorators} from "./utils";
 import DBModel from "@tvenceslau/db-decorators/lib/model/DBModel";
+import {repository} from "@tvenceslau/db-decorators/lib/repository/decorators";
 
 export type DSUKey = string | KeySSI;
 
