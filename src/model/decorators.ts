@@ -1,12 +1,13 @@
 import {model, ModelKeys} from "@tvenceslau/decorator-validation/lib";
-import {DSU, DSUAnchoringOptions, KeySSI, KeySSIType} from "../opendsu/types";
+import {DSU, DSUAnchoringOptions, DSUIOOptions, KeySSI, KeySSIType} from "../opendsu/types";
 import {DsuKeys, DSUOperation} from "./constants";
 import {DSUModel} from "./DSUModel";
 import {getDSUOperationsRegistry, getRepoRegistry} from "../repository/registry";
 import {
+    DSUCache,
     DSUCallback,
     DSUCreationHandler,
-    DSUEditingHandler,
+    DSUEditingHandler, fromCache,
     OpenDSURepository
 } from "../repository";
 import DBModel from "@tvenceslau/db-decorators/lib/model/DBModel";
@@ -40,11 +41,20 @@ export const DSUBlueprint = (domain: string | undefined = undefined, keySSIType:
     })(original);
 }
 
+export type DSUCreationMetadata = {
+    [indexer: string]: any;
+
+    dsu: string
+    derive: boolean | number,
+    dsuPath: string
+    ,
+}
+
 /**
  *
  * @typedef T extends DSUModel
  * @param {{new: T}} dsu
- * @param{boolean} [derive] decides if the resulting mount uses the Seed or the Read
+ * @param {boolean | number} [derive] decides if the resulting mount uses the Seed or the Read (or how many times it derives the key)
  * @param {string} [mountPath] defines the mount path, overriding the property name;
  * @param {any[]} [args] optional KeySSI generation params
  *
@@ -52,35 +62,55 @@ export const DSUBlueprint = (domain: string | undefined = undefined, keySSIType:
  * @namespace decorators
  * @memberOf model
  */
-export function dsu<T extends DSUModel>(dsu: {new(): T}, derive: boolean = false, mountPath?: string, ...args: any[]) {
+export function dsu<T extends DSUModel>(dsu: {new(): T}, derive: boolean | number = false, mountPath?: string, ...args: any[]) {
+    getRepoRegistry().register<OpenDSURepository<T>>(dsu);
     return (target: T, propertyKey: string) => {
+        const dsuPath = mountPath ? mountPath : propertyKey;
+
+        const metadata: DSUCreationMetadata = {
+            operation: DSUOperation.CREATION,
+            dsu: target.constructor.name,
+            derive: derive,
+            dsuPath: dsuPath
+        }
+
         Reflect.defineMetadata(
             getDSUModelKey(DsuKeys.DSU),
-            {
-                dsu: target.constructor.name,
-                derive: derive,
-                operation: DSUOperation.CREATION,
-                mountPath: mountPath ? mountPath : propertyKey
-            },
+            metadata,
             target,
             propertyKey
         );
 
-        getRepoRegistry().register<OpenDSURepository<T>>(dsu);
+        fromCache<T>(dsu, derive, dsuPath)(target, propertyKey);
 
-        const handler: DSUCreationHandler = function<T extends DSUModel>(this: OpenDSURepository<T>, model: T, decorators: any[], callback: ModelCallback<T>): void {
-            const repo = getRepoRegistry().get<OpenDSURepository<T>>(model.constructor.name)
+        const handler: DSUCreationHandler = function<T extends DSUModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, model: T, decorator: DSUCreationMetadata, callback: ModelCallback<T>): void {
+            const {dsu} = decorator;
+
+            const repo = getRepoRegistry().get<OpenDSURepository<T>>(dsu)
             if (!repo)
                     throw new CriticalError(`Cannot find ${model.constructor.name} repository`);
             repo.create(model, (err: Err, newModel: T, dsu: DSU, keySSI: KeySSI) => {
                 if (err)
                     return callback(err);
+
+                // dsuCache.cache(newModel, propertyKey, dsu, keySSI);
                 callback(undefined, newModel, dsu, keySSI);
             });
         }
 
         getDSUOperationsRegistry().register(handler, DSUOperation.CREATION, target, propertyKey);
     }
+}
+
+export type DSUEditMetadata = {
+    [indexer: string]: any;
+
+    operation: string
+    key?: string,
+    grouped?: boolean,
+    grouping?: string
+    dsuPath: string
+    ,
 }
 
 /**
@@ -91,24 +121,74 @@ export function dsu<T extends DSUModel>(dsu: {new(): T}, derive: boolean = false
  * @namespace decorators
  * @memberOf model
  */
-export function dsuFile(dsuFilePath: string = DsuKeys.DEFAULT_DSU_PATH) {
+export function dsuFile(dsuPath: string = DsuKeys.DEFAULT_DSU_PATH) {
     return (target: any, propertyKey: string) => {
+        const metadata: DSUEditMetadata = {
+            operation: DSUOperation.EDITING,
+            key: DsuKeys.DSU_FILE,
+            grouped: true,
+            grouping: dsuPath,
+            dsuPath: dsuPath
+        };
+
         Reflect.defineMetadata(
             getDSUModelKey(DsuKeys.DSU_FILE),
-            {
-                dsuFilePath: dsuFilePath,
-                grouping: dsuFilePath,
-                operation: DSUOperation.EDITING
-            },
+            metadata,
             target,
             propertyKey
         );
 
-        const handler: DSUEditingHandler = function<T extends DBModel>(this: OpenDSURepository<T>, obj: any, dsu: DSU, keySSI: KeySSI, callback: DSUCallback<T>): void {
-            dsu.writeFile(dsuFilePath, JSON.stringify(obj), (err: Err) => {
+        const handler: DSUEditingHandler = function<T extends DBModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, obj: any, dsu: DSU, decorator: DSUEditMetadata, callback: DSUCallback<T>): void {
+            const {dsuPath} = decorator;
+            dsu.writeFile(dsuPath, JSON.stringify(obj), (err: Err) => {
                 if (err)
                     return criticalCallback(err, callback);
-                callback(undefined, obj, dsu, keySSI);
+                callback(undefined, obj, dsu);
+            })
+        }
+
+        getDSUOperationsRegistry().register(handler, DSUOperation.EDITING, target, propertyKey);
+    }
+}
+
+/**
+ *
+ * @param {string} keySSI the KeySSI to mount
+ * @param {string} [mountPath] defines the mount path. defaults to the property key
+ * @param {DSUIOOptions} [options]
+ * @param {any[]} [args] optional params. meant for extending decorators
+ *
+ * @decorator dsu
+ * @namespace decorators
+ * @memberOf model
+ */
+export function mount(keySSI: string, mountPath?: string, options?: DSUIOOptions, ...args: any[]) {
+    return (target: any, propertyKey: string) => {
+        mountPath = mountPath ? mountPath : target[propertyKey];
+
+        if (!mountPath)
+            throw new CriticalError(`Missing mount path`);
+
+        const metadata: DSUEditMetadata = {
+            operation: DSUOperation.EDITING,
+            dsuPath: mountPath,
+            options: options,
+            args: args
+        };
+
+        Reflect.defineMetadata(
+            getDSUModelKey(DsuKeys.MOUNT),
+            metadata,
+            target,
+            propertyKey
+        );
+
+        const handler: DSUEditingHandler = function<T extends DBModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, obj: T, dsu: DSU, decorator: DSUEditMetadata, callback: DSUCallback<T>): void {
+            const {keySSI, dsuPath, options} = decorator;
+            dsu.mount(dsuPath, keySSI, options, err => {
+                if (err)
+                    return criticalCallback(err, callback);
+                callback(undefined, obj, dsu);
             })
         }
 

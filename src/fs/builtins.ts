@@ -25,6 +25,7 @@ export class IdDsuBlueprint extends DSUModel{
 @DSUBlueprint(undefined, KeySSIType.ARRAY)
 export class ParticipantDsuBlueprint extends DSUModel{
 
+    // @ts-ignore
     @fromCache<IdDsuBlueprint>(IdDsuBlueprint, true)
     id?: IdDsuBlueprint = undefined;
 

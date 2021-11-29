@@ -23,6 +23,9 @@ export interface KeySSI{
     getSpecificationString(): string;
     getVn(): string;
     load(subtype: string, dlDomain: string, subtypeSpecificString: string, control: string, vn: string, hint: string): void;
+
+    // Undocumented?? really?
+    derive(): KeySSI;
 }
 
 export interface SeedSSI extends KeySSI {

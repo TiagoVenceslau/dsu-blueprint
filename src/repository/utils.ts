@@ -1,6 +1,15 @@
 import {DSUCallback, DSUMultipleCallback, OpenDSURepository} from "./repository";
 import {DsuKeys, DSUModel, DSUOperation} from "../model";
-import {DSU, ErrCallback, getAnchoringOptionsByDSUType, getKeySsiSpace, getResolver, KeySSI, KeySSIType} from "../opendsu";
+import {
+    DSU,
+    ErrCallback,
+    GenericCallback,
+    getAnchoringOptionsByDSUType,
+    getKeySsiSpace,
+    getResolver,
+    KeySSI,
+    KeySSIType
+} from "../opendsu";
 import {
     Callback, criticalCallback, CriticalError, Err,
     errorCallback,
@@ -8,9 +17,11 @@ import {
     getClassDecorators,
     LoggedError
 } from "@tvenceslau/db-decorators/lib";
-import {DSUCreationHandler, DSUFactoryMethod} from "./types";
+import {DSUCreationHandler, DSUEditingHandler, DSUFactoryMethod} from "./types";
 import {getDSUOperationsRegistry} from "./registry";
 import {ModelKeys} from "@tvenceslau/decorator-validation/lib";
+import {DSUCache} from "./cache";
+import {KeyType} from "crypto";
 
 export function getDSUFactory(keySSI: KeySSI): DSUFactoryMethod{
     switch (keySSI.getTypeName()) {
@@ -35,6 +46,25 @@ export function getKeySSIFactory(type: KeySSIType): (...args: any[]) => KeySSI{
         default:
             throw new LoggedError(`Unsupported KeySSI Type ${type}`);
     }
+}
+
+
+const batchCallback = function(err: Err, dsu: DSU, ...args: any[]){
+    const callback: Callback = args.pop();
+    if (!callback)
+        throw new CriticalError(`Missing callback`);
+
+    if (err)
+        return dsu.batchInProgress() ? dsu.cancelBatch(() => {
+            criticalCallback(err, callback);
+        }) : criticalCallback(err, callback);
+    return dsu.batchInProgress() ? dsu.commitBatch((e?: Err) => {
+        if (e)
+            return dsu.cancelBatch(() =>{
+                criticalCallback(e, callback);
+            });
+        callback(undefined, ...args);
+    }) : callback(undefined, ...args);
 }
 
 /**
@@ -63,35 +93,29 @@ export function createFromDecorators<T extends DSUModel>(this: OpenDSURepository
 
     const {creation, editing} = splitDecorators;
 
-     handleCreationPropertyDecorators.call(this, model, creation || [],  (err: Err, models: T[], dsus?: DSU[], keySSIs?:[]) => {
-        if (err)
-            return callback(err);
+    const dsuCache: DSUCache<T> = new DSUCache<T>();
+
+    handleCreationPropertyDecorators.call(this, dsuCache, model, creation || [],  (err: Err, results?: DSUCreationResults) => {
+        if (err || !results)
+            return callback(err || new CriticalError(`Invalid Results`));
+
+        Object.keys(results).forEach(k => {
+            results[k].forEach(result => {
+                dsuCache.cache(model, k, result.dsu, result.keySSI)
+            })
+        })
 
         handleDSUClassDecorators.call(this, model, fallbackDomain, ...args, (err: Err, updatedModel?: T, dsu?: DSU, keySSI?: KeySSI, isBatchMode: boolean = false) => {
             if (err || !updatedModel || !dsu || !keySSI)
                 return callback(err || new CriticalError("Invalid Results"));
 
-            const cb = function(err: Err, ...argz: any[]){
-                if (err)
-                    return isBatchMode ? dsu.cancelBatch(() => {
-                        criticalCallback(err, callback);
-                    }) : criticalCallback(err, callback);
-                return isBatchMode ? dsu.commitBatch((e?: Err) => {
-                    if (e)
-                        return dsu.cancelBatch(() =>{
-                            criticalCallback(e, callback);
-                        });
-                    callback(undefined, ...argz);
-                }) : callback(undefined, ...argz);
-            }
-
             if (isBatchMode)
                 dsu.beginBatch();
 
-            handleEditingPropertyDecorators.call(this, updatedModel, dsu, editing || [], (err: Err, otherModel: T, otherDSU: DSU, otherKeySSI: KeySSI) => {
-                if (err || !otherModel || !otherDSU || !otherKeySSI)
-                    return cb(err || new Error("Invalid Results"));
-                cb(undefined, otherModel, otherDSU, otherKeySSI);
+            handleEditingPropertyDecorators.call(this, dsuCache as DSUCache<DSUModel>, updatedModel, dsu, editing || [], (err: Err, otherModel: T) => {
+                if (err || !otherModel)
+                    return batchCallback(err || new Error("Invalid Results"), dsu, callback);
+                batchCallback(undefined, dsu, otherModel, dsu, keySSI, callback);
             });
         });
     });
@@ -180,8 +204,10 @@ export function splitDSUDecorators<T extends DSUModel>(model: T) : {creation?: a
     }, undefined);
 }
 
-export function handleCreationPropertyDecorators<T extends DSUModel>(this: OpenDSURepository<T>, model: T, decorators: any[], ...args: (any | DSUMultipleCallback<T>)[]){
-    const callback: DSUMultipleCallback<T> = args.pop();
+export type DSUCreationResults = {[indexer: string]: {model: DSUModel, dsu: DSU, keySSI: KeySSI}[]};
+
+export function handleCreationPropertyDecorators<T extends DSUModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, model: T, decorators: any[], ...args: (any | DSUMultipleCallback<T>)[]){
+    const callback: DSUMultipleCallback<DSUModel> = args.pop();
     if (!callback)
         throw new LoggedError(`Missing callback`);
 
@@ -189,87 +215,99 @@ export function handleCreationPropertyDecorators<T extends DSUModel>(this: OpenD
 
     const self : OpenDSURepository<T> = this;
 
-    const accumulator: {model: DSUModel[], dsu: DSU[], keySSI: KeySSI[]} = {
-        model: [],
-        dsu: [],
-        keySSI: []
-    }
+    const results: DSUCreationResults = {};
 
     const decoratorIterator = function<T>(decoratorsCopy: any[], callback: Callback){
         const decorator = decoratorsCopy.shift();
         if (!decorator)
-            return callback(undefined, ...Object.values(accumulator));
+            return callback(undefined, results);
 
         let handler: DSUCreationHandler | undefined = dsuOperationsRegistry.get(decorator.props.dsu, decorator.prop, decorator.props.operation) as DSUCreationHandler;
 
         if (!handler)
             return criticalCallback(`No handler found for ${decorator.props.dsu} - ${decorator.prop} - ${decorator.props.operation}`, callback);
 
-        handler.call(self, model[decorator.prop], decorator.props, (err: Err, newModel?: DSUModel, dsu?: DSU, keySSI?: KeySSI) => {
+        handler.call(self, dsuCache, model[decorator.prop], decorator.props, (err: Err, newModel?: DSUModel, dsu?: DSU, keySSI?: KeySSI) => {
             if (err || !newModel || !dsu || !keySSI)
                 return criticalCallback(err || new Error(`Missing Results`), callback);
-            accumulator.model.push(newModel);
-            accumulator.dsu.push(dsu);
-            accumulator.keySSI.push(keySSI);
+
+            results[decorator.prop] = results[decorator.prop] || [];
+            results[decorator.prop].push(({
+                model: newModel,
+                dsu: dsu,
+                keySSI: keySSI
+            }));
+
             decoratorIterator(decoratorsCopy, callback);
         });
 
     }
 
-    decoratorIterator(decorators.slice(), (err, models: T[], dsus: DSU[], keySSIs: KeySSI[]) => {
+    decoratorIterator(decorators.slice(), (err, results) => {
         if (err)
             return callback(err);
-        callback(undefined, models, dsus, keySSIs)
+        callback(undefined, results)
     });
 }
 
-export function handleEditingPropertyDecorators<T extends DSUModel>(this: OpenDSURepository<T>, model: T, dsu: DSU, decorators: any[], ...args: (any | DSUCallback<T>)[]){
+export function handleEditingPropertyDecorators<T extends DSUModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, model: T, dsu: DSU, decorators: any[], ...args: (any | DSUCallback<T>)[]){
     const callback: DSUCallback<T> = args.pop();
     if (!callback)
         throw new LoggedError(`Missing callback`);
 
-    const decoratorIterator = function(decoratorsCopy: any[], callback: Callback){
+    const dsuOperationsRegistry = getDSUOperationsRegistry();
+
+    const self : OpenDSURepository<T> = this;
+
+    const splitDecorators: {grouped: {[indexer: string]: any}, single: any[]} = decorators.reduce((accum, dec) => {
+        if (!dec.props.grouped){
+            accum.single = accum.single || [];
+            accum.single.push(dec)
+            return accum;
+        }
+        accum.grouped = accum.grouped || {};
+        accum.grouped[dec.props.key] = accum.grouped[dec.props.key] || {};
+        accum.grouped[dec.props.key][dec.prop] = accum.grouped[dec.props.key][dec.prop] || {};
+
+        if (accum.grouped[dec.props.key][dec.prop][dec.grouping]){
+            const newPropValue: {[indexer: string] : any} = {};
+            newPropValue[dec.prop] = model[dec.prop];
+            Object.assign(accum.grouped[dec.props.key][dec.prop][dec.grouping], {
+                value: newPropValue
+            });
+        } else {
+            Object.assign({}, dec, {
+                value: model[dec.prop]
+            });
+        }
+        return accum;
+    }, {});
+
+    const decoratorIterator = function(decoratorsCopy: any[], newModel: T, callback: Callback){
         const decorator = decoratorsCopy.shift();
         if (!decorator)
-            return callback(); // TODO
+            return callback(undefined, newModel);
 
-    }
+        let handler: DSUEditingHandler | undefined = dsuOperationsRegistry.get(newModel.constructor.name, decorator.prop, decorator.props.operation) as DSUEditingHandler;
 
-    decoratorIterator(decorators.slice(), (err) => {
-        if (err)
-            return callback(err);
-    });
-}
+        if (!handler)
+            return criticalCallback(new Error(`No handler found for ${decorator.props.dsu} - ${decorator.prop} - ${decorator.props.operation}`), callback);
 
-export function handleDSUPropertyDecorators<T extends DSUModel>(model: T, decorators: any[], ...args: (any | DSUCallback<T>)[]){
-    const callback: DSUCallback<T> = args.pop();
-    if (!callback)
-        throw new LoggedError(`Missing callback`);
+        handler.call(self, dsuCache, model, dsu, decorator, (err: Err, newModel?: DSUModel) => {
+            if (err || !newModel)
+                return criticalCallback(err || new Error(`Missing Results`), callback);
 
-    const decoratorIterator = function(prop: string, decorators: any, callback: Callback): void {
-        const decorator = decorators.shift();
-        if (!decorator)
-            return callback(); // TODO
-        if (decorator.key === ModelKeys.MODEL)
-            return decoratorIterator(prop, decorators, callback);
-
-        // TODO
-    }
-
-    const propIterator = function(propsCopy: string[], callback: Callback): void {
-        const prop = propsCopy.shift();
-        if (!prop)
-            return callback();
-        decoratorIterator(prop, decorators.slice(), (err) => {
-            if (err)
-                return callback(err);
-            propIterator(propsCopy, callback);
+            decoratorIterator(decoratorsCopy, newModel as T, callback);
         });
     }
 
-    propIterator(decorators, (err) => {
+    decoratorIterator((splitDecorators.grouped || []).slice(), model, (err: Err, newModel: T) => {
         if (err)
             return callback(err);
-        callback(); // TODO
+        decoratorIterator((splitDecorators.single || []).slice(), newModel,(err: Err, newModel: T) => {
+            if (err)
+                return callback(err);
+            callback(undefined, newModel);
+        });
     });
 }

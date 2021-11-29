@@ -115,7 +115,6 @@ export class RepositoryRegistry implements IRegistry<OpenDSURepo>{
 
     private instantiateRepo(clazz: {new(): DSUModel}, repo?: OpenDSURepoFactory): OpenDSURepository<DSUModel>{
         const name = clazz.constructor ? clazz.constructor.name : clazz.name;
-        // ModelRegistry.
         try {
             const instance = repo ? new repo() : new OpenDSURepository<DSUModel>(clazz);
             this.cache[name] = {
@@ -130,7 +129,7 @@ export class RepositoryRegistry implements IRegistry<OpenDSURepo>{
 
     // @ts-ignore
     register<OpenDSURepo>(clazz: {new(): DSUModel} | string, repo?: OpenDSURepoFactory, isCustom: boolean = false): void {
-        const name = typeof clazz === 'string' ? clazz : (clazz.constructor ? clazz.constructor.name : clazz.name);
+        const name = typeof clazz === 'string' ? clazz : (clazz.constructor && clazz.constructor.name !== 'Function' ? clazz.constructor.name : clazz.name);
         if (!this.cache[name] || isCustom)
             this.cache[name] = {
                 repo: repo,

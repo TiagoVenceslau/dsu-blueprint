@@ -1,8 +1,19 @@
 import {CriticalError} from "@tvenceslau/db-decorators/lib";
 import {DSUAnchoringOptions, Keyssi, KeySSIType, OpenDSU, Resolver} from "./types";
 
+/**
+ * Handles the integration with the OpenDSU Framework
+ * @namespace openDSU
+ * @memberOf dsu-blueprint
+ */
+
 let openDSU: OpenDSU;
 
+/**
+ * @return OpenDSU the {@link OpenDSU} object;
+ * @throws {CriticalError} when it fails to load
+ * @namespace OpenDSU
+ */
 export function getOpenDSU(): OpenDSU {
     if (!openDSU){
         try{
@@ -17,6 +28,12 @@ export function getOpenDSU(): OpenDSU {
 
 let resolver: Resolver;
 
+
+/**
+ * @return Resolver the {@link Resolver} object;
+ * @throws {CriticalError} when it fails to load
+ * @namespace OpenDSU
+ */
 export function getResolver(): Resolver{
     if (!resolver)
         try {
@@ -30,6 +47,11 @@ export function getResolver(): Resolver{
 
 let keyssi: Keyssi;
 
+/**
+ * @return Keyssi the {@link Keyssi} object;
+ * @throws {CriticalError} when it fails to load
+ * @namespace OpenDSU
+ */
 export function getKeySsiSpace(): Keyssi{
     if (!keyssi)
         try {

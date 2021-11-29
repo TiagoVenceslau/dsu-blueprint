@@ -3,7 +3,8 @@ export const DsuKeys = {
     DEFAULT_DSU_PATH: 'info.json',
     FROM_CACHE: 'fromCache',
     DSU: 'dsu',
-    DSU_FILE: 'dsuFile'
+    DSU_FILE: 'dsuFile',
+    MOUNT: 'mount'
 }
 
 export const DSUOperation = {

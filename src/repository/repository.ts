@@ -1,6 +1,6 @@
 import {DSUModel} from "../model";
 import {
-    AsyncRepositoryImp, criticalCallback, debug,
+    AsyncRepositoryImp, debug,
     Err,
     errorCallback,
     LoggedError,
