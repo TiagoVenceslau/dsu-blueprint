@@ -302,7 +302,7 @@ export function handleDSUClassDecorators&lt;T extends DSUModel>(this: OpenDSURep
         keySSI = factory(...keyArgs);
         dsuFactory = getDSUFactory(keySSI);
     } catch (e){
-        return errorCallback(e, callback);
+        return errorCallback(e as Error, callback);
     }
 
     const options = getAnchoringOptionsByDSUType(keySSI.getTypeName() as KeySSIType);
