@@ -92,7 +92,7 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-dsu-blueprint.html">dsu-blueprint</a></li></ul><h3>Namespaces</h3><ul><li><a href="dsu-blueprint.openDSU.html">openDSU</a></li><li><a href="fs.decorators.html">decorators</a></li><li><a href="model.decorators.html">decorators</a></li><li><a href="OpenDSU.html">OpenDSU</a></li><li><a href="repository.html">repository</a></li></ul><h3>Classes</h3><ul><li><a href="OpenDSURepository_OpenDSURepository.html">OpenDSURepository</a></li></ul><h3><a href="global.html">Global</a></h3></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-dsu-blueprint.html">dsu-blueprint</a></li></ul><h3>Namespaces</h3><ul><li><a href="dsu-blueprint.cli.html">cli</a></li><li><a href="dsu-blueprint.fs.html">fs</a></li><li><a href="dsu-blueprint.openDSU.html">openDSU</a></li><li><a href="fs.decorators.html">decorators</a></li><li><a href="model.decorators.html">decorators</a></li><li><a href="OpenDSU.html">OpenDSU</a></li><li><a href="repository.html">repository</a></li></ul><h3>Classes</h3><ul><li><a href="OpenDSURepository_OpenDSURepository.html">OpenDSURepository</a></li></ul><h3><a href="global.html">Global</a></h3></div>
                 
             </nav>
         </div>
@@ -109,9 +109,9 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import {DSU, DSUStorage, ObjectCallback} from "../opendsu/types";
+            <pre class="prettyprint source linenums"><code>import {DSU, DSUStorage, ObjectCallback} from "../core/opendsu/types";
 import {Callback, Err} from "@tvenceslau/db-decorators/lib";
-import {get$$} from "../opendsu";
+import {get$$} from "../core/opendsu";
 
 export function impersonateDSUStorage(originalDsu: DSU): DSUStorage {
     const dsu: DSUStorage = originalDsu as DSUStorage;
@@ -142,43 +142,6 @@ export function impersonateDSUStorage(originalDsu: DSU): DSUStorage {
     dsu.getObject = getObject;
     dsu.setObject = setObject;
     return dsu;
-}
-
-export function argParser(defaultOpts: {[indexer: string]: any}, args: string[]){
-    let config = JSON.parse(JSON.stringify(defaultOpts));
-    if (!args)
-        return config;
-    args = args.slice(2);
-    const recognized = Object.keys(config);
-    const notation = recognized.map(r => '--' + r);
-    args.forEach(arg => {
-        if (arg.includes('=')){
-            let splits = arg.split('=');
-            if (notation.indexOf(splits[0]) !== -1) {
-                let result
-                try {
-                    result = eval(splits[1]);
-                } catch (e) {
-                    result = splits[1];
-                }
-                config[splits[0].substring(2)] = result;
-            }
-        }
-    });
-    return config;
-}
-
-export function parseEnvJS(strEnv: string){
-    return JSON.parse(strEnv.replace(/^export\sdefault\s/, ''));
-}
-
-export function getEnvJs(app: string, pathToApps: string, callback: ObjectCallback){
-    const appPath = require('path').join(process.cwd(), pathToApps, "trust-loader-config", app, "loader", "environment.js");
-    require('fs').readFile(appPath, (err: Err, data: Buffer) => {
-        if (err)
-            return callback(`Could not find Application ${app} at ${{appPath}} : ${err}`);
-        return callback(undefined, parseEnvJS(data.toString()));
-    });
 }
 
 export function jsonStringifyReplacer(key: string, value: any){

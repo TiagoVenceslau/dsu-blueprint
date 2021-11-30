@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,7 +7,7 @@
   
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Decorator Validation Engine OpenDSU</title>
+  <title>Decorator Validation Engine core/repository/decorators.ts</title>
 
   <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -97,283 +99,93 @@
         <div class="core" id="main-content-wrapper">
             <div class="content">
                 <header class="page-title">
-                    <p>Namespace</p>
-                    <h1>OpenDSU</h1>
+                    <p>Source</p>
+                    <h1>core/repository/decorators.ts</h1>
                 </header>
                 
 
 
 
-
-<section>
-
-<header>
-    
-        <h2>OpenDSU</h2>
-        
-    
-</header>
-
-<article>
-    <div class="container-overview">
-    
-        
-
-        
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    
-
-    
-
-    
-
-    
-        <p class="tag-source">
-            <a href="core_opendsu_opendsu.ts.html" class="button">View Source</a>
-            <span>
-                <a href="core_opendsu_opendsu.ts.html">core/opendsu/opendsu.ts</a>, <a href="core_opendsu_opendsu.ts.html#line10">line 10</a>
-            </span>
-        </p>
-    
-</dl>
-
-
-        
-    
-    </div>
-    
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
-
-
-
-
-
-
-
-<section>
-
-<header>
-    
-        <h2>OpenDSU</h2>
-        
-    
-</header>
-
-<article>
-    <div class="container-overview">
-    
-        
-
-        
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
     
-    
-
-    
-
-    
-
-    
-        <p class="tag-source">
-            <a href="core_opendsu_opendsu.ts.html" class="button">View Source</a>
-            <span>
-                <a href="core_opendsu_opendsu.ts.html">core/opendsu/opendsu.ts</a>, <a href="core_opendsu_opendsu.ts.html#line27">line 27</a>
-            </span>
-        </p>
-    
-</dl>
-
-
-        
-    
-    </div>
-    
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
-
-
-
-
-
-
-
-<section>
-
-<header>
-    
-        <h2>OpenDSU</h2>
-        
-    
-</header>
-
-<article>
-    <div class="container-overview">
-    
-        
-
-        
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    
-
-    
-
-    
-
-    
-        <p class="tag-source">
-            <a href="core_opendsu_opendsu.ts.html" class="button">View Source</a>
-            <span>
-                <a href="core_opendsu_opendsu.ts.html">core/opendsu/opendsu.ts</a>, <a href="core_opendsu_opendsu.ts.html#line43">line 43</a>
-            </span>
-        </p>
-    
-</dl>
-
-
-        
-    
-    </div>
-    
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import {DsuKeys, DSUOperation} from "../model/constants";
+import {DSUEditMetadata, DSUModel} from "../model";
+import {repository} from "@tvenceslau/db-decorators/lib/repository/decorators";
+import {DSUEditingHandler} from "./types";
+import {DSUCallback, OpenDSURepository} from "./repository";
+import {DSUCache} from "./cache";
+import {DSU, DSUIOOptions, KeySSI} from "../opendsu";
+import {criticalCallback, CriticalError, warn} from "@tvenceslau/db-decorators/lib";
+import {getDSUOperationsRegistry} from "./registry";
+
+const getDSUModelKey = (key: string) => DsuKeys.REFLECT + key;
+
+/**
+ * @typedef T extends DSUModel
+ * @param {{new: T}} model
+ * @param {boolean} [derive] if the received DSU should have its KeySSI derived. defaults to false
+ * @param {string} [mountPath] defines the mount path. defaults to the property key
+ * @param {DSUIOOptions} [mountOptions] options to be passed to OpenDSU for the mounting operation
+ *
+ * @decorator fromCache
+ * @namespace decorators
+ * @memberOf model
+ */
+export function fromCache&lt;T extends DSUModel>(model: {new(): T}, derive: boolean | number = false, mountPath?: string, mountOptions?: DSUIOOptions) {
+    return (target: T, propertyKey: string) => {
+        const metadata: DSUEditMetadata = {
+            operation: DSUOperation.EDITING,
+            derive: derive,
+            options: mountOptions,
+            dsuPath: mountPath ? mountPath : propertyKey,
+        };
+        Reflect.defineMetadata(
+            getDSUModelKey(DsuKeys.FROM_CACHE),
+            metadata,
+            target,
+            propertyKey
+        );
+
+        const handler: DSUEditingHandler = function&lt;T extends DSUModel>(this: OpenDSURepository&lt;T>, dsuCache: DSUCache&lt;T>, model: T, parentDsu: DSU, decorator: DSUEditMetadata, callback: DSUCallback&lt;T>){
+            const {dsuPath, options, derive} = decorator.props;
+
+            const cached = dsuCache.get(model as T, decorator.prop);
+            if (!cached)
+                throw new CriticalError(`Could not find matching cached DSU`);
+            if (cached.length > 1)
+                warn(`Cached DSUs for this property exceed the ones allowed. using only the first one`);
+            const {keySSI} = cached[0];
+
+            const ssi = derive ? keySSI.derive().getIdentifier() : keySSI.getIdentifier();
+
+            parentDsu.mount(dsuPath, ssi, options, (err) => {
+                if (err)
+                    return criticalCallback(err, callback);
+                callback(undefined, model);
+            });
+
+        }
+
+        getDSUOperationsRegistry().register(handler, DSUOperation.EDITING, target, propertyKey);
+
+    }
+}
+
+/**
+ * Defines a class as a DSU Repository (makes it injectable)
+ *
+ * @decorator dsuRepository
+ * @namespace decorators
+ * @memberOf model
+ */
+export function dsuRepository(...args: any[]){
+    return (original: Function) => {
+        return repository(...args)(original);
+    }
+}</code></pre>
+        </article>
+    </section>
 
 
 
