@@ -112,7 +112,7 @@ export abstract class OpenDSURepositoryDeterministic<T extends DSUModel> extends
         try {
             keySSI = this.generateKey(model, ...args);
         } catch (e){
-            return errorCallback(e, callback);
+            return errorCallback(e as Error, callback);
         }
 
         if (!keySSI)
