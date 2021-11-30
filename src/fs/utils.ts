@@ -33,43 +33,6 @@ export function impersonateDSUStorage(originalDsu: DSU): DSUStorage {
     return dsu;
 }
 
-export function argParser(defaultOpts: {[indexer: string]: any}, args: string[]){
-    let config = JSON.parse(JSON.stringify(defaultOpts));
-    if (!args)
-        return config;
-    args = args.slice(2);
-    const recognized = Object.keys(config);
-    const notation = recognized.map(r => '--' + r);
-    args.forEach(arg => {
-        if (arg.includes('=')){
-            let splits = arg.split('=');
-            if (notation.indexOf(splits[0]) !== -1) {
-                let result
-                try {
-                    result = eval(splits[1]);
-                } catch (e) {
-                    result = splits[1];
-                }
-                config[splits[0].substring(2)] = result;
-            }
-        }
-    });
-    return config;
-}
-
-export function parseEnvJS(strEnv: string){
-    return JSON.parse(strEnv.replace(/^export\sdefault\s/, ''));
-}
-
-export function getEnvJs(app: string, pathToApps: string, callback: ObjectCallback){
-    const appPath = require('path').join(process.cwd(), pathToApps, "trust-loader-config", app, "loader", "environment.js");
-    require('fs').readFile(appPath, (err: Err, data: Buffer) => {
-        if (err)
-            return callback(`Could not find Application ${app} at ${{appPath}} : ${err}`);
-        return callback(undefined, parseEnvJS(data.toString()));
-    });
-}
-
 export function jsonStringifyReplacer(key: string, value: any){
     if(key === 'manager' && value.constructor.name)
         return value.constructor.name;
