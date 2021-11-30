@@ -47,7 +47,7 @@ export function getDSUFactory(keySSI: KeySSI): DSUFactoryMethod{
 /**
  * Util method to retrieve the proper {@link KeySSI} factory method according to the {@link KeySSIType}
  * @param {KeySSIType} type
- * @return {function(...args: any[]): KeySSI} KeySSI factory method
+ * @return {Function} KeySSI factory method
  * @namespace repository
  */
 export function getKeySSIFactory(type: KeySSIType): (...args: any[]) => KeySSI{
@@ -98,7 +98,7 @@ export function batchCallback(err: Err, dsu: DSU, ...args: any[]){
  * @typedef T extends DSUModel
  * @param {T} model {@link DSUBlueprint} decorated {@link DSUModel}
  * @param {string} fallbackDomain The domain to be used when its not defined in the DSU Blueprint
- * @param {any[] | DSUCallback<T>[]} keyGenArgs key generation args when required (for Array SSIs for instance). The last arg will be considered to be the {@link DSUCallback<T>};
+ * @param {any[] | DSUCallback[]} keyGenArgs key generation args when required (for Array SSIs for instance). The last arg will be considered to be the {@link DSUCallback<T>};
  *
  * @function
  * @namespace repository
@@ -211,7 +211,7 @@ export function handleDSUClassDecorators<T extends DSUModel>(this: OpenDSUReposi
 /**
  * Splits the Attribute decorators between their matching {@link DSUOperation}
  * @param {T} model
- * @return {{creation?: any[], editing?: any[]} | undefined} split decorators
+ * @return {{creation: DSUCreationDecorator[], editing: DSUEditDecorator[]}} split decorators
  *
  * @function
  * @namespace repository
