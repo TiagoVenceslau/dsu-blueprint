@@ -187,7 +187,8 @@ export type CliOptions = {
     action: CliActions,
     domain?: string,
     blueprint: string,
-    pathAdaptor?: string
+    pathAdaptor: string,
+    pathToPskNode: string
 }
 
 export enum CliActions {
@@ -198,10 +199,25 @@ export enum CliActions {
 const defaultOptions: CliOptions = {
     action: CliActions.BUILD,
     domain: "default",
-    blueprint: "./build/build.js"
+    blueprint: "./build/build.js",
+    pathAdaptor: '../../',
+    pathToPskNode: '../privatesky/psknode/bundles/pskruntime.js'
 }
 
 const config: CliOptions = argParser(defaultOptions, process.argv);
+
+const pskNodePath = getPath().join(config.pathAdaptor, config.pathToPskNode);
+
+let opendsu;
+try{
+    const psknode = require(pskNodePath);
+    opendsu = require('opendsu');
+} catch (e) {
+    throw new CriticalError(e);
+}
+
+if (!opendsu)
+    throw new CriticalError(`Could not load OpenDSU`);
 
 function resultCallback(err: Err, model: DSUModel, dsu: DSU, keySSI: KeySSI){
     if (err)
