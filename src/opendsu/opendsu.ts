@@ -38,7 +38,7 @@ export function getResolver(): Resolver{
     if (!resolver)
         try {
             resolver = getOpenDSU().loadApi('resolver') as Resolver;
-        } catch (e){
+        } catch (e: any){
             throw new CriticalError(`Could not load DSU Resolver: ${e.message | e}`);
         }
 
@@ -56,7 +56,7 @@ export function getKeySsiSpace(): Keyssi{
     if (!keyssi)
         try {
             keyssi = getOpenDSU().loadApi('keyssi') as Keyssi;
-        } catch (e){
+        } catch (e: any){
             throw new CriticalError(`Could not load DSU KeySSI Space: ${e.message | e}`);
         }
 
@@ -69,7 +69,7 @@ export function get$$(){
         try {
             // @ts-ignore
             $$Cache = $$;
-        } catch (e){
+        } catch (e: any){
             throw new CriticalError(`Could not load DSU $$ Space: ${e.message | e}`);
         }
 
@@ -82,7 +82,7 @@ export function getHttp(){
     if (!httpDSU)
         try {
             httpDSU =  getOpenDSU().loadApi('http') as HttpDSU;
-        } catch (e){
+        } catch (e: any){
             throw new CriticalError(`Could not load DSU Http Space: ${e.message | e}`);
         }
 

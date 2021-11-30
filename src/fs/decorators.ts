@@ -1,7 +1,7 @@
 import {DSUEditMetadata, DsuKeys, DSUOperation} from "../model";
 import {DSU, DSUIOOptions, getKeySsiSpace} from "../opendsu";
 import {getFS, getPath} from "./utils";
-import {criticalCallback} from "@tvenceslau/db-decorators/lib";
+import {Callback, criticalCallback, Err} from "@tvenceslau/db-decorators/lib";
 import {getDSUOperationsRegistry} from "../repository/registry";
 import {DSUCache, DSUCallback, DSUEditingHandler, OpenDSURepository} from "../repository";
 import DBModel from "@tvenceslau/db-decorators/lib/model/DBModel";
@@ -38,22 +38,50 @@ export const dsuFS = (app: string, derive: boolean = false, mountPath?: string, 
         const {props} = decorator;
         const {dsuPath, options, derive, app} = props;
         const seedPath = getPath().join(this.pathAdaptor, app, FSOptions.seedFileName);
-        getFS().readFile(seedPath, undefined, (err, keySSI) => {
-            if (err || !keySSI)
-                return criticalCallback(err || new Error(`Missing data`), callback);
-            try {
-                keySSI = getKeySsiSpace().parse(keySSI.toString());
-                if (derive)
-                    keySSI = keySSI.derive();
 
-            } catch (e){
-                return criticalCallback(`Could not parse KeySSI for App ${app}`, callback);
+        const handleOperation = function(seedPath: string, dsuPath: string, callback: Callback){
+            getFS().readFile(seedPath, undefined, (err, keySSI) => {
+                if (err || !keySSI)
+                    return criticalCallback(err || new Error(`Missing data`), callback);
+                try {
+                    keySSI = getKeySsiSpace().parse(keySSI.toString());
+                    if (derive)
+                        keySSI = keySSI.derive();
+
+                } catch (e){
+                    return criticalCallback(`Could not parse KeySSI for App ${app}`, callback);
+                }
+                dsu.mount(dsuPath, keySSI.getIdentifier(), options, (err) => {
+                    if (err)
+                        return criticalCallback(err, callback);
+                    callback(undefined, obj, dsu)
+                })
+            });
+        }
+        if (!seedPath.match(/[\\/]\*[\\/]/))
+            return handleOperation(seedPath, dsuPath, callback);
+
+        let basePath = seedPath.split("*");
+        getFS().readdir(basePath[0], undefined, (err, folders) => {
+            if (err || !folders || !folders.length)
+                return criticalCallback(err || new Error(`Could not find referenced folders`), callback);
+
+            const mountIterator = function(folders: string[], callback: Callback){
+                const folder = folders.shift();
+                if (!folder)
+                    return callback();
+                handleOperation(getPath().join(basePath[0], folder, basePath[1]), `${dsuPath}/${folder}`, (err) => {
+                    if (err)
+                        return criticalCallback(err, callback);
+                    mountIterator(folders, callback);
+                });
             }
-            dsu.mount(dsuPath, keySSI.getIdentifier(), options, (err) => {
+
+            mountIterator(folders.slice(), (err) => {
                 if (err)
-                    return criticalCallback(err, callback);
-                callback(undefined, obj, dsu)
-            })
+                    return callback(err);
+                callback(undefined, obj, dsu);
+            });
         });
     }
 

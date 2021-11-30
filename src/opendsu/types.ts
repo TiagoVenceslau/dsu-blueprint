@@ -88,7 +88,7 @@ export interface DSU {
     // Mounting
     // getManifest(): void
     getSSIForMount(mountPoint: string, callback: GenericCallback<string>): void;
-    listMountedDSUs(mountPoint: string, callback: GenericCallback<any[]>): void;
+    listMountedDSUs(mountPoint: string, callback: GenericCallback<{path: string, identifier: string}[]>): void;
     mount(mountingPoint: string, archiveSSI: string, options?: IoOptionsOrErrCallback, callback?: ErrCallback): void;
     unmount(mountPoint: string, callback: ErrCallback): void;
 
