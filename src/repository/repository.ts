@@ -1,4 +1,4 @@
-import {DSUModel} from "../model";
+import {DSUCreationMetadata, DSUEditMetadata, DSUModel} from "../model";
 import {
     AsyncRepositoryImp, debug,
     Err,
@@ -17,14 +17,51 @@ export type DSUCallback<T extends DBModel> = (err?: Err, model?: T, dsu?: DSU, k
 
 export type DSUMultipleCallback<T extends DBModel> = (err?: Err, model?: T[], dsu?: DSU[], keySSI?: KeySSI[], ...args: any[]) => void;
 
+export type DSUDecorator = DSUCreationDecorator | DSUEditDecorator;
+
+export type DSUCreationDecorator = {
+    key: string,
+    prop: string,
+    props: DSUCreationMetadata
+}
+
+export type DSUEditDecorator = {
+    key: string,
+    prop: string,
+    props: DSUEditMetadata
+}
+
+/**
+ * Provide the Base implementation to a global single OpenDSU Repository implementation
+ * capable of, via the decorated properties of {@link DSUModel}s, handle all of the OpenDSU API related to CRUD operations
+ * in a single, scalable, maintainable and declarative fashion
+ **
+ * @typedef T extends DSUModel
+ * @class OpenDSURepository<T>
+ * @extends AsyncRepositoryImp<T>
+ * @namespace repository
+ */
 export class OpenDSURepository<T extends DSUModel> extends AsyncRepositoryImp<T>{
     protected fallbackDomain: string;
+    protected pathAdaptor: string;
 
-    constructor(clazz: {new (): T}, domain: string = "default"){
+    /**
+     * @constructor
+     * @param {{new: T}} clazz the class the repository will instantiate
+     * @param {string} domain the anchoring domain
+     * @param {string} [pathAdaptor] only required for Filesystem operations and is meant to handle the relative path differences when necessary
+     */
+    constructor(clazz: {new (): T}, domain: string = "default", pathAdaptor: string = './'){
         super(clazz);
         this.fallbackDomain = domain;
+        this.pathAdaptor = pathAdaptor;
     }
 
+    /**
+     * Creates the corresponding {@link DSU} from the provided {@link DSUModel}
+     * @param {T} model the {@link DSUModel}
+     * @param {any[]} [args]
+     */
     create(model?: T, ...args: any[]): void {
         const callback: DSUCallback<T> = args.pop();
         if (!callback)

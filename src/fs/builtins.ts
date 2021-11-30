@@ -37,20 +37,20 @@ export class ParticipantDsuBlueprint extends DSUModel{
     }
 }
 
-@DSUBlueprint(undefined, KeySSIType.WALLET)
+@DSUBlueprint(undefined)
 export class BuildDsuBlueprint extends DSUModel{
 
     @addFileFS("bin/init", "init.file")
     init?: any = undefined;
-
-    @addFolderFS()
-    code?: any = undefined;
-
-    @dsuFS("webcardinal", true)
-    webcardinal?: any = undefined;
-
-    @dsuFS("themes/*", true)
-    themes?: any[] = undefined;
+    //
+    // @addFolderFS()
+    // code?: any = undefined;
+    //
+    // @dsuFS("webcardinal", true)
+    // webcardinal?: any = undefined;
+    //
+    // @dsuFS("themes/*", true)
+    // themes?: any[] = undefined;
 
     constructor(blueprint?: BuildDsuBlueprint | {}) {
         super();
@@ -77,5 +77,8 @@ export class SSAppDsuBlueprint extends DSUModel{
     constructor(blueprint?: SSAppDsuBlueprint | {}) {
         super();
         constructFromObject<SSAppDsuBlueprint>(this, blueprint);
+        this.id = new IdDsuBlueprint(this.id);
+        this.participant = new ParticipantDsuBlueprint(this.participant);
+        this.db = new DbDsuBlueprint(this.participant);
     }
 }

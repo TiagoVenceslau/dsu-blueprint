@@ -82,7 +82,7 @@ export function jsonStringifyReplacer(key: string, value: any){
  * cache of node's fs object
  * @memberOf utils
  */
-let  _fileSystem: any = undefined;
+let  _fileSystem: fs | undefined = undefined;
 
 export type FsOptions = {encoding?: string, flag: string};
 
@@ -102,6 +102,31 @@ export function getFS(): fs {
     if (get$$().environmentType !== 'nodejs')
         throw new Error("Wrong environment for this function. Please make sure you know what you are doing...");
     if (!_fileSystem)
-        _fileSystem = require('fs');
+        _fileSystem = require('fs') as fs;
     return _fileSystem;
+}
+
+export interface path {
+    sep: string;
+
+    join(...args: string[]): string;
+    basename(path: string): string;
+    dirname(path: string): string;
+    resolve(...paths: string[]): string;
+}
+
+let  _path: path | undefined = undefined;
+
+
+/**
+ * Caches and returns node's fs object if the environment is right
+ * @return {path}
+ * @memberOf utils
+ */
+export function getPath(): path {
+    if (get$$().environmentType !== 'nodejs')
+        throw new Error("Wrong environment for this function. Please make sure you know what you are doing...");
+    if (!_path)
+        _path = require('path') as path;
+    return _path;
 }

@@ -1,7 +1,6 @@
-import {helloWorld} from '../src';
 
 describe(`Type Script Workspace test`, function(){
-    it(`runs hello world`, function(){
-        expect(helloWorld()).toBe('Hello World');
+    it(`Tests Belong in the dsu-blueprint-workspace repository`, function(){
+        expect(1).toBe(1);
     });
 });

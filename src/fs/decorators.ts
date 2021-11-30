@@ -1,13 +1,13 @@
-import {DsuFsKeys} from "./constants";
-import {DSUEditMetadata, DSUOperation} from "../model";
+import {DSUEditMetadata, DsuKeys, DSUOperation} from "../model";
 import {DSU, DSUIOOptions, getKeySsiSpace} from "../opendsu";
-import {getFS} from "./utils";
-import {criticalCallback, CriticalError, Err} from "@tvenceslau/db-decorators/lib";
+import {getFS, getPath} from "./utils";
+import {criticalCallback} from "@tvenceslau/db-decorators/lib";
 import {getDSUOperationsRegistry} from "../repository/registry";
 import {DSUCache, DSUCallback, DSUEditingHandler, OpenDSURepository} from "../repository";
 import DBModel from "@tvenceslau/db-decorators/lib/model/DBModel";
+import {DsuFsKeys} from "./constants";
 
-const getFsKey = (key: string) => DsuFsKeys.REFLECT + key;
+const getFsKey = (key: string) => DsuKeys.REFLECT + key;
 
 /**
  *
@@ -72,6 +72,7 @@ export const addFileFS = (fsPath: string, dsuPath?: string, options?: DSUIOOptio
     Reflect.defineMetadata(
         getFsKey(DsuFsKeys.ADD_FILE_FS),
         {
+            operation: DSUOperation.EDITING,
             fsPath: fsPath,
             dsuPath: dsuPath ? dsuPath : propertyKey,
             options: options
@@ -82,7 +83,9 @@ export const addFileFS = (fsPath: string, dsuPath?: string, options?: DSUIOOptio
 
     const handler: DSUEditingHandler = function<T extends DBModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, obj: T, dsu: DSU, decorator: DSUEditMetadata, callback: DSUCallback<T>): void {
         const {props} = decorator;
-        const {dsuPath, fsPath, options} = props;
+        let {dsuPath, fsPath, options} = props;
+        fsPath = getPath().join(this.pathAdaptor, fsPath);
+        console.log(getPath().join(process.cwd(), fsPath));
         dsu.addFile(fsPath, dsuPath, options, err => {
             if (err)
                 return criticalCallback(err, callback);
@@ -106,6 +109,7 @@ export const addFolderFS = (fsPath?: string, dsuPath?: string, options?: DSUIOOp
     Reflect.defineMetadata(
         getFsKey(DsuFsKeys.ADD_FOLDER_FS),
         {
+            operation: DSUOperation.EDITING,
             fsPath: fsPath ? fsPath : propertyKey,
             dsuPath: dsuPath ? dsuPath : propertyKey,
             options: options
@@ -116,7 +120,8 @@ export const addFolderFS = (fsPath?: string, dsuPath?: string, options?: DSUIOOp
 
     const handler: DSUEditingHandler = function<T extends DBModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, obj: T, dsu: DSU, decorator: DSUEditMetadata, callback: DSUCallback<T>): void {
         const {props} = decorator;
-        const {dsuPath, fsPath, options} = props;
+        let {dsuPath, fsPath, options} = props;
+        fsPath = getPath().join(this.pathAdaptor, fsPath);
         dsu.addFolder(fsPath, dsuPath, options, err => {
             if (err)
                 return criticalCallback(err, callback);

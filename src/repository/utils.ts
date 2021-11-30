@@ -1,9 +1,14 @@
-import {DSUCallback, DSUMultipleCallback, OpenDSURepository} from "./repository";
-import {DsuKeys, DSUModel, DSUOperation} from "../model";
+import {
+    DSUCallback,
+    DSUCreationDecorator,
+    DSUDecorator,
+    DSUEditDecorator,
+    DSUMultipleCallback,
+    OpenDSURepository
+} from "./repository";
+import {DSUCreationMetadata, DsuKeys, DSUModel, DSUOperation} from "../model";
 import {
     DSU,
-    ErrCallback,
-    GenericCallback,
     getAnchoringOptionsByDSUType,
     getKeySsiSpace,
     getResolver,
@@ -21,8 +26,12 @@ import {DSUCreationHandler, DSUEditingHandler, DSUFactoryMethod} from "./types";
 import {getDSUOperationsRegistry} from "./registry";
 import {ModelKeys} from "@tvenceslau/decorator-validation/lib";
 import {DSUCache} from "./cache";
-import {KeyType} from "crypto";
 
+/**
+ * Util method to retrieve the proper {@link DSU} factory method according to the {@link KeySSI} type
+ * @param {KeySSI} keySSI
+ * @namespace repository
+ */
 export function getDSUFactory(keySSI: KeySSI): DSUFactoryMethod{
     switch (keySSI.getTypeName()) {
         case KeySSIType.ARRAY:
@@ -35,6 +44,12 @@ export function getDSUFactory(keySSI: KeySSI): DSUFactoryMethod{
     }
 }
 
+/**
+ * Util method to retrieve the proper {@link KeySSI} factory method according to the {@link KeySSIType}
+ * @param {KeySSIType} type
+ * @return {function(...args: any[]): KeySSI} KeySSI factory method
+ * @namespace repository
+ */
 export function getKeySSIFactory(type: KeySSIType): (...args: any[]) => KeySSI{
     switch (type){
         case KeySSIType.ARRAY:
@@ -48,8 +63,18 @@ export function getKeySSIFactory(type: KeySSIType): (...args: any[]) => KeySSI{
     }
 }
 
-
-const batchCallback = function(err: Err, dsu: DSU, ...args: any[]){
+/**
+ * Util method that handles the {@link DSU}'s batch operation close
+ *
+ * @param {Err} err
+ * @param {DSU} dsu
+ * @param {any[]} args
+ *      The last arg will be considered to be the {@link Callback};
+ *
+ * @function
+ * @namespace repository
+ */
+export function batchCallback(err: Err, dsu: DSU, ...args: any[]){
     const callback: Callback = args.pop();
     if (!callback)
         throw new CriticalError(`Missing callback`);
@@ -68,24 +93,25 @@ const batchCallback = function(err: Err, dsu: DSU, ...args: any[]){
 }
 
 /**
- *
  * Creates a DSU from its matching {@link DSUModel}'s decorations
  *
  * @typedef T extends DSUModel
- * @param {T} model
+ * @param {T} model {@link DSUBlueprint} decorated {@link DSUModel}
  * @param {string} fallbackDomain The domain to be used when its not defined in the DSU Blueprint
- * @param {any[] | DSUCallback<T>[]} args key generation args when required (for Array SSIs for instance).
- *      The last arg will be considered to be the callback;
+ * @param {any[] | DSUCallback<T>[]} keyGenArgs key generation args when required (for Array SSIs for instance). The last arg will be considered to be the {@link DSUCallback<T>};
+ *
+ * @function
+ * @namespace repository
  */
-export function createFromDecorators<T extends DSUModel>(this: OpenDSURepository<T>, model: T, fallbackDomain: string, ...args: (any | DSUCallback<T>)[]){
-    const callback: DSUCallback<T> = args.pop();
+export function createFromDecorators<T extends DSUModel>(this: OpenDSURepository<T>, model: T, fallbackDomain: string,  ...keyGenArgs: (any | DSUCallback<T>)[]){
+    const callback: DSUCallback<T> = keyGenArgs.pop();
     if (!callback)
         throw new CriticalError(`Missing callback`);
 
-    const splitDecorators: {creation?: {}[], editing?: {}[]} | undefined = splitDSUDecorators<T>(model);
+    const splitDecorators: {creation?: DSUCreationDecorator[], editing?: DSUEditDecorator[]} | undefined = splitDSUDecorators<T>(model);
 
     if (!splitDecorators)
-        return handleDSUClassDecorators.call(this, model, fallbackDomain, ...args, (err?: Err, newModel?: T, dsu?: DSU, keySSI?: KeySSI) => {
+        return handleDSUClassDecorators.call(this, model, fallbackDomain, ...keyGenArgs, (err?: Err, newModel?: T, dsu?: DSU, keySSI?: KeySSI) => {
             if (err || !newModel || !dsu || !keySSI)
                 return callback(err || new CriticalError(`Invalid results`));
             callback(undefined, newModel, dsu, keySSI);
@@ -105,7 +131,7 @@ export function createFromDecorators<T extends DSUModel>(this: OpenDSURepository
             })
         })
 
-        handleDSUClassDecorators.call(this, model, fallbackDomain, ...args, (err: Err, updatedModel?: T, dsu?: DSU, keySSI?: KeySSI, isBatchMode: boolean = false) => {
+        handleDSUClassDecorators.call(this, model, fallbackDomain, ...keyGenArgs, (err: Err, updatedModel?: T, dsu?: DSU, keySSI?: KeySSI, isBatchMode: boolean = false) => {
             if (err || !updatedModel || !dsu || !keySSI)
                 return callback(err || new CriticalError("Invalid Results"));
 
@@ -121,6 +147,17 @@ export function createFromDecorators<T extends DSUModel>(this: OpenDSURepository
     });
 }
 
+/**
+ * Will create a {@link DSU} based on the definitions of the {@link DSUBlueprint}
+ *
+ * @param {T} model {@link DSUBlueprint} decorated {@link DSUModel}
+ * @param {string} fallbackDomain The repository's fallback anchoring domain when not defined by the {@link DSUBlueprint}
+ * @param {string[]} [args] parameters to be passed to the KeyGeneration Function, after the ones originated from the {@link DSUModel}'s properties, as defined in the {@link DSUBlueprint}
+ *       The last arg will be considered to be the {@link DSUCallback<T>};
+ *
+ * @function
+ * @namespace repository
+ */
 export function handleDSUClassDecorators<T extends DSUModel>(this: OpenDSURepository<T>, model: T, fallbackDomain: string, ...args: (any | DSUCallback<T>)[]){
     const callback: DSUCallback<T> = args.pop();
     if (!callback)
@@ -171,15 +208,23 @@ export function handleDSUClassDecorators<T extends DSUModel>(this: OpenDSUReposi
     });
 }
 
-export function splitDSUDecorators<T extends DSUModel>(model: T) : {creation?: any[], editing?: any[]} | undefined{
+/**
+ * Splits the Attribute decorators between their matching {@link DSUOperation}
+ * @param {T} model
+ * @return {{creation?: any[], editing?: any[]} | undefined} split decorators
+ *
+ * @function
+ * @namespace repository
+ */
+export function splitDSUDecorators<T extends DSUModel>(model: T) : {creation?: DSUCreationDecorator[], editing?: DSUEditDecorator[]} | undefined{
     const propDecorators: {[indexer: string]: any[]} | undefined = getAllPropertyDecorators<T>(model as T, DsuKeys.REFLECT);
     if (!propDecorators)
         return;
-    return Object.keys(propDecorators).reduce((accum: {creation?: any[], editing?: any[]} | undefined, key) => {
-        const decorators: {key: string, props: any}[] = propDecorators[key].filter(dec => dec.key !== ModelKeys.TYPE);
+    return Object.keys(propDecorators).reduce((accum: {creation?: DSUCreationDecorator[], editing?: DSUEditDecorator[]} | undefined, key) => {
+        const decorators: DSUDecorator[] = propDecorators[key].filter(dec => dec.key !== ModelKeys.TYPE);
         if (!decorators || ! decorators.length)
             return accum;
-        const addToAccum = function(decorator: {key: string, props: {operation: string}}){
+        const addToAccum = function(decorator: DSUDecorator){
             if (!accum)
                 accum = {};
 
@@ -188,11 +233,11 @@ export function splitDSUDecorators<T extends DSUModel>(model: T) : {creation?: a
             switch(decorator.props.operation){
                 case DSUOperation.CREATION:
                     accum.creation = accum.creation || [];
-                    accum.creation.push(decorator);
+                    accum.creation.push(decorator as DSUCreationDecorator);
                     break;
                 case DSUOperation.EDITING:
                     accum.editing = accum.editing || [];
-                    accum.editing.push(decorator);
+                    accum.editing.push(decorator as DSUEditDecorator);
                     break;
                 default:
                     throw new LoggedError(`Invalid DSU Operation provided ${decorator.props.operation}`);
@@ -204,9 +249,27 @@ export function splitDSUDecorators<T extends DSUModel>(model: T) : {creation?: a
     }, undefined);
 }
 
+/**
+ * Util type to describe the results of DSU creation operations
+ *
+ * @type DSUCreationResults
+ * @namespace repository
+ */
 export type DSUCreationResults = {[indexer: string]: {model: DSUModel, dsu: DSU, keySSI: KeySSI}[]};
 
-export function handleCreationPropertyDecorators<T extends DSUModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, model: T, decorators: any[], ...args: (any | DSUMultipleCallback<T>)[]){
+/**
+ * Handles the {@link DSU} creation operations, as tagged by the attribute decorators
+ *
+ * @param {DSUCache} dsuCache the current {@link DSUCache}
+ * @param {T} model {@link DSUBlueprint} decorated {@link DSUModel}
+ * @param {any} decorators
+ * @param {any[]} [args]
+ *       The last arg will be considered to be the {@link DSUMultipleCallback<T>};
+ *
+ * @function
+ * @namespace repository
+ */
+export function handleCreationPropertyDecorators<T extends DSUModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, model: T, decorators: DSUDecorator[], ...args: (any | DSUMultipleCallback<T>)[]){
     const callback: DSUMultipleCallback<DSUModel> = args.pop();
     if (!callback)
         throw new LoggedError(`Missing callback`);
@@ -250,22 +313,38 @@ export function handleCreationPropertyDecorators<T extends DSUModel>(this: OpenD
     });
 }
 
-export function handleEditingPropertyDecorators<T extends DSUModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, model: T, dsu: DSU, decorators: any[], ...args: (any | DSUCallback<T>)[]){
+/**
+ * Handles the {@link DSU} edition operations, as tagged by the attribute decorators
+ *
+ * @param {DSUCache} dsuCache the current {@link DSUCache}
+ * @param {T} model {@link DSUBlueprint} decorated {@link DSUModel}
+ * @param {DSU} dsu teh {@link DSU} object
+ * @param {any} decorators
+ * @param {any[]} [args]
+ *       The last arg will be considered to be the {@link DSUCallback<T>};
+ *
+ * @function
+ * @namespace repository
+ */
+export function handleEditingPropertyDecorators<T extends DSUModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, model: T, dsu: DSU, decorators: DSUEditDecorator[], ...args: (any | DSUCallback<T>)[]){
     const callback: DSUCallback<T> = args.pop();
     if (!callback)
-        throw new LoggedError(`Missing callback`);
+        throw new CriticalError(`Missing callback`);
 
     const dsuOperationsRegistry = getDSUOperationsRegistry();
 
     const self : OpenDSURepository<T> = this;
 
-    const splitDecorators: {grouped: {[indexer: string]: any}, single: any[]} = decorators.reduce((accum, dec) => {
+    const splitDecorators: {grouped: {[indexer: string]: any}, single: DSUEditDecorator[]} = decorators.reduce((accum: any, dec: DSUEditDecorator) => {
         if (!dec.props.grouped){
             accum.single = accum.single || [];
             accum.single.push(dec)
             return accum;
         }
         accum.grouped = accum.grouped || {};
+        if (!dec.props || !dec.props.key || !dec.props.grouping)
+            return criticalCallback(new Error(`Missing Decorator properties`), callback);
+
         accum.grouped[dec.props.key] = accum.grouped[dec.props.key] || {};
 
         if (accum.grouped[dec.props.key][dec.props.grouping]){
