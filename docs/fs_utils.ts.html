@@ -195,9 +195,10 @@ export function jsonStringifyReplacer(key: string, value: any){
  */
 let  _fileSystem: fs | undefined = undefined;
 
-export type FsOptions = {encoding?: string, flag: string};
+export type FsOptions = {encoding?: string, flag?: string, withFileTypes?: boolean};
 
 export interface fs {
+    readdir(path: string, options: FsOptions | undefined, callback: Callback): void;
     readFile(path: string, options: FsOptions | undefined, callback: Callback): void;
     readFileSync(path: string, options?: FsOptions): Promise&lt;string>;
     writeFile(path: string, data: any, options: FsOptions | undefined, callback: Callback): void;
