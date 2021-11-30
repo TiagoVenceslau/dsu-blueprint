@@ -49,7 +49,7 @@ export class OpenDSURepository<T extends DSUModel> extends AsyncRepositoryImp<T>
      * @constructor
      * @param {{new: T}} clazz the class the repository will instantiate
      * @param {string} domain the anchoring domain
-     * @param {string} [pathAdaptor] only required for Filesystem operations and is meant to handle the relative path differences when necessary
+     * @param {string} [pathAdaptor] only required for Filesystem operations and is meant to handle the relative path differences when necessary. Must point to the folder where './privatesky' is available
      */
     constructor(clazz: {new (): T}, domain: string = "default", pathAdaptor: string = './'){
         super(clazz);

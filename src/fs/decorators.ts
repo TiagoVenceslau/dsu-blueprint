@@ -5,7 +5,7 @@ import {criticalCallback} from "@tvenceslau/db-decorators/lib";
 import {getDSUOperationsRegistry} from "../repository/registry";
 import {DSUCache, DSUCallback, DSUEditingHandler, OpenDSURepository} from "../repository";
 import DBModel from "@tvenceslau/db-decorators/lib/model/DBModel";
-import {DsuFsKeys} from "./constants";
+import {DsuFsKeys, FSOptions} from "./constants";
 
 const getFsKey = (key: string) => DsuKeys.REFLECT + key;
 
@@ -37,7 +37,8 @@ export const dsuFS = (app: string, derive: boolean = false, mountPath?: string, 
     const handler: DSUEditingHandler = function<T extends DBModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, obj: any, dsu: DSU, decorator: DSUEditMetadata, callback: DSUCallback<T>): void {
         const {props} = decorator;
         const {dsuPath, options, derive, app} = props;
-        getFS().readFile(app, undefined, (err, keySSI) => {
+        const seedPath = getPath().join(this.pathAdaptor, app, FSOptions.seedFileName);
+        getFS().readFile(seedPath, undefined, (err, keySSI) => {
             if (err || !keySSI)
                 return criticalCallback(err || new Error(`Missing data`), callback);
             try {
@@ -85,12 +86,11 @@ export const addFileFS = (fsPath: string, dsuPath?: string, options?: DSUIOOptio
         const {props} = decorator;
         let {dsuPath, fsPath, options} = props;
         fsPath = getPath().join(this.pathAdaptor, fsPath);
-        console.log(getPath().join(process.cwd(), fsPath));
         dsu.addFile(fsPath, dsuPath, options, err => {
             if (err)
                 return criticalCallback(err, callback);
             callback(undefined, obj, dsu);
-        })
+        });
     }
 
     getDSUOperationsRegistry().register(handler, DSUOperation.EDITING, target, propertyKey);
@@ -126,7 +126,7 @@ export const addFolderFS = (fsPath?: string, dsuPath?: string, options?: DSUIOOp
             if (err)
                 return criticalCallback(err, callback);
             callback(undefined, obj, dsu);
-        })
+        });
     }
 
     getDSUOperationsRegistry().register(handler, DSUOperation.EDITING, target, propertyKey);
