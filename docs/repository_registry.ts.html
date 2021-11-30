@@ -1,0 +1,294 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Decorator Validation Engine repository/registry.ts</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+             
+                <a href="index.html">
+                    <h1 class="navbar-item">Decorator Validation Engine</h1>
+                </a>
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    API Documentation
+                </a>
+                
+                 
+                    
+                        <a
+                            class="link user-link "
+                            href="https://github.com/TiagoVenceslau/decorator-validation#readme"
+                        >
+                            Github Repository
+                        </a>
+                    
+                        <a
+                            class="link user-link "
+                            href="https://github.com/TiagoVenceslau"
+                        >
+                            Github Profile
+                        </a>
+                    
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+                <div class="search-wrapper">
+                    <input id="search" type="text" placeholder="Search docs..." class="input">
+                </div>
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-dsu-blueprint.html">dsu-blueprint</a></li></ul><h3>Namespaces</h3><ul><li><a href="dsu-blueprint.openDSU.html">openDSU</a></li><li><a href="fs.decorators.html">decorators</a></li><li><a href="model.decorators.html">decorators</a></li><li><a href="OpenDSU.html">OpenDSU</a></li><li><a href="repository.html">repository</a></li></ul><h3>Classes</h3><ul><li><a href="OpenDSURepository_OpenDSURepository.html">OpenDSURepository</a></li></ul><h3><a href="global.html">Global</a></h3></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Source</p>
+                    <h1>repository/registry.ts</h1>
+                </header>
+                
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import {DSUOperationHandler} from "./types";
+import {DSU} from "../opendsu";
+import {OpenDSURepository} from "./repository";
+import {DSUModel} from "../model";
+import {IRegistry} from "@tvenceslau/decorator-validation/lib/utils/registry";
+import {all, CriticalError} from "@tvenceslau/db-decorators/lib";
+
+export class DSUOperationRegistry implements IRegistry&lt;DSUOperationHandler>{
+    private cache: { [indexer: string]: any } = {};
+
+    get&lt;DSUOperationHandler>(targetName: string, propKey: string, operation: string): DSUOperationHandler | undefined {
+        try{
+            return this.cache[targetName][propKey][operation];
+        } catch (e){
+            all(e);
+            return undefined;
+        }
+    }
+
+    register&lt;DSUOperationHandler>(handler: DSUOperationHandler, operation: string, target: { [indexer: string]: any }, propKey: string | symbol): void {
+        const name = target.constructor.name;
+        if (!this.cache[name])
+            this.cache[name] = {};
+        if (!this.cache[name][propKey])
+            this.cache[name][propKey] = {};
+        if (this.cache[name][propKey][operation])
+            return;
+        this.cache[name][propKey][operation] = handler;
+    }
+}
+
+let actingDSUOperationsRegistry: IRegistry&lt;DSUOperationHandler>;
+
+/**
+ * Returns the current {@link DSUOperationRegistry}
+ * @function getDSUOperationsRegistry
+ * @return IRegistry&lt;DSUOperationHandler>, defaults to {@link DSUOperationRegistry}
+ * @memberOf repository
+ */
+export function getDSUOperationsRegistry(): IRegistry&lt;DSUOperationHandler> {
+    if (!actingDSUOperationsRegistry)
+        actingDSUOperationsRegistry = new DSUOperationRegistry();
+    return actingDSUOperationsRegistry;
+}
+
+/**
+ * Returns the current DSUOperationsRegistry
+ * @function getDSUOperationsRegistry
+ * @prop {IRegistry&lt;DSUOperationHandler>} dsuOperationsRegistry the new implementation of Registry
+ * @memberOf repository
+ */
+export function setDSUOperationsRegistry(operationsRegistry: IRegistry&lt;DSUOperationHandler>){
+    actingDSUOperationsRegistry = operationsRegistry;
+}
+
+export class DSURegistry implements IRegistry&lt;DSU>{
+    private cache: { [indexer: string]: any } = {};
+
+    get&lt;DSU>(name: string): DSU | undefined {
+        try{
+            return this.cache[name].dsu;
+        } catch (e){
+            all(e);
+            return undefined;
+        }
+    }
+
+    register&lt;DSU>(dsu: DSU, name: string): void {
+        if (!this.cache[name])
+            this.cache[name] = {
+                dsu: dsu
+            };
+    }
+}
+
+let actingDSURegistry: IRegistry&lt;DSU>;
+
+/**
+ * Returns the current {@link DSURegistry}
+ * @function getDSUOperationsRegistry
+ * @return IRegistry&lt;DSUOModel>, defaults to {@link DSURegistry}
+ * @memberOf repository
+ */
+export function getDSURegistry(): IRegistry&lt;DSU> {
+    if (!actingDSURegistry)
+        actingDSUOperationsRegistry = new DSURegistry();
+    return actingDSURegistry;
+}
+
+/**
+ * Returns the current DSURegistry
+ * @function getDSURegistry
+ * @prop {IRegistry&lt;DSU>} dsuOperationsRegistry the new implementation of Registry
+ * @memberOf repository
+ */
+export function setDSURegistry(dsuRegistry: IRegistry&lt;DSU>){
+    actingDSURegistry = dsuRegistry;
+}
+
+export type OpenDSURepo = OpenDSURepository&lt;DSUModel>;
+
+export type OpenDSURepoFactory = {new(): OpenDSURepo}
+
+export class RepositoryRegistry implements IRegistry&lt;OpenDSURepo>{
+    private cache: { [indexer: string]: any } = {};
+
+    get&lt;OpenDSURepo>(clazz: {new(): DSUModel} | string): OpenDSURepo | undefined {
+        const name = typeof clazz === 'string' ? clazz : (clazz.constructor ? clazz.constructor.name : clazz.name);
+        try{
+            return this.cache[name].instance || this.instantiateRepo(clazz as {new(): DSUModel});
+        } catch (e){
+            return undefined;
+        }
+    }
+
+    private instantiateRepo(clazz: {new(): DSUModel}, repo?: OpenDSURepoFactory): OpenDSURepository&lt;DSUModel>{
+        const name = clazz.constructor ? clazz.constructor.name : clazz.name;
+        try {
+            const instance = repo ? new repo() : new OpenDSURepository&lt;DSUModel>(clazz);
+            this.cache[name] = {
+                repo: name,
+                instance: instance
+            }
+            return instance;
+        } catch (e){
+            throw new CriticalError(e);
+        }
+    }
+
+    // @ts-ignore
+    register&lt;OpenDSURepo>(clazz: {new(): DSUModel} | string, repo?: OpenDSURepoFactory, isCustom: boolean = false): void {
+        const name = typeof clazz === 'string' ? clazz : (clazz.constructor &amp;&amp; clazz.constructor.name !== 'Function' ? clazz.constructor.name : clazz.name);
+        if (!this.cache[name] || isCustom)
+            this.cache[name] = {
+                repo: repo,
+                instance: undefined
+            };
+    }
+}
+
+let actingRepoRegistry: RepositoryRegistry;
+
+/**
+ * Returns the current {@link IRegistry&lt;OpenDSURepo>y}
+ * @function getDSUOperationsRegistry
+ * @return RepositoryRegistry
+ * @memberOf repository
+ */
+export function getRepoRegistry(): RepositoryRegistry {
+    if (!actingRepoRegistry)
+        actingRepoRegistry = new RepositoryRegistry();
+    return actingRepoRegistry;
+}
+
+/**
+ * Returns the current DSURegistry
+ * @function getDSURegistry
+ * @prop {RepositoryRegistry} dsuOperationsRegistry the new implementation of Registry
+ * @memberOf repository
+ */
+export function setRepoRegistry(repoRegistry: RepositoryRegistry){
+    actingRepoRegistry = repoRegistry;
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+            </div>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+<script src="scripts/search.js"> </script>
+
+</body>
+</html>

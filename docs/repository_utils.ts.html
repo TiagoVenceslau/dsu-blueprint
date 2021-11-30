@@ -1,0 +1,528 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Decorator Validation Engine repository/utils.ts</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+             
+                <a href="index.html">
+                    <h1 class="navbar-item">Decorator Validation Engine</h1>
+                </a>
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    API Documentation
+                </a>
+                
+                 
+                    
+                        <a
+                            class="link user-link "
+                            href="https://github.com/TiagoVenceslau/decorator-validation#readme"
+                        >
+                            Github Repository
+                        </a>
+                    
+                        <a
+                            class="link user-link "
+                            href="https://github.com/TiagoVenceslau"
+                        >
+                            Github Profile
+                        </a>
+                    
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+                <div class="search-wrapper">
+                    <input id="search" type="text" placeholder="Search docs..." class="input">
+                </div>
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-dsu-blueprint.html">dsu-blueprint</a></li></ul><h3>Namespaces</h3><ul><li><a href="dsu-blueprint.openDSU.html">openDSU</a></li><li><a href="fs.decorators.html">decorators</a></li><li><a href="model.decorators.html">decorators</a></li><li><a href="OpenDSU.html">OpenDSU</a></li><li><a href="repository.html">repository</a></li></ul><h3>Classes</h3><ul><li><a href="OpenDSURepository_OpenDSURepository.html">OpenDSURepository</a></li></ul><h3><a href="global.html">Global</a></h3></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Source</p>
+                    <h1>repository/utils.ts</h1>
+                </header>
+                
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import {
+    DSUCallback,
+    DSUCreationDecorator,
+    DSUDecorator,
+    DSUEditDecorator,
+    DSUMultipleCallback,
+    OpenDSURepository
+} from "./repository";
+import {DSUCreationMetadata, DsuKeys, DSUModel, DSUOperation} from "../model";
+import {
+    DSU,
+    getAnchoringOptionsByDSUType,
+    getKeySsiSpace,
+    getResolver,
+    KeySSI,
+    KeySSIType
+} from "../opendsu";
+import {
+    Callback, criticalCallback, CriticalError, Err,
+    errorCallback,
+    getAllPropertyDecorators,
+    getClassDecorators,
+    LoggedError
+} from "@tvenceslau/db-decorators/lib";
+import {DSUCreationHandler, DSUEditingHandler, DSUFactoryMethod} from "./types";
+import {getDSUOperationsRegistry} from "./registry";
+import {ModelKeys} from "@tvenceslau/decorator-validation/lib";
+import {DSUCache} from "./cache";
+
+/**
+ * Util method to retrieve the proper {@link DSU} factory method according to the {@link KeySSI} type
+ * @param {KeySSI} keySSI
+ * @namespace repository
+ */
+export function getDSUFactory(keySSI: KeySSI): DSUFactoryMethod{
+    switch (keySSI.getTypeName()) {
+        case KeySSIType.ARRAY:
+        case KeySSIType.WALLET:
+            return getResolver().createDSUForExistingSSI;
+        case KeySSIType.SEED:
+            return getResolver().createDSU;
+        default:
+            throw new LoggedError(`Unsupported DSU Factory ${keySSI.getTypeName()}`);
+    }
+}
+
+/**
+ * Util method to retrieve the proper {@link KeySSI} factory method according to the {@link KeySSIType}
+ * @param {KeySSIType} type
+ * @return {function(...args: any[]): KeySSI} KeySSI factory method
+ * @namespace repository
+ */
+export function getKeySSIFactory(type: KeySSIType): (...args: any[]) => KeySSI{
+    switch (type){
+        case KeySSIType.ARRAY:
+            return getKeySsiSpace().createArraySSI;
+        case KeySSIType.WALLET:
+            return getKeySsiSpace().createTemplateWalletSSI;
+        case KeySSIType.SEED:
+            return getKeySsiSpace().createTemplateSeedSSI;
+        default:
+            throw new LoggedError(`Unsupported KeySSI Type ${type}`);
+    }
+}
+
+/**
+ * Util method that handles the {@link DSU}'s batch operation close
+ *
+ * @param {Err} err
+ * @param {DSU} dsu
+ * @param {any[]} args
+ *      The last arg will be considered to be the {@link Callback};
+ *
+ * @function
+ * @namespace repository
+ */
+export function batchCallback(err: Err, dsu: DSU, ...args: any[]){
+    const callback: Callback = args.pop();
+    if (!callback)
+        throw new CriticalError(`Missing callback`);
+
+    if (err)
+        return dsu.batchInProgress() ? dsu.cancelBatch(() => {
+            criticalCallback(err, callback);
+        }) : criticalCallback(err, callback);
+    return dsu.batchInProgress() ? dsu.commitBatch((e?: Err) => {
+        if (e)
+            return dsu.cancelBatch(() =>{
+                criticalCallback(e, callback);
+            });
+        callback(undefined, ...args);
+    }) : callback(undefined, ...args);
+}
+
+/**
+ * Creates a DSU from its matching {@link DSUModel}'s decorations
+ *
+ * @typedef T extends DSUModel
+ * @param {T} model {@link DSUBlueprint} decorated {@link DSUModel}
+ * @param {string} fallbackDomain The domain to be used when its not defined in the DSU Blueprint
+ * @param {any[] | DSUCallback&lt;T>[]} keyGenArgs key generation args when required (for Array SSIs for instance). The last arg will be considered to be the {@link DSUCallback&lt;T>};
+ *
+ * @function
+ * @namespace repository
+ */
+export function createFromDecorators&lt;T extends DSUModel>(this: OpenDSURepository&lt;T>, model: T, fallbackDomain: string,  ...keyGenArgs: (any | DSUCallback&lt;T>)[]){
+    const callback: DSUCallback&lt;T> = keyGenArgs.pop();
+    if (!callback)
+        throw new CriticalError(`Missing callback`);
+
+    const splitDecorators: {creation?: DSUCreationDecorator[], editing?: DSUEditDecorator[]} | undefined = splitDSUDecorators&lt;T>(model);
+
+    if (!splitDecorators)
+        return handleDSUClassDecorators.call(this, model, fallbackDomain, ...keyGenArgs, (err?: Err, newModel?: T, dsu?: DSU, keySSI?: KeySSI) => {
+            if (err || !newModel || !dsu || !keySSI)
+                return callback(err || new CriticalError(`Invalid results`));
+            callback(undefined, newModel, dsu, keySSI);
+        });
+
+    const {creation, editing} = splitDecorators;
+
+    const dsuCache: DSUCache&lt;T> = new DSUCache&lt;T>();
+
+    handleCreationPropertyDecorators.call(this, dsuCache, model, creation || [],  (err: Err, results?: DSUCreationResults) => {
+        if (err || !results)
+            return callback(err || new CriticalError(`Invalid Results`));
+
+        Object.keys(results).forEach(k => {
+            results[k].forEach(result => {
+                dsuCache.cache(model, k, result.dsu, result.keySSI)
+            })
+        })
+
+        handleDSUClassDecorators.call(this, model, fallbackDomain, ...keyGenArgs, (err: Err, updatedModel?: T, dsu?: DSU, keySSI?: KeySSI, isBatchMode: boolean = false) => {
+            if (err || !updatedModel || !dsu || !keySSI)
+                return callback(err || new CriticalError("Invalid Results"));
+
+            if (isBatchMode)
+                dsu.beginBatch();
+
+            handleEditingPropertyDecorators.call(this, dsuCache as DSUCache&lt;DSUModel>, updatedModel, dsu, editing || [], (err: Err, otherModel: T) => {
+                if (err || !otherModel)
+                    return batchCallback(err || new Error("Invalid Results"), dsu, callback);
+                batchCallback(undefined, dsu, otherModel, dsu, keySSI, callback);
+            });
+        });
+    });
+}
+
+/**
+ * Will create a {@link DSU} based on the definitions of the {@link DSUBlueprint}
+ *
+ * @param {T} model {@link DSUBlueprint} decorated {@link DSUModel}
+ * @param {string} fallbackDomain The repository's fallback anchoring domain when not defined by the {@link DSUBlueprint}
+ * @param {string[]} [args] parameters to be passed to the KeyGeneration Function, after the ones originated from the {@link DSUModel}'s properties, as defined in the {@link DSUBlueprint}
+ *       The last arg will be considered to be the {@link DSUCallback&lt;T>};
+ *
+ * @function
+ * @namespace repository
+ */
+export function handleDSUClassDecorators&lt;T extends DSUModel>(this: OpenDSURepository&lt;T>, model: T, fallbackDomain: string, ...args: (any | DSUCallback&lt;T>)[]){
+    const callback: DSUCallback&lt;T> = args.pop();
+    if (!callback)
+        throw new LoggedError(`Missing callback`);
+
+    const classDecorators: {key: string, props: any}[] = getClassDecorators(ModelKeys.REFLECT, model);
+
+    if (!classDecorators.length)
+        return criticalCallback(new Error(`No DSU decorator Found on Model`), callback);
+
+    let {domain, keySSIType, specificKeyArgs, props, batchMode} = classDecorators[0].props.dsu;
+
+    let keySSI: KeySSI, dsuFactory: DSUFactoryMethod;
+
+    try{
+        const factory = getKeySSIFactory(keySSIType);
+
+        const keyArgs: any[] = [domain || fallbackDomain];
+        if (!props){
+            if (args &amp;&amp; args.length)
+                keyArgs.push(args);
+        } else {
+            if (args)
+                props.push(...args);
+            keyArgs.push(props);
+        }
+
+        if (specificKeyArgs &amp;&amp; specificKeyArgs.length)
+            keyArgs.push(...specificKeyArgs);
+
+        keySSI = factory(...keyArgs);
+        dsuFactory = getDSUFactory(keySSI);
+    } catch (e){
+        return errorCallback(e, callback);
+    }
+
+    const options = getAnchoringOptionsByDSUType(keySSI.getTypeName() as KeySSIType);
+
+    dsuFactory(keySSI, options, (err, dsu) => {
+        if (err || !dsu)
+            return criticalCallback(err || new Error(`No DSU received`), callback);
+
+        dsu.getKeySSIAsObject((err, keySSI) => {
+            if (err)
+                return errorCallback(err, callback);
+            callback(undefined, model, dsu, keySSI, batchMode);
+        });
+    });
+}
+
+/**
+ * Splits the Attribute decorators between their matching {@link DSUOperation}
+ * @param {T} model
+ * @return {{creation?: any[], editing?: any[]} | undefined} split decorators
+ *
+ * @function
+ * @namespace repository
+ */
+export function splitDSUDecorators&lt;T extends DSUModel>(model: T) : {creation?: DSUCreationDecorator[], editing?: DSUEditDecorator[]} | undefined{
+    const propDecorators: {[indexer: string]: any[]} | undefined = getAllPropertyDecorators&lt;T>(model as T, DsuKeys.REFLECT);
+    if (!propDecorators)
+        return;
+    return Object.keys(propDecorators).reduce((accum: {creation?: DSUCreationDecorator[], editing?: DSUEditDecorator[]} | undefined, key) => {
+        const decorators: DSUDecorator[] = propDecorators[key].filter(dec => dec.key !== ModelKeys.TYPE);
+        if (!decorators || ! decorators.length)
+            return accum;
+        const addToAccum = function(decorator: DSUDecorator){
+            if (!accum)
+                accum = {};
+
+            decorator = Object.assign({}, decorator, {prop: key});
+
+            switch(decorator.props.operation){
+                case DSUOperation.CREATION:
+                    accum.creation = accum.creation || [];
+                    accum.creation.push(decorator as DSUCreationDecorator);
+                    break;
+                case DSUOperation.EDITING:
+                    accum.editing = accum.editing || [];
+                    accum.editing.push(decorator as DSUEditDecorator);
+                    break;
+                default:
+                    throw new LoggedError(`Invalid DSU Operation provided ${decorator.props.operation}`);
+            }
+        }
+
+        decorators.forEach(addToAccum);
+        return accum;
+    }, undefined);
+}
+
+/**
+ * Util type to describe the results of DSU creation operations
+ *
+ * @type DSUCreationResults
+ * @namespace repository
+ */
+export type DSUCreationResults = {[indexer: string]: {model: DSUModel, dsu: DSU, keySSI: KeySSI}[]};
+
+/**
+ * Handles the {@link DSU} creation operations, as tagged by the attribute decorators
+ *
+ * @param {DSUCache} dsuCache the current {@link DSUCache}
+ * @param {T} model {@link DSUBlueprint} decorated {@link DSUModel}
+ * @param {any} decorators
+ * @param {any[]} [args]
+ *       The last arg will be considered to be the {@link DSUMultipleCallback&lt;T>};
+ *
+ * @function
+ * @namespace repository
+ */
+export function handleCreationPropertyDecorators&lt;T extends DSUModel>(this: OpenDSURepository&lt;T>, dsuCache: DSUCache&lt;T>, model: T, decorators: DSUDecorator[], ...args: (any | DSUMultipleCallback&lt;T>)[]){
+    const callback: DSUMultipleCallback&lt;DSUModel> = args.pop();
+    if (!callback)
+        throw new LoggedError(`Missing callback`);
+
+    const dsuOperationsRegistry = getDSUOperationsRegistry();
+
+    const self : OpenDSURepository&lt;T> = this;
+
+    const results: DSUCreationResults = {};
+
+    const decoratorIterator = function&lt;T>(decoratorsCopy: any[], callback: Callback){
+        const decorator = decoratorsCopy.shift();
+        if (!decorator)
+            return callback(undefined, results);
+
+        let handler: DSUCreationHandler | undefined = dsuOperationsRegistry.get(decorator.props.dsu, decorator.prop, decorator.props.operation) as DSUCreationHandler;
+
+        if (!handler)
+            return criticalCallback(`No handler found for ${decorator.props.dsu} - ${decorator.prop} - ${decorator.props.operation}`, callback);
+
+        handler.call(self, dsuCache, model[decorator.prop], decorator.props, (err: Err, newModel?: DSUModel, dsu?: DSU, keySSI?: KeySSI) => {
+            if (err || !newModel || !dsu || !keySSI)
+                return criticalCallback(err || new Error(`Missing Results`), callback);
+
+            results[decorator.prop] = results[decorator.prop] || [];
+            results[decorator.prop].push(({
+                model: newModel,
+                dsu: dsu,
+                keySSI: keySSI
+            }));
+
+            decoratorIterator(decoratorsCopy, callback);
+        });
+
+    }
+
+    decoratorIterator(decorators.slice(), (err, results) => {
+        if (err)
+            return callback(err);
+        callback(undefined, results)
+    });
+}
+
+/**
+ * Handles the {@link DSU} edition operations, as tagged by the attribute decorators
+ *
+ * @param {DSUCache} dsuCache the current {@link DSUCache}
+ * @param {T} model {@link DSUBlueprint} decorated {@link DSUModel}
+ * @param {DSU} dsu teh {@link DSU} object
+ * @param {any} decorators
+ * @param {any[]} [args]
+ *       The last arg will be considered to be the {@link DSUCallback&lt;T>};
+ *
+ * @function
+ * @namespace repository
+ */
+export function handleEditingPropertyDecorators&lt;T extends DSUModel>(this: OpenDSURepository&lt;T>, dsuCache: DSUCache&lt;T>, model: T, dsu: DSU, decorators: DSUEditDecorator[], ...args: (any | DSUCallback&lt;T>)[]){
+    const callback: DSUCallback&lt;T> = args.pop();
+    if (!callback)
+        throw new CriticalError(`Missing callback`);
+
+    const dsuOperationsRegistry = getDSUOperationsRegistry();
+
+    const self : OpenDSURepository&lt;T> = this;
+
+    const splitDecorators: {grouped: {[indexer: string]: any}, single: DSUEditDecorator[]} = decorators.reduce((accum: any, dec: DSUEditDecorator) => {
+        if (!dec.props.grouped){
+            accum.single = accum.single || [];
+            accum.single.push(dec)
+            return accum;
+        }
+        accum.grouped = accum.grouped || {};
+        if (!dec.props || !dec.props.key || !dec.props.grouping)
+            return criticalCallback(new Error(`Missing Decorator properties`), callback);
+
+        accum.grouped[dec.props.key] = accum.grouped[dec.props.key] || {};
+
+        if (accum.grouped[dec.props.key][dec.props.grouping]){
+            const newPropValue: {[indexer: string] : any} = {};
+            newPropValue[dec.prop] = model[dec.prop];
+            Object.assign(accum.grouped[dec.props.key][dec.props.grouping].value, newPropValue);
+        } else {
+            const newPropValue: {[indexer: string] : any} = {};
+            newPropValue[dec.prop] = model[dec.prop];
+            accum.grouped[dec.props.key][dec.props.grouping] = Object.assign({}, dec, {
+                    value: newPropValue
+                });
+        }
+        return accum;
+    }, {});
+
+    const decoratorIterator = function(decoratorsCopy: any[], newModel: T, callback: Callback){
+        const decorator = decoratorsCopy.shift();
+        if (!decorator)
+            return callback(undefined, newModel);
+
+        let handler: DSUEditingHandler | undefined = dsuOperationsRegistry.get(newModel.constructor.name, decorator.prop, decorator.props.operation) as DSUEditingHandler;
+
+        if (!handler)
+            return criticalCallback(new Error(`No handler found for ${decorator.props.dsu} - ${decorator.prop} - ${decorator.props.operation}`), callback);
+
+        handler.call(self, dsuCache, model, dsu, decorator, (err: Err, newModel?: DSUModel) => {
+            if (err || !newModel)
+                return criticalCallback(err || new Error(`Missing Results`), callback);
+
+            decoratorIterator(decoratorsCopy, newModel as T, callback);
+        });
+    }
+
+    const grouped = Object.keys(splitDecorators.grouped || {}).reduce((accum, k) => {
+        // @ts-ignore
+        accum.push(...Object.values(splitDecorators.grouped[k]))
+        return accum;
+    }, []);
+
+    decoratorIterator(grouped, model, (err: Err, newModel: T) => {
+        if (err)
+            return callback(err);
+        decoratorIterator((splitDecorators.single || []).slice(), newModel,(err: Err, newModel: T) => {
+            if (err)
+                return callback(err);
+            callback(undefined, newModel);
+        });
+    });
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+            </div>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+<script src="scripts/search.js"> </script>
+
+</body>
+</html>
