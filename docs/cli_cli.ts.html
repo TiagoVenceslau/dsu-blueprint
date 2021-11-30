@@ -206,7 +206,7 @@ const defaultOptions: CliOptions = {
 
 const config: CliOptions = argParser(defaultOptions, process.argv);
 
-const pskNodePath = getPath().join(config.pathAdaptor, config.pathToPskNode);
+const pskNodePath = require('path').join(config.pathAdaptor, config.pathToPskNode);
 
 let opendsu;
 try{
