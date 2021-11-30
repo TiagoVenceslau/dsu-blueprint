@@ -2,7 +2,5 @@
  * @module dsu-blueprint
  */
 
-export * from './opendsu';
+export * from './core';
 export * from './fs';
-export * from './model';
-export * from './repository';

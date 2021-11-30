@@ -1,9 +1,9 @@
-import {DSUEditMetadata, DsuKeys, DSUOperation} from "../model";
-import {DSU, DSUIOOptions, getKeySsiSpace} from "../opendsu";
+import {DSUEditMetadata, DsuKeys, DSUOperation} from "../core/model";
+import {DSU, DSUIOOptions, getKeySsiSpace} from "../core/opendsu";
 import {getFS, getPath} from "./utils";
 import {Callback, criticalCallback, Err} from "@tvenceslau/db-decorators/lib";
-import {getDSUOperationsRegistry} from "../repository/registry";
-import {DSUCache, DSUCallback, DSUEditingHandler, OpenDSURepository} from "../repository";
+import {getDSUOperationsRegistry} from "../core/repository/registry";
+import {DSUCache, DSUCallback, DSUEditingHandler, OpenDSURepository} from "../core/repository";
 import DBModel from "@tvenceslau/db-decorators/lib/model/DBModel";
 import {DsuFsKeys, FSOptions} from "./constants";
 

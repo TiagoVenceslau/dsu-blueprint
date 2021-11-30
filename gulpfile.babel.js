@@ -29,6 +29,22 @@ function exportModules() {
         .pipe(dest('dist/esm/'));
 }
 
+function exportCoreModules() {
+    const tsProject = ts.createProject('tsconfig.json', tsOptions);
+    return src('src/core/**/*.ts')
+        .pipe(sourcemaps.init())
+        .pipe(tsProject())
+        .pipe(babel({
+            presets: [['@babel/preset-env', {
+                targets: {"esmodules": true}
+            }]]
+        }))
+        .pipe(uglify())
+        .pipe(rename({ extname: '.min.esm.js' }))
+        .pipe(sourcemaps.write())
+        .pipe(dest('dist/core/esm/'));
+}
+
 function exportDefault() {
     const tsProject = ts.createProject('tsconfig.json', tsOptions);
     return src('src/**/*.ts')
@@ -39,6 +55,18 @@ function exportDefault() {
         .pipe(rename({ extname: '.min.js' }))
         .pipe(sourcemaps.write())
         .pipe(dest('dist/'));
+}
+
+function exportCoreDefault() {
+    const tsProject = ts.createProject('tsconfig.json', tsOptions);
+    return src('src/core/**/*.ts')
+        .pipe(sourcemaps.init())
+        .pipe(tsProject())
+        .pipe(babel())
+        .pipe(uglify())
+        .pipe(rename({ extname: '.min.js' }))
+        .pipe(sourcemaps.write())
+        .pipe(dest('dist/core/'));
 }
 
 function exportModulesBundles() {
@@ -58,6 +86,23 @@ function exportModulesBundles() {
         .pipe(dest('dist/esm/'));
 }
 
+function exportCoreModulesBundles() {
+    const tsProject = ts.createProject('tsconfig.json', tsOptions);
+    return src('src/core/**/*.ts')
+        .pipe(sourcemaps.init())
+        .pipe(tsProject())
+        .pipe(babel({
+            presets: [['@babel/preset-env', {
+                targets: {"esmodules": true}
+            }]]
+        }))
+        .pipe(concat('index.bundle.js'))
+        .pipe(uglify())
+        .pipe(rename({ extname: '.min.esm.js' }))
+        .pipe(sourcemaps.write())
+        .pipe(dest('dist/core/esm/'));
+}
+
 function exportDefaultBundles() {
     const tsProject = ts.createProject('tsconfig.json', tsOptions);
     return src('src/**/*.ts')
@@ -71,4 +116,17 @@ function exportDefaultBundles() {
         .pipe(dest('dist/'));
 }
 
-exports.default = parallel(series(exportDefault, exportDefaultBundles), series( exportModules, exportModulesBundles));
+function exportCoreDefaultBundles() {
+    const tsProject = ts.createProject('tsconfig.json', tsOptions);
+    return src('src/core/**/*.ts')
+        .pipe(sourcemaps.init())
+        .pipe(tsProject())
+        .pipe(babel())
+        .pipe(concat('index.bundle.js'))
+        .pipe(uglify())
+        .pipe(rename({ extname: '.min.js' }))
+        .pipe(sourcemaps.write())
+        .pipe(dest('dist/core/'));
+}
+
+exports.default = series(parallel(series(exportDefault, exportDefaultBundles), series( exportModules, exportModulesBundles)), parallel(series(exportCoreDefault, exportCoreDefaultBundles), series(exportCoreModules, exportCoreModulesBundles)));
