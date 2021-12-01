@@ -1,12 +1,11 @@
-import {getOpenDSU} from "../../demo-repositories/lib";
+import {getOpenDSU} from "../src";
 
-describe(`Type Script Workspace test`, function(){
+describe(`DSU Blueprint`, function(){
     it(`Tests Belong in the dsu-blueprint-workspace repository`, function(){
         try{
             getOpenDSU()
         } catch (e) {
             expect(e).toBeDefined();
         }
-        expect(1).toBe(1);
     });
 });

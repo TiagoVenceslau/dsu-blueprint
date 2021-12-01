@@ -51,13 +51,12 @@ export function getEnvJs(app: string, pathToApps: string, callback: ObjectCallba
 
 export function build(config: CliOptions, callback: Callback){
     let blueprintFile;
-    try{
-        blueprintFile = require(getPath().join('../../', config.blueprint));
+    try {
+        blueprintFile = require(config.blueprint);
     } catch (e) {
         return criticalCallback(e, callback);
     }
-
-    const {BLUEPRINT} = blueprintFile;
+    const BLUEPRINT = blueprintFile.default;
     if (!BLUEPRINT)
         return criticalCallback(`Could not find BLUEPRINT export`, callback);
 
@@ -77,7 +76,7 @@ export type CliOptions = {
     domain?: string,
     blueprint: string,
     pathAdaptor: string,
-    pathToPskNode: string
+    pathToOpenDSU: string
 }
 
 export enum CliActions {
@@ -90,17 +89,16 @@ const defaultOptions: CliOptions = {
     domain: "default",
     blueprint: "./build/build.js",
     pathAdaptor: '../../',
-    pathToPskNode: '../privatesky/psknode/bundles/pskruntime.js'
+    pathToOpenDSU: '../privatesky/psknode/bundles/openDSU.js'
 }
 
 const config: CliOptions = argParser(defaultOptions, process.argv);
 
-const pskNodePath = require('path').join(config.pathAdaptor, config.pathToPskNode);
+const openDSUPath = require('path').join(config.pathAdaptor, config.pathToOpenDSU);
 
 let opendsu;
 try{
-    const psknode = require(pskNodePath);
-    opendsu = require('opendsu');
+    opendsu = require(openDSUPath);
 } catch (e) {
     throw new CriticalError(e);
 }
