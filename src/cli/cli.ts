@@ -88,7 +88,7 @@ const defaultOptions: CliOptions = {
     action: CliActions.BUILD,
     domain: "default",
     blueprint: "./build/build.js",
-    pathAdaptor: '../../',
+    pathAdaptor: './',
     pathToOpenDSU: '../privatesky/psknode/bundles/openDSU.js'
 }
 
