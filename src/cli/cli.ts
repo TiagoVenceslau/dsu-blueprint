@@ -5,7 +5,7 @@ import {getFS, getPath} from "../fs";
 /**
  * Overrides any custom options passed in process args into the default options provided
  *
- * @param {[indexer:string]: any} defaultOpts the default options to the overwritten when necessary
+ * @param {any} defaultOpts the default options to the overwritten when necessary
  * @param {string} args the process.argv
  *
  * @function
