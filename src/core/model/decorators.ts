@@ -6,12 +6,20 @@ import {getDSUOperationsRegistry, getRepoRegistry} from "../repository/registry"
 import {
     DSUCache,
     DSUCallback,
-    DSUCreationHandler,
+    DSUCreationHandler, DSUCreationUpdateHandler,
     DSUEditingHandler, fromCache,
     OpenDSURepository
 } from "../repository";
 import DBModel from "@tvenceslau/db-decorators/lib/model/DBModel";
-import {criticalCallback, CriticalError, Err, ModelCallback} from "@tvenceslau/db-decorators/lib";
+import {
+    criticalCallback,
+    CriticalError,
+    DBOperations,
+    Err,
+    ModelCallback,
+    OperationKeys
+} from "@tvenceslau/db-decorators/lib";
+import {getKeySsiSpace} from "../opendsu";
 
 const getDSUModelKey = (key: string) => DsuKeys.REFLECT + key;
 
@@ -44,6 +52,8 @@ export const DSUBlueprint = (domain: string | undefined = undefined, keySSIType:
 export type DSUCreationMetadata = {
     [indexer: string]: any;
 
+    operation: string,
+    phase: string[],
     dsu: string
     derive: boolean | number,
     dsuPath: string
@@ -70,6 +80,7 @@ export function dsu<T extends DSUModel>(dsu: {new(): T}, derive: boolean | numbe
 
         const metadata: DSUCreationMetadata = {
             operation: DSUOperation.CREATION,
+            phase: DBOperations.CREATE,
             dsu: target.constructor.name,
             derive: derive,
             dsuPath: dsuPath
@@ -84,7 +95,7 @@ export function dsu<T extends DSUModel>(dsu: {new(): T}, derive: boolean | numbe
 
         fromCache<T>(dsu, derive, dsuPath, mountOptions)(target, propertyKey);
 
-        const handler: DSUCreationHandler = function<T extends DSUModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, model: T, decorator: DSUCreationMetadata, callback: ModelCallback<T>): void {
+        const createHandler: DSUCreationHandler = function<T extends DSUModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, model: T, decorator: DSUCreationMetadata, callback: ModelCallback<T>): void {
             const {dsu} = decorator;
 
             const repo = getRepoRegistry().get<OpenDSURepository<T>>(dsu)
@@ -93,13 +104,32 @@ export function dsu<T extends DSUModel>(dsu: {new(): T}, derive: boolean | numbe
             repo.create(model, (err: Err, newModel: T, dsu: DSU, keySSI: KeySSI) => {
                 if (err)
                     return callback(err);
-
-                // dsuCache.cache(newModel, propertyKey, dsu, keySSI);
                 callback(undefined, newModel, dsu, keySSI);
             });
         }
 
-        getDSUOperationsRegistry().register(handler, DSUOperation.CREATION, target, propertyKey);
+        getDSUOperationsRegistry().register(createHandler, DSUOperation.CREATION, OperationKeys.CREATE, target, propertyKey);
+
+        const updateHandler: DSUCreationUpdateHandler = function<T extends DSUModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, model: T, oldModel: T, dsuObj: DSU, decorator: any, callback: DSUCallback<T>): void {
+            const {dsu, dsuPath} = decorator;
+
+            const repo = getRepoRegistry().get<OpenDSURepository<T>>(dsu)
+            if (!repo)
+                throw new CriticalError(`Cannot find ${model.constructor.name} repository`);
+
+            dsuObj.getSSIForMount(dsuPath, (err, keySSI) => {
+                if (err || !keySSI)
+                    return criticalCallback(err || new Error(`No KeySSI for specified mount`), callback);
+
+                repo.update(keySSI, model, (err: Err, newModel: T, dsu: DSU, keySSI: KeySSI) => {
+                    if (err)
+                        return callback(err);
+                    callback(undefined, newModel, dsu, keySSI);
+                });
+            })
+        }
+
+        getDSUOperationsRegistry().register(createHandler, DSUOperation.CREATION, OperationKeys.UPDATE, target, propertyKey);
     }
 }
 
@@ -107,6 +137,7 @@ export type DSUEditMetadata = {
     [indexer: string]: any;
 
     operation: string
+    phase: string[],
     key?: string,
     grouped?: boolean,
     grouping?: string
@@ -126,6 +157,7 @@ export function dsuFile(dsuPath: string = DsuKeys.DEFAULT_DSU_PATH) {
     return (target: any, propertyKey: string) => {
         const metadata: DSUEditMetadata = {
             operation: DSUOperation.EDITING,
+            phase: DBOperations.CREATE_UPDATE,
             key: DsuKeys.DSU_FILE,
             grouped: true,
             grouping: dsuPath,
@@ -149,7 +181,7 @@ export function dsuFile(dsuPath: string = DsuKeys.DEFAULT_DSU_PATH) {
             })
         }
 
-        getDSUOperationsRegistry().register(handler, DSUOperation.EDITING, target, propertyKey);
+        DBOperations.CREATE_UPDATE.forEach(p => getDSUOperationsRegistry().register(handler, DSUOperation.EDITING, p, target, propertyKey));
     }
 }
 
@@ -173,6 +205,7 @@ export function mount(keySSI: string, mountPath?: string, options?: DSUIOOptions
 
         const metadata: DSUEditMetadata = {
             operation: DSUOperation.EDITING,
+            phase: DBOperations.CREATE,
             dsuPath: mountPath,
             options: options,
             args: args
@@ -194,6 +227,6 @@ export function mount(keySSI: string, mountPath?: string, options?: DSUIOOptions
             })
         }
 
-        getDSUOperationsRegistry().register(handler, DSUOperation.EDITING, target, propertyKey);
+        getDSUOperationsRegistry().register(handler, DSUOperation.EDITING, OperationKeys.CREATE, target, propertyKey);
     }
 }

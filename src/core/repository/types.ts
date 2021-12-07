@@ -17,6 +17,8 @@ export type DSUFactoryMethod = (keySSI: KeySSI, options?: AnchoringOptsOrDSUCall
 
 export type DSUCreationHandler = <T extends DSUModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, model: T, decorator: any, callback: DSUCallback<T>) => void;
 
+export type DSUCreationUpdateHandler = <T extends DSUModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, model: T, oldModel: T, dsu: DSU, decorator: any, callback: DSUCallback<T>) => void;
+
 export type DSUEditingHandler = <T extends DSUModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, model: T, dsu: DSU, decorator: any, callback: DSUCallback<T>) => void;
 
 export type DSUOperationHandler = DSUCreationHandler | DSUEditingHandler;

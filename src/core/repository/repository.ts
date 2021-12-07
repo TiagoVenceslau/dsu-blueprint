@@ -1,13 +1,13 @@
 import {DSUCreationMetadata, DSUEditMetadata, DSUModel} from "../model";
 import {
-    AsyncRepositoryImp, debug,
+    AsyncRepositoryImp, criticalCallback, CriticalError, debug,
     Err,
     errorCallback,
     LoggedError,
     ModelCallback
 } from "@tvenceslau/db-decorators/lib";
 import {DSU, KeySSI} from "../opendsu/types";
-import {createFromDecorators} from "./utils";
+import {createFromDecorators, safeParseKeySSI, updateFromDecorators} from "./utils";
 import DBModel from "@tvenceslau/db-decorators/lib/model/DBModel";
 import {repository} from "@tvenceslau/db-decorators/lib/repository/decorators";
 
@@ -88,15 +88,56 @@ export class OpenDSURepository<T extends DSUModel> extends AsyncRepositoryImp<T>
     }
 
     delete(key?: DSUKey, ...args: any[]): void {
+        const callback: DSUCallback<T> = args.pop();
+        if (!callback)
+            throw new LoggedError(`Missing callback`);
 
+        const self = this;
+        if (typeof key === 'string')
+            return safeParseKeySSI(key, err => err
+                ? errorCallback(err, callback)
+                : self.delete(key, ...args, callback));
     }
 
     read(key?: DSUKey, ...args: any[]): void {
+        const callback: DSUCallback<T> = args.pop();
+        if (!callback)
+            throw new LoggedError(`Missing callback`);
 
+        const self = this;
+        if (typeof key === 'string')
+            return safeParseKeySSI(key, err => err
+                ? errorCallback(err, callback)
+                : self.read(key,  ...args, callback));
     }
 
     update(key?: DSUKey, model?: T, ...args: any[]): void {
+        const callback: DSUCallback<T> = args.pop();
+        if (!callback)
+            throw new LoggedError(`Missing callback`);
+        if (!model)
+            return errorCallback(new Error(`Missing Model`), callback);
 
+        const self = this;
+
+        if (typeof key === 'string')
+            return safeParseKeySSI(key, err => err
+                ? errorCallback(err, callback)
+                : self.update(key, model, ...args, callback));
+
+        self.read(key, ...args, (err: Err, oldModel: T, dsu: DSU, keySSI: KeySSI) => {
+            if (err)
+                return criticalCallback(err, callback);
+
+            debug(`Updating {0} DSU from model {1} to {2}`, this.clazz.name, oldModel.toString(), model.toString())
+
+            updateFromDecorators.call(self, model, oldModel, dsu, (err?: Err, updatedModel?: T, updatedDsu?: DSU, updatedKeySSI?: KeySSI) => {
+                if (err || !updatedModel || !updatedDsu || !updatedKeySSI)
+                    return callback(err || new CriticalError(`Missing Results`));
+                debug(`{0} DSU updated. Resulting Model: {1}, KeySSI: {2}`, this.clazz.name, updatedModel.toString(), keySSI.getIdentifier());
+                callback(undefined, updatedModel, updatedDsu, updatedKeySSI);
+            });
+        });
     }
 }
 
