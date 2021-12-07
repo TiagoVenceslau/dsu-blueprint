@@ -119,24 +119,26 @@ import {all, CriticalError} from "@tvenceslau/db-decorators/lib";
 export class DSUOperationRegistry implements IRegistry&lt;DSUOperationHandler>{
     private cache: { [indexer: string]: any } = {};
 
-    get&lt;DSUOperationHandler>(targetName: string, propKey: string, operation: string): DSUOperationHandler | undefined {
+    get&lt;DSUOperationHandler>(targetName: string, propKey: string, operation: string, phase: string): DSUOperationHandler | undefined {
         try{
-            return this.cache[targetName][propKey][operation];
+            return this.cache[targetName][propKey][operation][phase];
         } catch (e){
             all(e);
             return undefined;
         }
     }
 
-    register&lt;DSUOperationHandler>(handler: DSUOperationHandler, operation: string, target: { [indexer: string]: any }, propKey: string | symbol): void {
+    register&lt;DSUOperationHandler>(handler: DSUOperationHandler, operation: string, phase: string, target: { [indexer: string]: any }, propKey: string | symbol): void {
         const name = target.constructor.name;
         if (!this.cache[name])
             this.cache[name] = {};
         if (!this.cache[name][propKey])
             this.cache[name][propKey] = {};
-        if (this.cache[name][propKey][operation])
+        if (!this.cache[name][propKey][operation])
+            this.cache[name][propKey][operation] = {};
+        if (this.cache[name][propKey][operation][phase])
             return;
-        this.cache[name][propKey][operation] = handler;
+        this.cache[name][propKey][operation][phase] = handler;
     }
 }
 
