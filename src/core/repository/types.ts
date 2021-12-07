@@ -21,4 +21,4 @@ export type DSUCreationUpdateHandler = <T extends DSUModel>(this: OpenDSUReposit
 
 export type DSUEditingHandler = <T extends DSUModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, model: T, dsu: DSU, decorator: any, callback: DSUCallback<T>) => void;
 
-export type DSUOperationHandler = DSUCreationHandler | DSUEditingHandler;
+export type DSUOperationHandler = DSUCreationHandler | DSUEditingHandler | DSUCreationUpdateHandler;

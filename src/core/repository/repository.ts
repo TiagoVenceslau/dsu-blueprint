@@ -103,12 +103,17 @@ export class OpenDSURepository<T extends DSUModel> extends AsyncRepositoryImp<T>
         const callback: DSUCallback<T> = args.pop();
         if (!callback)
             throw new LoggedError(`Missing callback`);
+        if (!key)
+            throw new LoggedError(`Missing SSI`);
 
         const self = this;
         if (typeof key === 'string')
             return safeParseKeySSI(key, err => err
                 ? errorCallback(err, callback)
                 : self.read(key,  ...args, callback));
+
+        debug(`Reading {0} DSU with SSI {1}`, this.clazz.name, key.getIdentifier());
+
     }
 
     update(key?: DSUKey, model?: T, ...args: any[]): void {
