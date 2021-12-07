@@ -407,7 +407,7 @@ export function handleCreationPropertyDecorators&lt;T extends DSUModel>(this: Op
         if (!decorator)
             return callback(undefined, results);
 
-        let handler: DSUCreationHandler | undefined = dsuOperationsRegistry.get(decorator.props.dsu, decorator.prop, decorator.props.operation) as DSUCreationHandler;
+        let handler: DSUCreationHandler | undefined = dsuOperationsRegistry.get(decorator.props.dsu, decorator.prop, decorator.props.operation, decorator.props.phase) as DSUCreationHandler;
 
         if (!handler)
             return criticalCallback(`No handler found for ${decorator.props.dsu} - ${decorator.prop} - ${decorator.props.operation}`, callback);
@@ -488,7 +488,7 @@ export function handleEditingPropertyDecorators&lt;T extends DSUModel>(this: Ope
         if (!decorator)
             return callback(undefined, newModel);
 
-        let handler: DSUEditingHandler | undefined = dsuOperationsRegistry.get(newModel.constructor.name, decorator.prop, decorator.props.operation) as DSUEditingHandler;
+        let handler: DSUEditingHandler | undefined = dsuOperationsRegistry.get(newModel.constructor.name, decorator.prop, decorator.props.operation, decorator.props.phase) as DSUEditingHandler;
 
         if (!handler)
             return criticalCallback(new Error(`No handler found for ${decorator.props.dsu} - ${decorator.prop} - ${decorator.props.operation}`), callback);
@@ -535,7 +535,7 @@ export function handleUpdateCreationPropertyDecorator&lt;T extends DSUModel>(thi
         if (!decorator)
             return callback(undefined, results);
 
-        let handler: DSUCreationUpdateHandler | undefined = dsuOperationsRegistry.get(decorator.props.dsu, decorator.prop, decorator.props.operation) as DSUCreationUpdateHandler;
+        let handler: DSUCreationUpdateHandler | undefined = dsuOperationsRegistry.get(decorator.props.dsu, decorator.prop, decorator.props.operation, decorator.props.phase) as DSUCreationUpdateHandler;
 
         if (!handler)
             return criticalCallback(`No handler found for ${decorator.props.dsu} - ${decorator.prop} - ${decorator.props.operation}`, callback);
@@ -561,6 +561,24 @@ export function handleUpdateCreationPropertyDecorator&lt;T extends DSUModel>(thi
             return callback(err);
         callback(undefined, results)
     });
+}
+
+export function readFromDecorators&lt;T extends DSUModel>(this: OpenDSURepository&lt;T>, dsu: DSU, ...args: (any | DSUCallback&lt;T>)[]){
+    const callback: DSUCallback&lt;T> = args.pop();
+    if (!callback)
+        throw new CriticalError(`Missing callback`);
+    // TODO: isn't there a better way than to instantiate an empty class?
+
+    const model = new this.clazz() as T;
+
+    const splitDecorators: {creation?: DSUCreationDecorator[], editing?: DSUEditDecorator[]} | undefined = splitDSUDecorators&lt;T>(model, OperationKeys.READ);
+    if (!splitDecorators)
+        return callback(undefined, model, dsu);
+
+    const self = this;
+    const dsuCache: DSUCache&lt;T> = new DSUCache&lt;T>();
+
+
 }
 
 

@@ -112,7 +112,7 @@
             <pre class="prettyprint source linenums"><code>import {DSUEditMetadata, DsuKeys, DSUOperation} from "../core/model";
 import {DSU, DSUIOOptions, getKeySsiSpace} from "../core/opendsu";
 import {getFS, getPath} from "./utils";
-import {Callback, criticalCallback, Err} from "@tvenceslau/db-decorators/lib";
+import {Callback, criticalCallback, DBOperations, Err, OperationKeys} from "@tvenceslau/db-decorators/lib";
 import {getDSUOperationsRegistry} from "../core/repository/registry";
 import {DSUCache, DSUCallback, DSUEditingHandler, OpenDSURepository} from "../core/repository";
 import DBModel from "@tvenceslau/db-decorators/lib/model/DBModel";
@@ -136,6 +136,7 @@ export const dsuFS = (app: string, derive: boolean = false, mountPath?: string, 
         getFsKey(DsuFsKeys.MOUNT_FS),
         {
             operation: DSUOperation.EDITING,
+            phase: DBOperations.CREATE,
             app: app,
             derive: derive,
             options: mountOptions,
@@ -196,7 +197,7 @@ export const dsuFS = (app: string, derive: boolean = false, mountPath?: string, 
         });
     }
 
-    getDSUOperationsRegistry().register(handler, DSUOperation.EDITING, target, propertyKey);
+    getDSUOperationsRegistry().register(handler, DSUOperation.EDITING, OperationKeys.CREATE, target, propertyKey);
 }
 
 /**
@@ -213,6 +214,7 @@ export const addFileFS = (fsPath: string, dsuPath?: string, options?: DSUIOOptio
         getFsKey(DsuFsKeys.ADD_FILE_FS),
         {
             operation: DSUOperation.EDITING,
+            phase: DBOperations.CREATE,
             fsPath: fsPath,
             dsuPath: dsuPath ? dsuPath : propertyKey,
             options: options
@@ -232,7 +234,7 @@ export const addFileFS = (fsPath: string, dsuPath?: string, options?: DSUIOOptio
         });
     }
 
-    getDSUOperationsRegistry().register(handler, DSUOperation.EDITING, target, propertyKey);
+    getDSUOperationsRegistry().register(handler, DSUOperation.EDITING, OperationKeys.CREATE, target, propertyKey);
 }
 
 /**
@@ -249,6 +251,7 @@ export const addFolderFS = (fsPath?: string, dsuPath?: string, options?: DSUIOOp
         getFsKey(DsuFsKeys.ADD_FOLDER_FS),
         {
             operation: DSUOperation.EDITING,
+            phase: DBOperations.CREATE,
             fsPath: fsPath ? fsPath : propertyKey,
             dsuPath: dsuPath ? dsuPath : propertyKey,
             options: options
@@ -268,7 +271,7 @@ export const addFolderFS = (fsPath?: string, dsuPath?: string, options?: DSUIOOp
         });
     }
 
-    getDSUOperationsRegistry().register(handler, DSUOperation.EDITING, target, propertyKey);
+    getDSUOperationsRegistry().register(handler, DSUOperation.EDITING, OperationKeys.CREATE, target, propertyKey);
 }</code></pre>
         </article>
     </section>
