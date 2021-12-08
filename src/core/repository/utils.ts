@@ -148,7 +148,7 @@ export function createFromDecorators<T extends DSUModel>(this: OpenDSURepository
             if (isBatchMode)
                 dsu.beginBatch();
 
-            handleEditingPropertyDecorators.call(this, dsuCache as DSUCache<DSUModel>, updatedModel, dsu, editing || [], (err: Err, otherModel: T) => {
+            handleEditingPropertyDecorators.call(this, dsuCache as DSUCache<DSUModel>, updatedModel, dsu, editing || [], OperationKeys.CREATE, (err: Err, otherModel: T) => {
                 if (err || !otherModel)
                     return batchCallback(err || new Error("Invalid Results"), dsu, callback);
                 batchCallback(undefined, dsu, otherModel, dsu, keySSI, callback);
@@ -331,13 +331,14 @@ export function handleCreationPropertyDecorators<T extends DSUModel>(this: OpenD
  * @param {T} model {@link DSUBlueprint} decorated {@link DSUModel}
  * @param {DSU} dsu teh {@link DSU} object
  * @param {any} decorators
+ * @param {string} [phase] defaults to {@link OperationKeys.CREATE}
  * @param {any[]} [args]
  *       The last arg will be considered to be the {@link DSUCallback<T>};
  *
  * @function
  * @namespace repository
  */
-export function handleEditingPropertyDecorators<T extends DSUModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, model: T, dsu: DSU, decorators: DSUEditDecorator[], ...args: (any | DSUCallback<T>)[]){
+export function handleEditingPropertyDecorators<T extends DSUModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, model: T, dsu: DSU, decorators: DSUEditDecorator[], phase: string = OperationKeys.CREATE, ...args: (any | DSUCallback<T>)[]){
     const callback: DSUCallback<T> = args.pop();
     if (!callback)
         throw new CriticalError(`Missing callback`);
@@ -377,10 +378,10 @@ export function handleEditingPropertyDecorators<T extends DSUModel>(this: OpenDS
         if (!decorator)
             return callback(undefined, newModel);
 
-        let handler: DSUEditingHandler | undefined = dsuOperationsRegistry.get(newModel.constructor.name, decorator.prop, decorator.props.operation, decorator.props.phase) as DSUEditingHandler;
+        let handler: DSUEditingHandler | undefined = dsuOperationsRegistry.get(newModel.constructor.name, decorator.prop, decorator.props.operation, phase) as DSUEditingHandler;
 
         if (!handler)
-            return criticalCallback(new Error(`No handler found for ${decorator.props.dsu} - ${decorator.prop} - ${decorator.props.operation}`), callback);
+            return criticalCallback(new Error(`No handler found for ${newModel.constructor.name} - ${decorator.prop} - ${decorator.props.operation}`), callback);
 
         handler.call(self, dsuCache, model, dsu, decorator, (err: Err, newModel?: DSUModel) => {
             if (err || !newModel)
@@ -504,7 +505,7 @@ export function updateFromDecorators<T extends DSUModel>(this: OpenDSURepository
         if (batchMode)
             dsu.beginBatch();
 
-        handleEditingPropertyDecorators.call(self, dsuCache, model, dsu, splitDecorators.editing || [], (err: Err, otherModel: T) => {
+        handleEditingPropertyDecorators.call(self, dsuCache, model, dsu, splitDecorators.editing || [], OperationKeys.UPDATE, (err: Err, otherModel: T) => {
             if (err || !otherModel)
                 return batchCallback(err || new Error("Invalid Results"), dsu, callback);
             batchCallback(undefined, dsu, otherModel, dsu, callback);

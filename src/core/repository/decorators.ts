@@ -5,7 +5,7 @@ import {DSUEditingHandler} from "./types";
 import {DSUCallback, OpenDSURepository} from "./repository";
 import {DSUCache} from "./cache";
 import {DSU, DSUIOOptions, KeySSI} from "../opendsu";
-import {criticalCallback, CriticalError, DBOperations, warn} from "@tvenceslau/db-decorators/lib";
+import {criticalCallback, CriticalError, DBOperations, OperationKeys, warn} from "@tvenceslau/db-decorators/lib";
 import {getDSUOperationsRegistry} from "./registry";
 
 const getDSUModelKey = (key: string) => DsuKeys.REFLECT + key;
@@ -56,7 +56,7 @@ export function fromCache<T extends DSUModel>(model: {new(): T}, derive: boolean
             });
         }
 
-        getDSUOperationsRegistry().register(handler, DSUOperation.EDITING, target, propertyKey);
+        getDSUOperationsRegistry().register(handler, DSUOperation.EDITING, OperationKeys.CREATE, target, propertyKey);
     }
 }
 
