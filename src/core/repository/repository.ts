@@ -11,6 +11,7 @@ import {createFromDecorators, readFromDecorators, safeParseKeySSI, updateFromDec
 import DBModel from "@tvenceslau/db-decorators/lib/model/DBModel";
 import {repository} from "@tvenceslau/db-decorators/lib/repository/decorators";
 import {getResolver} from "../opendsu";
+import ModelErrorDefinition from "@tvenceslau/decorator-validation/lib/Model/ModelErrorDefinition";
 
 export type DSUKey = string | KeySSI;
 
@@ -70,11 +71,11 @@ export class OpenDSURepository<T extends DSUModel> extends AsyncRepositoryImp<T>
         if (!callback)
             throw new LoggedError(`Missing callback`);
         if (!model)
-            return errorCallback(new Error(`Missing Model`), callback);
+            return criticalCallback(new Error(`Missing Model`), callback);
 
-        const errs = model.hasErrors();
+        const errs: ModelErrorDefinition | undefined = model.hasErrors();
         if (errs)
-            return callback(errs.toString());
+            return callback(new Error(errs.toString()));
 
         debug(`Creating {0} DSU from model {1}`, this.clazz.name, model.toString())
 
@@ -146,13 +147,17 @@ export class OpenDSURepository<T extends DSUModel> extends AsyncRepositoryImp<T>
             if (err)
                 return criticalCallback(err, callback);
 
+            const errors: ModelErrorDefinition | undefined = model.hasErrors(oldModel);
+            if (errors)
+                return callback(new Error(errors.toString()));
+
             debug(`Updating {0} DSU from model {1} to {2}`, this.clazz.name, oldModel.toString(), model.toString())
 
-            updateFromDecorators.call(self, model, oldModel, dsu, (err?: Err, updatedModel?: T, updatedDsu?: DSU, updatedKeySSI?: KeySSI) => {
-                if (err || !updatedModel || !updatedDsu || !updatedKeySSI)
+            updateFromDecorators.call(self, model, oldModel, dsu, (err?: Err, updatedModel?: T, updatedDsu?: DSU) => {
+                if (err || !updatedModel || !updatedDsu)
                     return callback(err || new CriticalError(`Missing Results`));
                 debug(`{0} DSU updated. Resulting Model: {1}, KeySSI: {2}`, this.clazz.name, updatedModel.toString(), keySSI.getIdentifier());
-                callback(undefined, updatedModel, updatedDsu, updatedKeySSI);
+                callback(undefined, updatedModel, updatedDsu, key);
             });
         });
     }
