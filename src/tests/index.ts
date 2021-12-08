@@ -1,4 +1,4 @@
 export * from './ArrayDsu';
 export * from './FsDsu';
-export * from './SeedDsu';
+export * from './SeedDsuBlueprint';
 export * from './builtins';

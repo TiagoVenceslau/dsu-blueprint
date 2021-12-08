@@ -7,13 +7,16 @@ import {
     ModelCallback
 } from "@tvenceslau/db-decorators/lib";
 import {DSU, KeySSI} from "../opendsu/types";
-import {createFromDecorators, safeParseKeySSI, updateFromDecorators} from "./utils";
+import {createFromDecorators, readFromDecorators, safeParseKeySSI, updateFromDecorators} from "./utils";
 import DBModel from "@tvenceslau/db-decorators/lib/model/DBModel";
 import {repository} from "@tvenceslau/db-decorators/lib/repository/decorators";
+import {getResolver} from "../opendsu";
 
 export type DSUKey = string | KeySSI;
 
 export type DSUCallback<T extends DBModel> = (err?: Err, model?: T, dsu?: DSU, keySSI?: KeySSI, ...args: any[]) => void;
+
+export type ReadCallback = (err?: Err, model?: {[indexer: string]: any}, dsu?: DSU, keySSI?: KeySSI, ...args: any[]) => void;
 
 export type DSUMultipleCallback<T extends DBModel> = (err?: Err, model?: T[], dsu?: DSU[], keySSI?: KeySSI[], ...args: any[]) => void;
 
@@ -104,7 +107,7 @@ export class OpenDSURepository<T extends DSUModel> extends AsyncRepositoryImp<T>
         if (!callback)
             throw new LoggedError(`Missing callback`);
         if (!key)
-            throw new LoggedError(`Missing SSI`);
+            return criticalCallback(`Missing Key`, callback);
 
         const self = this;
         if (typeof key === 'string')
@@ -114,6 +117,15 @@ export class OpenDSURepository<T extends DSUModel> extends AsyncRepositoryImp<T>
 
         debug(`Reading {0} DSU with SSI {1}`, this.clazz.name, key.getIdentifier());
 
+        getResolver().loadDSU(key, (err, dsu) => {
+            if (err || !dsu)
+                return criticalCallback(err || new Error(`Missing DSU`), callback);
+            readFromDecorators.call(self, dsu, (err: Err, model?: T, dsu?: DSU) => {
+                if (err || !model || !dsu)
+                    return callback(err || new CriticalError(`Missing results`));
+                callback(undefined, model, dsu, key);
+            });
+        });
     }
 
     update(key?: DSUKey, model?: T, ...args: any[]): void {

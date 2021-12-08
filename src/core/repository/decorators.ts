@@ -2,7 +2,7 @@ import {DsuKeys, DSUOperation} from "../model/constants";
 import {DSUEditMetadata, DSUModel} from "../model";
 import {repository} from "@tvenceslau/db-decorators/lib/repository/decorators";
 import {DSUEditingHandler} from "./types";
-import {DSUCallback, OpenDSURepository} from "./repository";
+import {DSUCallback, OpenDSURepository, ReadCallback} from "./repository";
 import {DSUCache} from "./cache";
 import {DSU, DSUIOOptions, KeySSI} from "../opendsu";
 import {criticalCallback, CriticalError, DBOperations, OperationKeys, warn} from "@tvenceslau/db-decorators/lib";
@@ -25,7 +25,7 @@ export function fromCache<T extends DSUModel>(model: {new(): T}, derive: boolean
     return (target: T, propertyKey: string) => {
         const metadata: DSUEditMetadata = {
             operation: DSUOperation.EDITING,
-            phase: DBOperations.CREATE,
+            phase: [OperationKeys.CREATE, OperationKeys.READ],
             derive: derive,
             options: mountOptions,
             dsuPath: mountPath ? mountPath : propertyKey,
@@ -37,7 +37,7 @@ export function fromCache<T extends DSUModel>(model: {new(): T}, derive: boolean
             propertyKey
         );
 
-        const handler: DSUEditingHandler = function<T extends DSUModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, model: T, parentDsu: DSU, decorator: DSUEditMetadata, callback: DSUCallback<T>){
+        const createHandler: DSUEditingHandler = function<T extends DSUModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, model: T | {}, parentDsu: DSU, decorator: DSUEditMetadata, callback: DSUCallback<T>){
             const {dsuPath, options, derive} = decorator.props;
 
             const cached = dsuCache.get(model as T, decorator.prop);
@@ -52,11 +52,11 @@ export function fromCache<T extends DSUModel>(model: {new(): T}, derive: boolean
             parentDsu.mount(dsuPath, ssi, options, (err) => {
                 if (err)
                     return criticalCallback(err, callback);
-                callback(undefined, model);
+                callback(undefined, model as T);
             });
         }
 
-        getDSUOperationsRegistry().register(handler, DSUOperation.EDITING, OperationKeys.CREATE, target, propertyKey);
+        getDSUOperationsRegistry().register(createHandler, DSUOperation.EDITING, OperationKeys.CREATE, target, propertyKey);
     }
 }
 

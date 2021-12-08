@@ -112,14 +112,14 @@ export const addFileFS = (fsPath: string, dsuPath?: string, options?: DSUIOOptio
         propertyKey
     );
 
-    const handler: DSUEditingHandler = function<T extends DBModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, obj: T, dsu: DSU, decorator: DSUEditMetadata, callback: DSUCallback<T>): void {
+    const handler: DSUEditingHandler = function<T extends DBModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, obj: T | {}, dsu: DSU, decorator: DSUEditMetadata, callback: DSUCallback<T>): void {
         const {props} = decorator;
         let {dsuPath, fsPath, options} = props;
         fsPath = getPath().join(this.pathAdaptor, fsPath);
         dsu.addFile(fsPath, dsuPath, options, err => {
             if (err)
                 return criticalCallback(err, callback);
-            callback(undefined, obj, dsu);
+            callback(undefined, obj as T, dsu);
         });
     }
 
@@ -149,14 +149,14 @@ export const addFolderFS = (fsPath?: string, dsuPath?: string, options?: DSUIOOp
         propertyKey
     );
 
-    const handler: DSUEditingHandler = function<T extends DBModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, obj: T, dsu: DSU, decorator: DSUEditMetadata, callback: DSUCallback<T>): void {
+    const handler: DSUEditingHandler = function<T extends DBModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, obj: T | {}, dsu: DSU, decorator: DSUEditMetadata, callback: DSUCallback<T>): void {
         const {props} = decorator;
         let {dsuPath, fsPath, options} = props;
         fsPath = getPath().join(this.pathAdaptor, fsPath);
         dsu.addFolder(fsPath, dsuPath, options, err => {
             if (err)
                 return criticalCallback(err, callback);
-            callback(undefined, obj, dsu);
+            callback(undefined, obj as T, dsu);
         });
     }
 

@@ -8,7 +8,7 @@ import {
     DSUCallback,
     DSUCreationHandler, DSUCreationUpdateHandler,
     DSUEditingHandler, fromCache,
-    OpenDSURepository
+    OpenDSURepository, ReadCallback
 } from "../repository";
 import DBModel from "@tvenceslau/db-decorators/lib/model/DBModel";
 import {
@@ -131,8 +131,8 @@ export function dsu<T extends DSUModel>(dsu: {new(): T}, derive: boolean | numbe
 
         getDSUOperationsRegistry().register(updateHandler, DSUOperation.CREATION, OperationKeys.UPDATE, target, propertyKey);
 
-        const readHandler: DSUCreationUpdateHandler = function<T extends DSUModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, model: T, oldModel: T, dsuObj: DSU, decorator: any, callback: DSUCallback<T>): void {
-            const {dsu, dsuPath} = decorator;
+        const readHandler: DSUEditingHandler = function<T extends DSUModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, model: T | {}, dsuObj: DSU, decorator: any, callback: DSUCallback<T> | ReadCallback): void {
+            const {dsu, dsuPath, prop} = decorator;
 
             const repo = getRepoRegistry().get<OpenDSURepository<T>>(dsu)
             if (!repo)
@@ -145,12 +145,14 @@ export function dsu<T extends DSUModel>(dsu: {new(): T}, derive: boolean | numbe
                 repo.read(keySSI, (err: Err, newModel: T, dsu: DSU, keySSI: KeySSI) => {
                     if (err)
                         return callback(err);
-                    callback(undefined, newModel, dsu, keySSI);
+                    // @ts-ignore
+                    model[prop] = newModel;
+                    callback(undefined, model as T, dsu, keySSI);
                 });
             });
         }
 
-        getDSUOperationsRegistry().register(readHandler, DSUOperation.CREATION, OperationKeys.READ, target, propertyKey);
+        getDSUOperationsRegistry().register(readHandler, DSUOperation.EDITING, OperationKeys.READ, target, propertyKey);
 
         const deleteHandler: DSUCreationUpdateHandler = function<T extends DSUModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, model: T, oldModel: T, dsuObj: DSU, decorator: any, callback: DSUCallback<T>): void {
             const {dsu, dsuPath} = decorator;
@@ -228,7 +230,7 @@ export function dsuFile(dsuPath: string = DsuKeys.DEFAULT_DSU_PATH) {
             });
         }
 
-        const readHandler: DSUEditingHandler = function<T extends DBModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, obj: T, dsu: DSU, decorator: DSUEditMetadata, callback: DSUCallback<T>): void {
+        const readHandler: DSUEditingHandler = function<T extends DBModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, obj: {}, dsu: DSU, decorator: DSUEditMetadata, callback: DSUCallback<T>): void {
             const {props} = decorator;
             const {dsuPath} = props;
             dsu.readFile(dsuPath, (err: Err, data: any) => {
@@ -244,13 +246,13 @@ export function dsuFile(dsuPath: string = DsuKeys.DEFAULT_DSU_PATH) {
             });
         }
 
-        const deleteHandler: DSUEditingHandler = function<T extends DBModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, obj: T, dsu: DSU, decorator: DSUEditMetadata, callback: DSUCallback<T>): void {
+        const deleteHandler: DSUEditingHandler = function<T extends DBModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, obj: T | {}, dsu: DSU, decorator: DSUEditMetadata, callback: DSUCallback<T>): void {
             const {props} = decorator;
             const {dsuPath} = props;
             dsu.delete(dsuPath, (err) => {
                 if (err)
                     return criticalCallback(err, callback);
-                callback(undefined, obj, dsu);
+                callback(undefined, obj as T, dsu);
             });
         }
 
@@ -280,7 +282,7 @@ export function mount(keySSI: string, mountPath?: string, options?: DSUIOOptions
 
         const metadata: DSUEditMetadata = {
             operation: DSUOperation.EDITING,
-            phase: DBOperations.CREATE,
+            phase: [OperationKeys.READ, OperationKeys.CREATE],
             dsuPath: mountPath,
             options: options,
             args: args
@@ -293,15 +295,28 @@ export function mount(keySSI: string, mountPath?: string, options?: DSUIOOptions
             propertyKey
         );
 
-        const handler: DSUEditingHandler = function<T extends DBModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, obj: T, dsu: DSU, decorator: DSUEditMetadata, callback: DSUCallback<T>): void {
+        const createHandler: DSUEditingHandler = function<T extends DBModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, obj: T | {}, dsu: DSU, decorator: DSUEditMetadata, callback: DSUCallback<T>): void {
             const {keySSI, dsuPath, options} = decorator;
             dsu.mount(dsuPath, keySSI, options, err => {
                 if (err)
                     return criticalCallback(err, callback);
-                callback(undefined, obj, dsu);
+                callback(undefined, obj as T, dsu);
             })
         }
 
-        getDSUOperationsRegistry().register(handler, DSUOperation.EDITING, OperationKeys.CREATE, target, propertyKey);
+        const readHandler: DSUEditingHandler = function<T extends DSUModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, model: T | {}, parentDsu: DSU, decorator: DSUEditMetadata, callback: DSUCallback<T> | ReadCallback){
+            const {dsuPath} = decorator.props;
+            parentDsu.getSSIForMount(dsuPath, (err, keySSI) => {
+                if (err || !keySSI)
+                    return criticalCallback(err || new Error('Missing KeySSI'), callback);
+                // @ts-ignore
+                model[decorator.prop] = keySSI;
+                callback(undefined, model as T, parentDsu)
+            });
+        }
+
+
+        getDSUOperationsRegistry().register(createHandler, DSUOperation.EDITING, OperationKeys.CREATE, target, propertyKey);
+        getDSUOperationsRegistry().register(readHandler, DSUOperation.EDITING, OperationKeys.READ, target, propertyKey);
     }
 }

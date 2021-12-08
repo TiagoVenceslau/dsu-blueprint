@@ -22,7 +22,12 @@ import {
     getClassDecorators,
     LoggedError, OperationKeys
 } from "@tvenceslau/db-decorators/lib";
-import {DSUCreationHandler, DSUCreationUpdateHandler, DSUEditingHandler, DSUFactoryMethod} from "./types";
+import {
+    DSUCreationHandler,
+    DSUCreationUpdateHandler,
+    DSUEditingHandler,
+    DSUFactoryMethod
+} from "./types";
 import {getDSUOperationsRegistry} from "./registry";
 import {ModelKeys} from "@tvenceslau/decorator-validation/lib";
 import {DSUCache} from "./cache";
@@ -328,7 +333,7 @@ export function handleCreationPropertyDecorators<T extends DSUModel>(this: OpenD
  * Handles the {@link DSU} edition operations, as tagged by the attribute decorators
  *
  * @param {DSUCache} dsuCache the current {@link DSUCache}
- * @param {T} model {@link DSUBlueprint} decorated {@link DSUModel}
+ * @param {T | {[indexer: string]: any}} model {@link DSUBlueprint} decorated {@link DSUModel} or an object for {@link OperationKeys.READ} operations
  * @param {DSU} dsu teh {@link DSU} object
  * @param {any} decorators
  * @param {string} [phase] defaults to {@link OperationKeys.CREATE}
@@ -338,7 +343,7 @@ export function handleCreationPropertyDecorators<T extends DSUModel>(this: OpenD
  * @function
  * @namespace repository
  */
-export function handleEditingPropertyDecorators<T extends DSUModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, model: T, dsu: DSU, decorators: DSUEditDecorator[], phase: string = OperationKeys.CREATE, ...args: (any | DSUCallback<T>)[]){
+export function handleEditingPropertyDecorators<T extends DSUModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, model: T | {[indexer: string]: any}, dsu: DSU, decorators: DSUEditDecorator[], phase: string = OperationKeys.CREATE, ...args: (any | DSUCallback<T>)[]){
     const callback: DSUCallback<T> = args.pop();
     if (!callback)
         throw new CriticalError(`Missing callback`);
@@ -373,7 +378,7 @@ export function handleEditingPropertyDecorators<T extends DSUModel>(this: OpenDS
         return accum;
     }, {});
 
-    const decoratorIterator = function(decoratorsCopy: any[], newModel: T, callback: Callback){
+    const decoratorIterator = function(decoratorsCopy: any[], newModel: T | {}, callback: Callback){
         const decorator = decoratorsCopy.shift();
         if (!decorator)
             return callback(undefined, newModel);
@@ -425,10 +430,10 @@ export function handleUpdateCreationPropertyDecorator<T extends DSUModel>(this: 
         if (!decorator)
             return callback(undefined, results);
 
-        let handler: DSUCreationUpdateHandler | undefined = dsuOperationsRegistry.get(decorator.props.dsu, decorator.prop, decorator.props.operation, decorator.props.phase) as DSUCreationUpdateHandler;
+        let handler: DSUCreationUpdateHandler | undefined = dsuOperationsRegistry.get(decorator.props.dsu, decorator.prop, decorator.props.operation, OperationKeys.UPDATE) as DSUCreationUpdateHandler;
 
         if (!handler)
-            return criticalCallback(`No handler found for ${decorator.props.dsu} - ${decorator.prop} - ${decorator.props.operation}`, callback);
+            return criticalCallback(`No handler found for ${decorator.props.dsu} - ${decorator.prop} - ${decorator.props.operation} - ${OperationKeys.UPDATE}`, callback);
 
         handler.call(self, dsuCache, model[decorator.prop], oldModel[decorator.prop], dsu, decorator.props, (err: Err, newModel?: DSUModel, dsu?: DSU, keySSI?: KeySSI) => {
             if (err || !newModel || !dsu || !keySSI)
@@ -457,7 +462,6 @@ export function readFromDecorators<T extends DSUModel>(this: OpenDSURepository<T
     const callback: DSUCallback<T> = args.pop();
     if (!callback)
         throw new CriticalError(`Missing callback`);
-    // TODO: isn't there a better way than to instantiate an empty class?
 
     const model = new this.clazz() as T;
 
@@ -465,10 +469,23 @@ export function readFromDecorators<T extends DSUModel>(this: OpenDSURepository<T
     if (!splitDecorators)
         return callback(undefined, model, dsu);
 
+    const {editing} = splitDecorators;
+
     const self = this;
     const dsuCache: DSUCache<T> = new DSUCache<T>();
 
+    handleEditingPropertyDecorators.call(self, dsuCache, model, dsu, editing || [], OperationKeys.READ,(err: Err, newModel: {} | T, dsu: DSU) => {
+        if (err || !newModel || !dsu)
+            return callback(err || new CriticalError('Missing results'));
 
+        try {
+            // @ts-ignore
+            newModel = new self.clazz(newModel) as T;
+        } catch (e) {
+            return criticalCallback(e, callback);
+        }
+        callback(undefined, newModel as T, dsu);
+    });
 }
 
 
