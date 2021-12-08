@@ -388,7 +388,7 @@ export function handleEditingPropertyDecorators<T extends DSUModel>(this: OpenDS
         if (!handler)
             return criticalCallback(new Error(`No handler found for ${newModel.constructor.name} - ${decorator.prop} - ${decorator.props.operation}`), callback);
 
-        handler.call(self, dsuCache, model, dsu, decorator, (err: Err, newModel?: DSUModel) => {
+        handler.call(self, dsuCache, newModel, dsu, decorator, (err: Err, newModel?: DSUModel) => {
             if (err || !newModel)
                 return criticalCallback(err || new Error(`Missing Results`), callback);
 
@@ -474,8 +474,8 @@ export function readFromDecorators<T extends DSUModel>(this: OpenDSURepository<T
     const self = this;
     const dsuCache: DSUCache<T> = new DSUCache<T>();
 
-    handleEditingPropertyDecorators.call(self, dsuCache, model, dsu, editing || [], OperationKeys.READ,(err: Err, newModel: {} | T, dsu: DSU) => {
-        if (err || !newModel || !dsu)
+    handleEditingPropertyDecorators.call(self, dsuCache, model, dsu, editing || [], OperationKeys.READ,(err: Err, newModel: {} | T) => {
+        if (err || !newModel)
             return callback(err || new CriticalError('Missing results'));
 
         try {
