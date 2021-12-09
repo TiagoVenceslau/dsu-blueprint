@@ -15,7 +15,7 @@ const tsOptions = {
 
 function exportModules() {
     const tsProject = ts.createProject('tsconfig.json', tsOptions);
-    return src('src/**/*.ts')
+    return src('src/!tests/**/*.ts')
         .pipe(sourcemaps.init())
         .pipe(tsProject())
         .pipe(babel({
@@ -47,7 +47,7 @@ function exportCoreModules() {
 
 function exportDefault() {
     const tsProject = ts.createProject('tsconfig.json', tsOptions);
-    return src('src/**/*.ts')
+    return src('src/!tests/**/*.ts')
         .pipe(sourcemaps.init())
         .pipe(tsProject())
         .pipe(babel())
@@ -71,7 +71,7 @@ function exportCoreDefault() {
 
 function exportModulesBundles() {
     const tsProject = ts.createProject('tsconfig.json', tsOptions);
-    return src('src/**/*.ts')
+    return src('src/!tests/**/*.ts')
         .pipe(sourcemaps.init())
         .pipe(tsProject())
         .pipe(babel({
@@ -105,7 +105,7 @@ function exportCoreModulesBundles() {
 
 function exportDefaultBundles() {
     const tsProject = ts.createProject('tsconfig.json', tsOptions);
-    return src('src/**/*.ts')
+    return src('src/!tests/**/*.ts')
         .pipe(sourcemaps.init())
         .pipe(tsProject())
         .pipe(babel())
