@@ -19,7 +19,6 @@ import {
     ModelCallback,
     OperationKeys
 } from "@tvenceslau/db-decorators/lib";
-import {getKeySsiSpace} from "../opendsu";
 
 const getDSUModelKey = (key: string) => DsuKeys.REFLECT + key;
 
@@ -38,7 +37,7 @@ const getDSUModelKey = (key: string) => DsuKeys.REFLECT + key;
  */
 export const DSUBlueprint = (domain: string | undefined = undefined, keySSIType: KeySSIType = KeySSIType.SEED, specificKeyArgs: string[] | undefined = undefined, options: DSUAnchoringOptions | undefined = undefined, batchMode: boolean = true, ...props: string[]) => (original: Function) => {
     getRepoRegistry().register(original.name);
-    return model(ModelKeys.MODEL, {
+    return model({
         dsu: {
             domain: domain,
             keySSIType: keySSIType,

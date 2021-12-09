@@ -4,6 +4,7 @@ import {OpenDSURepository} from "./repository";
 import {DSUModel} from "../model";
 import {IRegistry} from "@tvenceslau/decorator-validation/lib/utils/registry";
 import {all, CriticalError} from "@tvenceslau/db-decorators/lib";
+import {getModelRegistry} from "@tvenceslau/decorator-validation/lib";
 
 export class DSUOperationRegistry implements IRegistry<DSUOperationHandler>{
     private cache: { [indexer: string]: any } = {};
@@ -118,6 +119,8 @@ export class RepositoryRegistry implements IRegistry<OpenDSURepo>{
     private instantiateRepo(clazz: {new(): DSUModel}, repo?: OpenDSURepoFactory): OpenDSURepository<DSUModel>{
         const name = clazz.constructor ? clazz.constructor.name : clazz.name;
         try {
+            // if (typeof clazz === 'string')
+            //     clazz = getModelRegistry().get(clazz);
             const instance = repo ? new repo() : new OpenDSURepository<DSUModel>(clazz);
             this.cache[name] = {
                 repo: name,
@@ -130,7 +133,7 @@ export class RepositoryRegistry implements IRegistry<OpenDSURepo>{
     }
 
     // @ts-ignore
-    register<OpenDSURepo>(clazz: {new(): DSUModel} | string, repo?: OpenDSURepoFactory, isCustom: boolean = false): void {
+    register<OpenDSURepo>(clazz: {new(): DSUModel} | string | Function, repo?: OpenDSURepoFactory, isCustom: boolean = false): void {
         const name = typeof clazz === 'string' ? clazz : (clazz.constructor && clazz.constructor.name !== 'Function' ? clazz.constructor.name : clazz.name);
         if (!this.cache[name] || isCustom)
             this.cache[name] = {

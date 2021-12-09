@@ -12,6 +12,7 @@ import DBModel from "@tvenceslau/db-decorators/lib/model/DBModel";
 import {repository} from "@tvenceslau/db-decorators/lib/repository/decorators";
 import {getResolver} from "../opendsu";
 import ModelErrorDefinition from "@tvenceslau/decorator-validation/lib/Model/ModelErrorDefinition";
+import {getModelRegistry} from "@tvenceslau/decorator-validation/lib";
 
 export type DSUKey = string | KeySSI;
 
@@ -79,7 +80,8 @@ export class OpenDSURepository<T extends DSUModel> extends AsyncRepositoryImp<T>
 
         debug(`Creating {0} DSU from model {1}`, this.clazz.name, model.toString())
 
-        createFromDecorators.call(this, model, this.fallbackDomain, ...args, (err: Err, newModel: T | undefined, dsu: DSU | undefined, keySSI: KeySSI | undefined) => {
+        const instance = getModelRegistry().build(model);
+        createFromDecorators.call(this, instance, this.fallbackDomain, ...args, (err: Err, newModel: T | undefined, dsu: DSU | undefined, keySSI: KeySSI | undefined) => {
             if (err || !newModel || !dsu || !keySSI)
                 return callback(err || new LoggedError(`Missing Arguments...`));
             debug(`{0} DSU created. Resulting Model: {1}, KeySSI: {2}`, this.clazz.name, newModel.toString(), keySSI.getIdentifier());
@@ -87,6 +89,11 @@ export class OpenDSURepository<T extends DSUModel> extends AsyncRepositoryImp<T>
         });
     }
 
+    /**
+     * Override to disable the key param on {@link AsyncRepositoryImp#createPrefix} method
+     * @see AsyncRepositoryImp#createPrefix
+     * @override
+     */
     createPrefix(model?: T, ...args: any[]){
         super.createPrefix(undefined, model, ...args);
     }
@@ -152,8 +159,8 @@ export class OpenDSURepository<T extends DSUModel> extends AsyncRepositoryImp<T>
                 return callback(new Error(errors.toString()));
 
             debug(`Updating {0} DSU from model {1} to {2}`, this.clazz.name, oldModel.toString(), model.toString())
-
-            updateFromDecorators.call(self, model, oldModel, dsu, (err?: Err, updatedModel?: T, updatedDsu?: DSU) => {
+            const instance = getModelRegistry().build(model);
+            updateFromDecorators.call(self, instance, oldModel, dsu, (err?: Err, updatedModel?: T, updatedDsu?: DSU) => {
                 if (err || !updatedModel || !updatedDsu)
                     return callback(err || new CriticalError(`Missing Results`));
                 debug(`{0} DSU updated. Resulting Model: {1}, KeySSI: {2}`, this.clazz.name, updatedModel.toString(), keySSI.getIdentifier());
