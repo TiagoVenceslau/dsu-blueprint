@@ -55,6 +55,7 @@ export type DSUCreationMetadata = {
     phase: string[],
     dsu: string
     derive: boolean | number,
+    options: DSUIOOptions | undefined,
     dsuPath: string
     ,
 }
@@ -66,13 +67,14 @@ export type DSUCreationMetadata = {
  * @param {boolean | number} [derive] decides if the resulting mount uses the Seed or the Read (or how many times it derives the key)
  * @param {string} [mountPath] defines the mount path, overriding the property name;
  * @param {DSUIOOptions} [mountOptions] defines the mount path, overriding the property name;
+ * @param {string[]} [modelArgs] optional model KeySSI generation params
  * @param {any[]} [args] optional KeySSI generation params
  *
  * @decorator dsu
  * @namespace decorators
  * @memberOf model
  */
-export function dsu<T extends DSUModel>(dsu: {new(): T}, derive: boolean | number = false, mountPath?: string, mountOptions?: DSUIOOptions, ...args: any[]) {
+export function dsu<T extends DSUModel>(dsu: {new(): T}, derive: boolean | number = false, mountPath?: string, mountOptions?: DSUIOOptions, modelArgs?: string[], ...args: any[]) {
     getRepoRegistry().register<OpenDSURepository<T>>(dsu);
     return (target: T, propertyKey: string) => {
         const dsuPath = mountPath ? mountPath : propertyKey;
@@ -82,7 +84,10 @@ export function dsu<T extends DSUModel>(dsu: {new(): T}, derive: boolean | numbe
             phase: DBOperations.CREATE,
             dsu: target.constructor.name,
             derive: derive,
-            dsuPath: dsuPath
+            dsuPath: dsuPath,
+            options: mountOptions,
+            modelArgs: modelArgs,
+            args: args
         }
 
         Reflect.defineMetadata(
@@ -94,13 +99,17 @@ export function dsu<T extends DSUModel>(dsu: {new(): T}, derive: boolean | numbe
 
         fromCache<T>(dsu, derive, dsuPath, mountOptions)(target, propertyKey);
 
-        const createHandler: DSUCreationHandler = function<T extends DSUModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, model: T, decorator: DSUCreationMetadata, callback: ModelCallback<T>): void {
+        const createHandler: DSUCreationHandler = function<T extends DSUModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, model: T, decorator: DSUCreationMetadata, ...keyGenArgs: (string | ModelCallback<T>)[]): void {
+            const callback: ModelCallback<T> = keyGenArgs.pop() as ModelCallback<T>;
+            if (!callback)
+                throw new CriticalError("Missing Callback");
             const {dsu} = decorator;
 
             const repo = getRepoRegistry().get<OpenDSURepository<T>>(dsu)
             if (!repo)
-                    throw new CriticalError(`Cannot find ${model.constructor.name} repository`);
-            repo.create(model, (err: Err, newModel: T, dsu: DSU, keySSI: KeySSI) => {
+                return criticalCallback(new Error(`Cannot find ${model.constructor.name} repository`), callback);
+
+            repo.create(model, dsuCache, ...keyGenArgs, (err: Err, newModel: T, dsu: DSU, keySSI: KeySSI) => {
                 if (err)
                     return callback(err);
                 callback(undefined, newModel, dsu, keySSI);
@@ -114,13 +123,13 @@ export function dsu<T extends DSUModel>(dsu: {new(): T}, derive: boolean | numbe
 
             const repo = getRepoRegistry().get<OpenDSURepository<T>>(dsu)
             if (!repo)
-                throw new CriticalError(`Cannot find ${model.constructor.name} repository`);
+                return criticalCallback(new Error(`Cannot find ${model.constructor.name} repository`), callback);
 
             dsuObj.getSSIForMount(dsuPath, (err, keySSI) => {
                 if (err || !keySSI)
                     return criticalCallback(err || new Error(`No KeySSI for specified mount`), callback);
 
-                repo.update(keySSI, model, (err: Err, newModel: T, dsu: DSU, keySSI: KeySSI) => {
+                repo.update(keySSI, model, dsuCache, (err: Err, newModel: T, dsu: DSU, keySSI: KeySSI) => {
                     if (err)
                         return callback(err);
                     callback(undefined, newModel, dsu, keySSI);
@@ -135,7 +144,7 @@ export function dsu<T extends DSUModel>(dsu: {new(): T}, derive: boolean | numbe
 
             const repo = getRepoRegistry().get<OpenDSURepository<T>>(dsu)
             if (!repo)
-                throw new CriticalError(`Cannot find ${model.constructor.name} repository`);
+                return criticalCallback(new Error(`Cannot find ${model.constructor.name} repository`), callback);
 
             dsuObj.getSSIForMount(dsuPath, (err, keySSI) => {
                 if (err || !keySSI)
@@ -158,7 +167,7 @@ export function dsu<T extends DSUModel>(dsu: {new(): T}, derive: boolean | numbe
 
             const repo = getRepoRegistry().get<OpenDSURepository<T>>(dsu)
             if (!repo)
-                throw new CriticalError(`Cannot find ${model.constructor.name} repository`);
+                return criticalCallback(new Error(`Cannot find ${model.constructor.name} repository`), callback);
 
             dsuObj.getSSIForMount(dsuPath, (err, keySSI) => {
                 if (err || !keySSI)

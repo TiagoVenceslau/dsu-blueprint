@@ -42,7 +42,8 @@ export function fromCache<T extends DSUModel>(model: {new(): T}, derive: boolean
 
             const cached = dsuCache.get(model as T, decorator.prop);
             if (!cached)
-                throw new CriticalError(`Could not find matching cached DSU`);
+                return criticalCallback(new Error(`Could not find matching cached DSU`), callback);
+
             if (cached.length > 1)
                 warn(`Cached DSUs for this property exceed the ones allowed. using only the first one`);
             const {keySSI} = cached[0];

@@ -13,6 +13,7 @@ import {repository} from "@tvenceslau/db-decorators/lib/repository/decorators";
 import {getResolver} from "../opendsu";
 import ModelErrorDefinition from "@tvenceslau/decorator-validation/lib/Model/ModelErrorDefinition";
 import {getModelRegistry} from "@tvenceslau/decorator-validation/lib";
+import {DSUCache, isDSUCache} from "./cache";
 
 export type DSUKey = string | KeySSI;
 
@@ -65,9 +66,16 @@ export class OpenDSURepository<T extends DSUModel> extends AsyncRepositoryImp<T>
     /**
      * Creates the corresponding {@link DSU} from the provided {@link DSUModel}
      * @param {T} model the {@link DSUModel}
+     * @param {DSUCache} [dsuCache] if building during a nested transaction, the dsuCache needs to be passed along
      * @param {any[]} [args]
      */
-    create(model?: T, ...args: any[]): void {
+    // @ts-ignore
+    create(model?: T, dsuCache?: DSUCache<T> | any, ...args: any[]): void {
+        if (!isDSUCache(dsuCache)){
+            args.unshift(dsuCache);
+            dsuCache = undefined;
+        }
+
         const callback: DSUCallback<T> = args.pop();
         if (!callback)
             throw new LoggedError(`Missing callback`);
@@ -81,7 +89,7 @@ export class OpenDSURepository<T extends DSUModel> extends AsyncRepositoryImp<T>
         debug(`Creating {0} DSU from model {1}`, this.clazz.name, model.toString())
 
         const instance = getModelRegistry().build(model);
-        createFromDecorators.call(this, instance, this.fallbackDomain, ...args, (err: Err, newModel: T | undefined, dsu: DSU | undefined, keySSI: KeySSI | undefined) => {
+        createFromDecorators.call(this, instance, this.fallbackDomain, dsuCache, ...args, (err: Err, newModel: T | undefined, dsu: DSU | undefined, keySSI: KeySSI | undefined) => {
             if (err || !newModel || !dsu || !keySSI)
                 return callback(err || new LoggedError(`Missing Arguments...`));
             debug(`{0} DSU created. Resulting Model: {1}, KeySSI: {2}`, this.clazz.name, newModel.toString(), keySSI.getIdentifier());
@@ -136,7 +144,12 @@ export class OpenDSURepository<T extends DSUModel> extends AsyncRepositoryImp<T>
         });
     }
 
-    update(key?: DSUKey, model?: T, ...args: any[]): void {
+    update(key?: DSUKey, model?: T, dsuCache?: DSUCache<T> | any, ...args: any[]): void {
+        if (!isDSUCache(dsuCache)){
+            args.unshift(dsuCache);
+            dsuCache = undefined;
+        }
+
         const callback: DSUCallback<T> = args.pop();
         if (!callback)
             throw new LoggedError(`Missing callback`);
@@ -148,7 +161,7 @@ export class OpenDSURepository<T extends DSUModel> extends AsyncRepositoryImp<T>
         if (typeof key === 'string')
             return safeParseKeySSI(key, err => err
                 ? errorCallback(err, callback)
-                : self.update(key, model, ...args, callback));
+                : self.update(key, model, dsuCache, ...args, callback));
 
         self.read(key, ...args, (err: Err, oldModel: T, dsu: DSU, keySSI: KeySSI) => {
             if (err)
@@ -160,7 +173,7 @@ export class OpenDSURepository<T extends DSUModel> extends AsyncRepositoryImp<T>
 
             debug(`Updating {0} DSU from model {1} to {2}`, this.clazz.name, oldModel.toString(), model.toString())
             const instance = getModelRegistry().build(model);
-            updateFromDecorators.call(self, instance, oldModel, dsu, (err?: Err, updatedModel?: T, updatedDsu?: DSU) => {
+            updateFromDecorators.call(self, instance, oldModel, dsu, dsuCache, (err?: Err, updatedModel?: T, updatedDsu?: DSU) => {
                 if (err || !updatedModel || !updatedDsu)
                     return callback(err || new CriticalError(`Missing Results`));
                 debug(`{0} DSU updated. Resulting Model: {1}, KeySSI: {2}`, this.clazz.name, updatedModel.toString(), keySSI.getIdentifier());

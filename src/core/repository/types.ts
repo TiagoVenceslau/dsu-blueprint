@@ -3,9 +3,10 @@ import {
     KeySSI,
     SimpleDSUCallback
 } from "../opendsu/types";
-import {DSUModel} from "../model";
+import {DSUCreationMetadata, DSUModel} from "../model";
 import {DSUCallback, OpenDSURepository, ReadCallback} from "./repository";
 import {DSUCache} from "./cache";
+import {ModelCallback} from "@tvenceslau/db-decorators/lib";
 
 export type ArraySSISpecificArgs = [vn: string, hint: string];
 
@@ -15,7 +16,7 @@ export type SeedSSISpecificArgs = [specificString: string, control: string, vn: 
 
 export type DSUFactoryMethod = (keySSI: KeySSI, options?: AnchoringOptsOrDSUCallback, callback?: SimpleDSUCallback) => void;
 
-export type DSUCreationHandler = <T extends DSUModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, model: T, decorator: any, callback: DSUCallback<T>) => void;
+export type DSUCreationHandler = <T extends DSUModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, model: T, decorator: DSUCreationMetadata, ...keyGenArgs: (string | ModelCallback<T>)[]) => void;
 
 export type DSUCreationUpdateHandler = <T extends DSUModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, model: T, oldModel: T, dsu: DSU, decorator: any, callback: DSUCallback<T>) => void;
 

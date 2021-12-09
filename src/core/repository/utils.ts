@@ -113,12 +113,13 @@ export function safeParseKeySSI(keySSI: string, callback: Callback){
  * @typedef T extends DSUModel
  * @param {T} model {@link DSUBlueprint} decorated {@link DSUModel}
  * @param {string} fallbackDomain The domain to be used when its not defined in the DSU Blueprint
+ * @param {DSUCache<T> | undefined} [dsuCache] undefined for new transactions, inherited otherwise
  * @param {any[] | DSUCallback[]} keyGenArgs key generation args when required (for Array SSIs for instance). The last arg will be considered to be the {@link DSUCallback<T>};
  *
  * @function
  * @namespace repository
  */
-export function createFromDecorators<T extends DSUModel>(this: OpenDSURepository<T>, model: T, fallbackDomain: string,  ...keyGenArgs: (any | DSUCallback<T>)[]){
+export function createFromDecorators<T extends DSUModel>(this: OpenDSURepository<T>, model: T, fallbackDomain: string, dsuCache: DSUCache<T> | undefined, ...keyGenArgs: (any | DSUCallback<T>)[]){
     const callback: DSUCallback<T> = keyGenArgs.pop();
     if (!callback)
         throw new CriticalError(`Missing callback`);
@@ -134,17 +135,11 @@ export function createFromDecorators<T extends DSUModel>(this: OpenDSURepository
 
     const {creation, editing} = splitDecorators;
 
-    const dsuCache: DSUCache<T> = new DSUCache<T>();
+    dsuCache = dsuCache || new DSUCache<T>();
 
-    handleCreationPropertyDecorators.call(this, dsuCache, model, creation || [],  (err: Err, results?: DSUCreationResults) => {
-        if (err || !results)
-            return callback(err || new CriticalError(`Invalid Results`));
-
-        Object.keys(results).forEach(k => {
-            results[k].forEach(result => {
-                dsuCache.cache(model, k, result.dsu, result.keySSI)
-            })
-        })
+    handleCreationPropertyDecorators.call(this, dsuCache, model, creation || [],  (err: Err) => {
+        if (err)
+            return callback(err);
 
         handleDSUClassDecorators.call(this, model, fallbackDomain, ...keyGenArgs, (err: Err, updatedModel?: T, dsu?: DSU, keySSI?: KeySSI, isBatchMode: boolean = false) => {
             if (err || !updatedModel || !dsu || !keySSI)
@@ -306,20 +301,20 @@ export function handleCreationPropertyDecorators<T extends DSUModel>(this: OpenD
         if (!handler)
             return criticalCallback(`No handler found for ${decorator.props.dsu} - ${decorator.prop} - ${decorator.props.operation}`, callback);
 
-        handler.call(self, dsuCache, model[decorator.prop], decorator.props, (err: Err, newModel?: DSUModel, dsu?: DSU, keySSI?: KeySSI) => {
+        const {modelArgs, args} = decorator.props;
+
+        const keyGenArgs: string[] = modelArgs ? getValueFromModelChain(model, ...modelArgs) : [];
+        if (args)
+            keyGenArgs.push(...args);
+
+        handler.call(self, dsuCache.bindToParent(model, decorator.prop), model[decorator.prop], decorator.props, ...keyGenArgs, (err: Err, newModel?: DSUModel, dsu?: DSU, keySSI?: KeySSI) => {
             if (err || !newModel || !dsu || !keySSI)
                 return criticalCallback(err || new Error(`Missing Results`), callback);
 
-            results[decorator.prop] = results[decorator.prop] || [];
-            results[decorator.prop].push(({
-                model: newModel,
-                dsu: dsu,
-                keySSI: keySSI
-            }));
+            dsuCache.cache(model, decorator.prop, dsu, keySSI)
 
             decoratorIterator(decoratorsCopy, callback);
         });
-
     }
 
     decoratorIterator(decorators.slice(), (err, results) => {
@@ -327,6 +322,75 @@ export function handleCreationPropertyDecorators<T extends DSUModel>(this: OpenD
             return callback(err);
         callback(undefined, results)
     });
+}
+
+/**
+ * given a chain like 'a.b.c', and a model:
+ * <pre>
+ *     {
+ *         a: {
+ *             b: {
+ *                 c: "value"
+ *             }
+ *         }
+ *     }
+ * </pre>
+ *
+ * this method will return "value"
+ *
+ * @param {{}} model
+ * @param {string[]} chains
+ * @throws CriticalError if the value is not found in the object
+ */
+export function getValueFromModelChain(model: {[indexer: string]: any}, ...chains: string[]): any[]{
+    return chains.map(c => {
+        const split = c.split('.');
+
+        let result: any = model;
+
+        try {
+            split.forEach(s => {
+                result = result[s];
+            });
+        } catch (e) {
+            throw new CriticalError(`Could not resolve value chain ${c}`);
+        }
+
+        return result;
+    });
+}
+
+/**
+ * Inverse of {@link getValueFromModelChain}.
+ * given a {@param chain} like 'a.b.c' and an {@param obj} like {} and a value 'value'
+ * will output:
+ * <pre>
+ *     {
+ *         a: {
+ *             b: {
+ *                 c: 'value'
+ *             }
+ *         }
+ *     }
+ * </pre>
+ *
+ * @param obj
+ * @param chain
+ * @param value
+ */
+export function createObjectToValueChain(obj: {[indexer: string]: any}, chain: string, value: any): {} {
+    const split = chain.split(".");
+    let inner = obj;
+    split.forEach((s, i) => {
+        if (i === split.length - 1){
+            inner[s] = value;
+            return;
+        }
+        inner[s] = inner[s] || {};
+        inner = inner[s];
+    });
+
+    return obj;
 }
 
 /**
@@ -489,7 +553,7 @@ export function readFromDecorators<T extends DSUModel>(this: OpenDSURepository<T
 }
 
 
-export function updateFromDecorators<T extends DSUModel>(this: OpenDSURepository<T>, model: T, oldModel: T, dsu: DSU, ...args: (any | DSUCallback<T>)[]){
+export function updateFromDecorators<T extends DSUModel>(this: OpenDSURepository<T>, model: T, oldModel: T, dsu: DSU, dsuCache: DSUCache<T>, ...args: (any | DSUCallback<T>)[]){
     const callback: DSUCallback<T> = args.pop();
     if (!callback)
         throw new CriticalError(`Missing callback`);
@@ -500,7 +564,7 @@ export function updateFromDecorators<T extends DSUModel>(this: OpenDSURepository
 
     const self = this;
 
-    const dsuCache: DSUCache<T> = new DSUCache<T>();
+    dsuCache = dsuCache || new DSUCache<T>();
 
     handleUpdateCreationPropertyDecorator.call(self, dsuCache, model, oldModel, dsu, splitDecorators.creation || [], (err: Err, results?: DSUCreationResults) => {
         if (err || !results)
