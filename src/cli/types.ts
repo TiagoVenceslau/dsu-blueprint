@@ -18,15 +18,17 @@ export type CliOptions = {
     /**
      * used in conjunction with {@link pathToOpenDSU}
      *
-     * prefixes {@link pathToOpenDSU} in older to control the path, depending on where the cli file is located
-     * defaults to '../../../../../' (when it's ran from 'node_modules/@tvenceslau/dsu-blueprint/lib/cli')
+     * relative path adaptor pointing to folder with Seed File and the root to the builprint path
+     *
+     * also prefixes {@link pathToOpenDSU}, so they must be matched in older to control the path, depending on where the cli file is located
+     * defaults to './'
      */
     pathAdaptor: string,
     /**
      * used in conjunction with {@link pathAdaptor}
      *
      * set's the relative path to the OpenDSU bundle file.
-     * defaults to '../privatesky/psknode/bundles/openDSU.js'
+     * defaults to '../../../../../../privatesky/psknode/bundles/openDSU.js' (when it's ran from 'node_modules/@tvenceslau/dsu-blueprint/lib/cli')
      */
     pathToOpenDSU: string
 }

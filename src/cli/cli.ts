@@ -7,8 +7,8 @@ const defaultOptions: CliOptions = {
     action: CliActions.BUILD,
     domain: "default",
     blueprint: "./build/build.js",
-    pathAdaptor: '../../../../../', // this assumes this is running from node_modules/@tvenceslau/dsu-blueprint/lib/cli
-    pathToOpenDSU: '../privatesky/psknode/bundles/openDSU.js'
+    pathAdaptor: './',
+    pathToOpenDSU: '../../../../../../privatesky/psknode/bundles/openDSU.js'
 }
 
 const config: CliOptions = argParser(defaultOptions, process.argv);
