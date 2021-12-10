@@ -92,7 +92,7 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-dsu-blueprint.html">dsu-blueprint</a></li></ul><h3>Namespaces</h3><ul><li><a href="dsu-blueprint.cli.html">cli</a></li><li><a href="dsu-blueprint.fs.html">fs</a></li><li><a href="dsu-blueprint.openDSU.html">openDSU</a></li><li><a href="fs.decorators.html">decorators</a></li><li><a href="model.decorators.html">decorators</a></li><li><a href="OpenDSU.html">OpenDSU</a></li><li><a href="repository.html">repository</a></li></ul><h3>Classes</h3><ul><li><a href="OpenDSURepository_OpenDSURepository.html">OpenDSURepository</a></li></ul><h3>Global</h3><ul><li><a href="global.html#createObjectToValueChain">createObjectToValueChain</a></li><li><a href="global.html#getValueFromModelChain">getValueFromModelChain</a></li><li><a href="global.html#isDSUCache">isDSUCache</a></li></ul></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-dsu-blueprint.html">dsu-blueprint</a></li></ul><h3>Namespaces</h3><ul><li><a href="cli.html">cli</a></li><li><a href="dsu-blueprint.cli.html">cli</a></li><li><a href="dsu-blueprint.fs.html">fs</a></li><li><a href="dsu-blueprint.openDSU.html">openDSU</a></li><li><a href="fs.decorators.html">decorators</a></li><li><a href="model.decorators.html">decorators</a></li><li><a href="OpenDSU.html">OpenDSU</a></li><li><a href="repository.html">repository</a></li></ul><h3>Classes</h3><ul><li><a href="OpenDSURepository_OpenDSURepository.html">OpenDSURepository</a></li></ul><h3>Global</h3><ul><li><a href="global.html#createObjectToValueChain">createObjectToValueChain</a></li><li><a href="global.html#getValueFromModelChain">getValueFromModelChain</a></li><li><a href="global.html#isDSUCache">isDSUCache</a></li></ul></div>
                 
             </nav>
         </div>
@@ -160,6 +160,12 @@ export function getEnvJs(app: string, pathToApps: string, callback: ObjectCallba
     });
 }
 
+/**
+ * Builds a DSU from a transpiled {@link DSUBlueprint} file
+ * @param {CliOptions} config the cli options
+ * @param {Callback} callback
+ * @namespace cli
+ */
 export function build(config: CliOptions, callback: Callback){
     let blueprintFile;
     try {
@@ -182,15 +188,48 @@ export function build(config: CliOptions, callback: Callback){
     });
 }
 
+/**
+ * Accepted params to the cli interface
+ * @namespace cli
+ */
 export type CliOptions = {
+    /**
+     * one of {@link CliActions}. defaults to {@link CliActions.BUILD}
+     */
     action: CliActions,
+    /**
+     * the domain to anchor the dsu
+     */
     domain?: string,
+    /**
+     * The location of the transpiled build Blueprint file. defaults to './build/build.js'
+     */
     blueprint: string,
+    /**
+     * used in conjunction with {@link pathToOpenDSU}
+     *
+     * prefixes {@link pathToOpenDSU} in older to control the path, depending on where the cli file is located
+     * defaults to '../../../../../' (when it's ran from 'node_modules/@tvenceslau/dsu-blueprint/lib/cli')
+     */
     pathAdaptor: string,
+    /**
+     * used in conjunction with {@link pathAdaptor}
+     *
+     * set's the relative path to the OpenDSU bundle file.
+     * defaults to '../privatesky/psknode/bundles/openDSU.js'
+     */
     pathToOpenDSU: string
 }
 
+/**
+ * Available Actions the Cli supports
+ * @namespace cli
+ */
 export enum CliActions {
+    /**
+     * Builds Or Updates a DSU from a blueprint file
+     * (will delete the contents of the DSU beforehand)
+     */
     BUILD = 'build',
     UPDATE = 'update'
 }
@@ -199,7 +238,7 @@ const defaultOptions: CliOptions = {
     action: CliActions.BUILD,
     domain: "default",
     blueprint: "./build/build.js",
-    pathAdaptor: './',
+    pathAdaptor: '../../../../../', // this assumes this is running from node_modules/@tvenceslau/dsu-blueprint/lib/cli
     pathToOpenDSU: '../privatesky/psknode/bundles/openDSU.js'
 }
 
