@@ -7,15 +7,15 @@ import {SecurityContextApi} from "./apis/sc";
 import {W3cDIDApi} from "./apis/w3cdid";
 import {DBApi} from "./apis/db";
 import {EnclaveApi} from "./apis/enclave";
+import {AnchoringApi} from "./apis/anchoring";
 import {BdnsApi} from "./apis/bdns";
 import {ConfigApi} from "./apis/config";
 import {CacheApi} from "./apis/cache";
 import {ContractsApi} from "./apis/contracts";
 import {CrypoApi} from "./apis/crypto";
-import {AnchoringAPI} from "./index";
 import {ErrorApi} from "./apis/error";
-import {OpenDSUWorkers} from "./apis/workers";
-import {OpenDSUUtils} from "./apis/utils";
+import {OpenDSUWorkersApi} from "./apis/workers";
+import {OpenDSUUtilsApi} from "./apis/utils";
 import {OAuthApi} from "./apis/oauth";
 import {NotificationsApi} from "./apis/notifications";
 import {MessageQueueApi} from "./apis/mq";
@@ -118,4 +118,4 @@ export interface OpenDSU {
     loadApi(api: string): OpenDSUApi;
 }
 
-export type OpenDSUApi = StorageApi | M2DsuApi | MessageQueueApi | NotificationsApi | OAuthApi | OpenDSUWorkers | OpenDSUUtils | AnchoringAPI | ErrorApi | ResolverApi | KeyssiApi | SystemApi | HttpApi | SecurityContextApi | W3cDIDApi | DBApi | EnclaveApi | BdnsApi | ConfigApi | CacheApi | ContractsApi | CrypoApi;
+export type OpenDSUApi = StorageApi | M2DsuApi | MessageQueueApi | NotificationsApi | OAuthApi | OpenDSUWorkersApi | OpenDSUUtilsApi | AnchoringApi | ErrorApi | ResolverApi | KeyssiApi | SystemApi | HttpApi | SecurityContextApi | W3cDIDApi | DBApi | EnclaveApi | BdnsApi | ConfigApi | CacheApi | ContractsApi | CrypoApi;

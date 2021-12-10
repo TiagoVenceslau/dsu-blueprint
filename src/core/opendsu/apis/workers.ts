@@ -6,7 +6,7 @@ export interface WorkerPool {
     runSyncFunctionOnlyByWorker(apiSpaceName: string, functionName: string, ...params: any[]): any;
 }
 
-export interface OpenDSUWorkers {
+export interface OpenDSUWorkersApi {
     createPool(options?: {}): WorkerPool;
     getFunctionsRegistry : {
         runSyncFunction(definition: {}): any,

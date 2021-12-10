@@ -1,4 +1,4 @@
 
-export interface OpenDSUUtils {
-    bindAutoPendingFunctions(obj: any, excelptionList: []): void;
+export interface OpenDSUUtilsApi {
+    bindAutoPendingFunctions(obj: any, exceptionList: []): void;
 }
