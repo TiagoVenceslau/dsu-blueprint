@@ -4,7 +4,7 @@
  * @memberOf dt
  * @function FileService
  */
-import {Callback, Err} from "@tvenceslau/db-decorators/lib";
+import {Callback, CriticalError, Err} from "@tvenceslau/db-decorators/lib";
 import {get$$, getHttp} from "../opendsu";
 
 export type FileServiceOptions = {
@@ -81,7 +81,7 @@ export class FileService {
      * Returns the content of a file as a uintArray
      * @param {string} appName
      * @param {string} fileName
-     * @param {function(err, U8intArray)} callback
+     * @param {function(err, Uint8Array)} callback
      */
     getFile(appName: string, fileName: string, callback: Callback){
         const suffix = `${appName}/${fileName}`;
@@ -101,7 +101,7 @@ export class FileService {
      * @param callback
      */
     getFolderContentAsJSON(innerFolder: string, callback: Callback){
-        let url = this.constructUrlBase("directory-summary/") + (innerFolder ? `/${innerFolder}` : '') ;
+        const url = this.constructUrlBase("directory-summary/") + (innerFolder ? `/${innerFolder}` : '') ;
         this.doGet(url, undefined, (err, data) => {
             if (err)
                 return callback(err);
@@ -112,19 +112,19 @@ export class FileService {
     /**
      * Util method to convert Utf8Arrays to Strings in the browser
      * (simpler methods fail for big content jsons)
-     * @param {U8intArray} array
+     * @param {Uint8Array} array
      * @param {function(err, string)} callback
      */
-    private Utf8ArrayToStr(array: any, callback: Callback) {
+    private Utf8ArrayToStr(array: Uint8Array, callback: Callback) {
         if (!this.isBrowser)
             return callback(undefined, array.toString());
-        var bb = new Blob([array]);
-        var f = new FileReader();
+        const bb: Blob = new Blob([array]);
+        const f: FileReader = new FileReader();
         f.onload = function(e) {
-            // @ts-ignore
+            if (!e.target || !e.target.result)
+                return callback(new CriticalError(`No result found`))
             callback(undefined, e.target.result);
         };
-        // @ts-ignore
         f.readAsText(bb);
     }
 }
