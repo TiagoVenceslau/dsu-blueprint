@@ -1,11 +1,8 @@
 import {Callback, Err} from "@tvenceslau/db-decorators/lib";
+import {DSUCallback} from "../repository";
 
 export type ObjectCallback = (err?: Err, object?: any) => void;
 export type ErrCallback = (err?: Err) => void;
-
-export interface OpenDSU {
-    loadApi(api: string): {[indexer: string]: any}
-}
 
 export interface KeySSI{
     // From Docs
@@ -37,7 +34,6 @@ export interface ArraySSI extends KeySSI {
 }
 
 export interface WalletSSI extends KeySSI {
-    getWritableDSU(): DSU;
 }
 
 export type GenericCallback<T> = (err?: Err, result?: T, ...args: any[]) => void;
@@ -74,6 +70,8 @@ export type IoOptionsOrDSUCallback = DSUIOOptions | SimpleDSUCallback;
 export type AnchoringOptsOrCallback<T> = DSUAnchoringOptions | GenericCallback<T>;
 export type AnchoringOptsOrErrCallback = DSUAnchoringOptions | ErrCallback;
 export type AnchoringOptsOrDSUCallback = DSUAnchoringOptions | SimpleDSUCallback;
+
+// DSUs
 
 export interface DSU {
     directAccessEnabled: boolean;
@@ -123,7 +121,17 @@ export interface DSU {
     extractFolder(fsPath: string, dsuPath: string, options?: IoOptionsOrErrCallback, callback?: ErrCallback): void;
 }
 
-export interface Resolver {
+export interface WalletDsu extends DSU {
+    getWritableDSU(): DSU;
+}
+
+// OpenDSU Apis
+
+export interface OpenDSU {
+    loadApi(api: string): {[indexer: string]: any}
+}
+
+export interface ResolverApi {
     createDSU(keySSI: KeySSI, options?: AnchoringOptsOrDSUCallback, callback?: SimpleDSUCallback): void;
     createDSUForExistingSSI(keySSI: KeySSI, options?: AnchoringOptsOrDSUCallback, callback?: SimpleDSUCallback): void;
     getDSUHandler(keySSI: KeySSI) : DSUHandler;
@@ -132,7 +140,7 @@ export interface Resolver {
     registerDSUFactory(type: string, factory: DSUFactory): void;
 }
 
-export interface Keyssi{
+export interface KeyssiApi {
     createArraySSI(domain: string, args?: string[], vn?: string, hint?: string): ArraySSI;
     createTemplateSeedSSI(domain: string, specificString?: string, control?: string, vn?: string, hint?: string): SeedSSI;
     createTemplateWalletSSI(domain: string, credentials?: string[], hint?: string): WalletSSI;
@@ -141,11 +149,146 @@ export interface Keyssi{
     parse(ssiString: string, options?: {}): KeySSI
 }
 
-export interface HttpDSU{
+export interface SystemApi {
+    getEnvironmentVariable(name: string): any,
+    setEnvironmentVariable(name: string, value: any): void,
+    getFS(): any,
+    getPath(): any,
+    getBaseURL(): string
+}
+
+export interface HttpApi {
     fetch(url: string, options?: {}): Promise<any>;
     doGet(url: string, options: {} | undefined, callback: Callback): void;
     doPost(url: string, options: {} | undefined, callback: Callback): void;
     doPut(url: string, options: {} | undefined, callback: Callback): void;
+}
+
+export interface DSUSecurityContext{
+    registerDID(didDocument: any, callback: Callback): void
+    addPrivateKeyForDID(didDocument: any, privateKey: any, callback: Callback): void;
+    registerKeySSI(forDID: any, keySSI: KeySSI, callback: Callback): void;
+    signForKeySSI(forDID: any, keySSI: KeySSI, data: any, callback: Callback): void;
+    signAsDid(didDocument: any, data: any, callback: Callback): void;
+    verifyForDID(didDocument: any, data: any, signature: any, callback: Callback): void;
+    encryptForDID(senderDIDDocument: any, receiverDIDDocument: any, message: any, callback: Callback): void;
+    decryptAsDID(didDocument: any, encryptedMessage: any, callback: Callback): void;
+    isInitialized(): boolean;
+    getDB(callback: Callback): void;
+    getDSU(callback: Callback): void;
+    getMainEnclaveDB(asDID: any, callback: Callback): void;
+    getSharedEnclaveDB(asDID: any, callback: Callback): void;
+}
+
+export interface SecurityContextApi{
+    getMainDSU(mainDSU: DSU): void,
+    setMainDSU(callback: SimpleDSUCallback): void,
+    getVaultDomain(callback: GenericCallback<string>): void,
+    getSecurityContext(): DSUSecurityContext,
+    refreshSecurityContext() : DSUSecurityContext,
+    getDIDDomain(callback: GenericCallback<string>): void,
+    securityContextIsInitialised(): boolean
+}
+
+export interface CryptographicSkillsApi {
+    registerSkills(didMethod: string, skills: any): void;
+    applySkills(didMethod: string, skillName: string, ...args: any[]): any;
+    NAMES: {}
+}
+
+export interface W3cDIDApi{
+    createIdentity(didMethod: string, ...args: any[]): any;
+    resolveDID(identifier: any, callback: Callback): void;
+    registerDIDMethod(method: any, implementation: any): void;
+    CryptographicSkills: CryptographicSkillsApi
+}
+
+export type DSUDbRecord = {[indexer: string]: any};
+
+export type RecordCallback = GenericCallback<DSUDbRecord>;
+export type MultipleRecordCallback = GenericCallback<DSUDbRecord[]>;
+
+export interface DSUDatabase {
+    getAllRecords(tableName: string, callback: MultipleRecordCallback): void;
+    addIndex(tableName: string, callback: Callback): void;
+    filter(tableName: string, query: string[], sort: string | undefined, limit: number | undefined, callback: MultipleRecordCallback): void;
+    query(tableName: string, query: string[], sort: string | undefined, limit: number | undefined, callback: MultipleRecordCallback): void;
+    insertRecord(tableName: string, key: string | number, record: {}, callback: RecordCallback): void;
+    updateRecord(tableName: string, key: string | number, record: {}, callback: RecordCallback): void;
+    getRecord(tableName: string, key: string | number, callback: RecordCallback): void;
+    deleteRecord(tableName: string, key: string | number, callback: RecordCallback): void;
+    getHistory(tableName: string, key: string | number, callback: Callback): void;
+    getRecordedVersions(record: DSUDbRecord): [];
+    getIndexedFields(tableName: string, callback: Callback): void;
+
+    // Simple key-pair db methods
+    writeKey(key: string | number, value: any, callback: ErrCallback): void;
+    readKey(key: string | number, callback: Callback): void;
+
+    // Batch Methods
+    beginBatch(): void;
+    cancelBatch(callback: ErrCallback): void;
+    commitBatch(onConflict?: () => any | ErrCallback, callback?: ErrCallback): void;
+}
+
+export type DBCallback = GenericCallback<DSUDatabase>;
+
+export interface DSUEnclave {
+    getKeySSI(forDID: any, callback: KeySSICallback): void;
+    isInitialized(): boolean;
+
+}
+
+export type EnclaveCallback = GenericCallback<DSUEnclave>;
+
+export interface DBApi {
+    getBasicDB(storageStrategy?: any, conflictSolvingStrategy?: any): DSUDatabase;
+
+    /**
+     *
+     * @param {KeySSI} keySSI
+     * @param {string} dbName
+     * @deprecated
+     */
+    getWalletDB(keySSI: KeySSI, dbName: string): DSUDatabase;
+    getSimpleWalletDB(dbName: string): DSUDatabase,
+    // /**
+    //  * @not implemented
+    //  */
+    // getMultiUserDB,
+    getSharedDB(keySSI: KeySSI, dbName: string): DSUDatabase,
+    getInMemoryDB(): DSUDatabase,
+
+    // /**
+    //  * @not implemented
+    //  */
+    // getEnclaveDB(): void,
+    getMainEnclaveDB(callback: DBCallback): void
+    getMainEnclave(callback: EnclaveCallback): void
+    mainEnclaveIsInitialised(): boolean,
+    getSharedEnclave(callback: EnclaveCallback): void
+    getSharedEnclaveDB(callback: DBCallback): void
+}
+
+export interface HighSecurityProxy{
+    getDID(callback: Callback): void;
+}
+export interface ApiHubSecurityProxy{
+    getDID(callback: Callback): void;
+    isInitialized(): boolean;
+}
+
+export interface EnclaveApi {
+    initialiseWalletDBEnclave(keySSI: KeySSI, did: any): DSUEnclave;
+    initialiseMemoryEnclave(): DSUEnclave;
+    initialiseAPIHUBProxy(domain: string, did: any): ApiHubSecurityProxy;
+    initialiseHighSecurityProxy(domain: string, did: any): HighSecurityProxy;
+    // /**
+    //  * @not implemented
+    //  */
+    // connectEnclave,
+    createEnclave(enclaveType: string, ...args: any[]): DSUEnclave;
+    registerEnclave(enclaveType: string, enclaveConstructor: any): void;
 }
 
 export interface DSUStorage extends DSU {

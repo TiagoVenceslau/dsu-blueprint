@@ -1,5 +1,5 @@
 import {CriticalError} from "@tvenceslau/db-decorators/lib";
-import {DSUAnchoringOptions, HttpDSU, Keyssi, KeySSIType, OpenDSU, Resolver} from "./types";
+import {DSUAnchoringOptions, HttpApi, KeyssiApi, KeySSIType, OpenDSU, ResolverApi} from "./types";
 
 /**
  * Handles the integration with the OpenDSU Framework
@@ -26,18 +26,18 @@ export function getOpenDSU(): OpenDSU {
     return openDSU;
 }
 
-let resolver: Resolver;
+let resolver: ResolverApi;
 
 
 /**
- * @return Resolver the {@link Resolver} object;
+ * @return ResolverApi the {@link ResolverApi} object;
  * @throws {CriticalError} when it fails to load
  * @namespace OpenDSU
  */
-export function getResolver(): Resolver{
+export function getResolver(): ResolverApi{
     if (!resolver)
         try {
-            resolver = getOpenDSU().loadApi('resolver') as Resolver;
+            resolver = getOpenDSU().loadApi('resolver') as ResolverApi;
         } catch (e: any){
             throw new CriticalError(`Could not load DSU Resolver: ${e.message | e}`);
         }
@@ -45,17 +45,17 @@ export function getResolver(): Resolver{
     return resolver;
 }
 
-let keyssi: Keyssi;
+let keyssi: KeyssiApi;
 
 /**
- * @return Keyssi the {@link Keyssi} object;
+ * @return KeyssiApi the {@link KeyssiApi} object;
  * @throws {CriticalError} when it fails to load
  * @namespace OpenDSU
  */
-export function getKeySsiSpace(): Keyssi{
+export function getKeySsiSpace(): KeyssiApi{
     if (!keyssi)
         try {
-            keyssi = getOpenDSU().loadApi('keyssi') as Keyssi;
+            keyssi = getOpenDSU().loadApi('keyssi') as KeyssiApi;
         } catch (e: any){
             throw new CriticalError(`Could not load DSU KeySSI Space: ${e.message | e}`);
         }
@@ -81,7 +81,7 @@ let httpDSU: any = undefined;
 export function getHttp(){
     if (!httpDSU)
         try {
-            httpDSU =  getOpenDSU().loadApi('http') as HttpDSU;
+            httpDSU =  getOpenDSU().loadApi('http') as HttpApi;
         } catch (e: any){
             throw new CriticalError(`Could not load DSU Http Space: ${e.message | e}`);
         }
