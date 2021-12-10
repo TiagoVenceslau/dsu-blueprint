@@ -6,7 +6,6 @@
  */
 import {Callback, Err} from "@tvenceslau/db-decorators/lib";
 import {get$$, getHttp} from "../opendsu";
-import {Blob} from "buffer";
 
 export type FileServiceOptions = {
     hosts: string,

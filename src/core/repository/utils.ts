@@ -476,7 +476,6 @@ export function handleEditingPropertyDecorators<T extends DSUModel>(this: OpenDS
     });
 }
 
-
 export function handleUpdateCreationPropertyDecorator<T extends DSUModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, model: T, oldModel: T, dsu: DSU, decorators: DSUDecorator[], ...args: (any | DSUMultipleCallback<T>)[]){
     const callback: DSUMultipleCallback<DSUModel> = args.pop();
     if (!callback)
@@ -550,7 +549,6 @@ export function readFromDecorators<T extends DSUModel>(this: OpenDSURepository<T
         callback(undefined, newModel as T, dsu);
     });
 }
-
 
 export function updateFromDecorators<T extends DSUModel>(this: OpenDSURepository<T>, model: T, oldModel: T, dsu: DSU, dsuCache: DSUCache<T>, ...args: (any | DSUCallback<T>)[]){
     const callback: DSUCallback<T> = args.pop();
