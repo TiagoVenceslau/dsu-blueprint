@@ -18,7 +18,7 @@ export type CliOptions = {
     /**
      * used in conjunction with {@link pathToOpenDSU}
      *
-     * relative path adaptor pointing to folder with Seed File and the root to the builprint path
+     * relative path adaptor pointing to folder with Seed File and the root to the Blueprint path
      *
      * also prefixes {@link pathToOpenDSU}, so they must be matched in older to control the path, depending on where the cli file is located
      * defaults to './'

@@ -920,8 +920,10 @@ will output:</p>
 
     <td class="description last"><p>used in conjunction with <code>pathToOpenDSU</code>,
 ,
-prefixes <code>pathToOpenDSU</code> in older to control the path, depending on where the cli file is located,
-defaults to '../../../../../' (when it's ran from 'node_modules/@tvenceslau/dsu-blueprint/lib/cli')</p></td>
+relative path adaptor pointing to folder with Seed File and the root to the Blueprint path,
+,
+also prefixes <code>pathToOpenDSU</code>, so they must be matched in older to control the path, depending on where the cli file is located,
+defaults to './'</p></td>
 </tr>
 
         
@@ -953,7 +955,7 @@ defaults to '../../../../../' (when it's ran from 'node_modules/@tvenceslau/dsu-
     <td class="description last"><p>used in conjunction with <code>pathAdaptor</code>,
 ,
 set's the relative path to the OpenDSU bundle file.,
-defaults to '../privatesky/psknode/bundles/openDSU.js'</p></td>
+defaults to '../../../../../../privatesky/psknode/bundles/openDSU.js' (when it's ran from 'node_modules/@tvenceslau/dsu-blueprint/lib/cli')</p></td>
 </tr>
 
         
