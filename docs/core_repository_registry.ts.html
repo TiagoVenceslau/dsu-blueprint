@@ -92,7 +92,7 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-dsu-blueprint.html">dsu-blueprint</a></li></ul><h3>Namespaces</h3><ul><li><a href="dsu-blueprint.cli.html">cli</a></li><li><a href="dsu-blueprint.fs.html">fs</a></li><li><a href="dsu-blueprint.openDSU.html">openDSU</a></li><li><a href="fs.decorators.html">decorators</a></li><li><a href="model.decorators.html">decorators</a></li><li><a href="OpenDSU.html">OpenDSU</a></li><li><a href="repository.html">repository</a></li></ul><h3>Classes</h3><ul><li><a href="OpenDSURepository_OpenDSURepository.html">OpenDSURepository</a></li></ul><h3><a href="global.html">Global</a></h3></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-dsu-blueprint.html">dsu-blueprint</a></li></ul><h3>Namespaces</h3><ul><li><a href="dsu-blueprint.cli.html">cli</a></li><li><a href="dsu-blueprint.fs.html">fs</a></li><li><a href="dsu-blueprint.openDSU.html">openDSU</a></li><li><a href="fs.decorators.html">decorators</a></li><li><a href="model.decorators.html">decorators</a></li><li><a href="OpenDSU.html">OpenDSU</a></li><li><a href="repository.html">repository</a></li></ul><h3>Classes</h3><ul><li><a href="OpenDSURepository_OpenDSURepository.html">OpenDSURepository</a></li></ul><h3>Global</h3><ul><li><a href="global.html#createObjectToValueChain">createObjectToValueChain</a></li><li><a href="global.html#getValueFromModelChain">getValueFromModelChain</a></li><li><a href="global.html#isDSUCache">isDSUCache</a></li></ul></div>
                 
             </nav>
         </div>
@@ -115,6 +115,7 @@ import {OpenDSURepository} from "./repository";
 import {DSUModel} from "../model";
 import {IRegistry} from "@tvenceslau/decorator-validation/lib/utils/registry";
 import {all, CriticalError} from "@tvenceslau/db-decorators/lib";
+import {getModelRegistry} from "@tvenceslau/decorator-validation/lib";
 
 export class DSUOperationRegistry implements IRegistry&lt;DSUOperationHandler>{
     private cache: { [indexer: string]: any } = {};
@@ -229,6 +230,8 @@ export class RepositoryRegistry implements IRegistry&lt;OpenDSURepo>{
     private instantiateRepo(clazz: {new(): DSUModel}, repo?: OpenDSURepoFactory): OpenDSURepository&lt;DSUModel>{
         const name = clazz.constructor ? clazz.constructor.name : clazz.name;
         try {
+            // if (typeof clazz === 'string')
+            //     clazz = getModelRegistry().get(clazz);
             const instance = repo ? new repo() : new OpenDSURepository&lt;DSUModel>(clazz);
             this.cache[name] = {
                 repo: name,
@@ -241,7 +244,7 @@ export class RepositoryRegistry implements IRegistry&lt;OpenDSURepo>{
     }
 
     // @ts-ignore
-    register&lt;OpenDSURepo>(clazz: {new(): DSUModel} | string, repo?: OpenDSURepoFactory, isCustom: boolean = false): void {
+    register&lt;OpenDSURepo>(clazz: {new(): DSUModel} | string | Function, repo?: OpenDSURepoFactory, isCustom: boolean = false): void {
         const name = typeof clazz === 'string' ? clazz : (clazz.constructor &amp;&amp; clazz.constructor.name !== 'Function' ? clazz.constructor.name : clazz.name);
         if (!this.cache[name] || isCustom)
             this.cache[name] = {

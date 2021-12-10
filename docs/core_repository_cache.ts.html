@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,7 +7,7 @@
   
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Decorator Validation Engine Home</title>
+  <title>Decorator Validation Engine core/repository/cache.ts</title>
 
   <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -97,65 +99,101 @@
         <div class="core" id="main-content-wrapper">
             <div class="content">
                 <header class="page-title">
-                    <p></p>
-                    <h1>Home</h1>
+                    <p>Source</p>
+                    <h1>core/repository/cache.ts</h1>
                 </header>
                 
 
 
 
     
-
-
-    <h3> </h3>
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
     <section>
-        <article><p><a href="http://www.pdmfc.com"><img src="https://github.com/TiagoVenceslau/dsu-blueprint/actions/workflows/nodejs-build.yaml/badge.svg" alt="Build"></a>
-<a href="http://www.pdmfc.com"><img src="https://github.com/TiagoVenceslau/dsu-blueprint/actions/workflows/jest-test.yaml/badge.svg" alt="Tests"></a>
-<img src="https://raw.github.com/TiagoVenceslau/dsu-blueprint/master/workdocs/badges/badge-lines.svg?sanitize=true" alt="Alt text">
-<img src="https://img.shields.io/snyk/vulnerabilities/github/TiagoVenceslau/dsu-blueprint?style=plastic" alt="Snyk Vulnerabilities for GitHub Repo"></p>
-<p><img src="https://img.shields.io/github/license/TiagoVenceslau/dsu-blueprint.svg" alt="Licence">
-<img src="https://img.shields.io/github/languages/count/TiagoVenceslau/dsu-blueprint?style=plastic" alt="GitHub language count">
-<img src="https://img.shields.io/github/languages/top/TiagoVenceslau/dsu-blueprint?style=plastic" alt="GitHub top language">
-<a href="https://github.com/TiagoVenceslau/dsu-blueprint/actions?query=workflow%3ACodeQL"><img src="https://github.com/starnowski/posmulten/workflows/CodeQL/badge.svg" alt="CodeQL"></a></p>
-<p><img src="https://img.shields.io/badge/dynamic/json.svg?url=https%3A%2F%2Fraw.githubusercontent.com%2Fbadges%2Fshields%2Fmaster%2Fpackage.json&amp;label=Node&amp;query=$.engines.node&amp;colorB=blue" alt="Node Version">
-<img src="https://img.shields.io/badge/dynamic/json.svg?url=https%3A%2F%2Fraw.githubusercontent.com%2Fbadges%2Fshields%2Fmaster%2Fpackage.json&amp;label=NPM&amp;query=$.engines.npm&amp;colorB=purple" alt="NPM Version"></p>
-<h2>DSU Blueprint</h2>
-<p>Decorator based approach to OpenDSU.</p>
-<p>Aims to achieve server side business logic and validation, enforced by OpenDSU itself.</p>
-<p>Also an (easy) and declarative alternative to the overly complicated DSU Mapping Engine</p>
-<p><img src="https://img.shields.io/github/forks/TiagoVenceslau/dsu-blueprint.svg" alt="Forks">
-<img src="https://img.shields.io/github/stars/TiagoVenceslau/dsu-blueprint.svg" alt="Stars">
-<img src="https://img.shields.io/github/watchers/TiagoVenceslau/dsu-blueprint.svg" alt="Watchers"></p>
-<p><img src="https://img.shields.io/github/issues/TiagoVenceslau/dsu-blueprint.svg" alt="Open Issues">
-<img src="https://img.shields.io/github/issues-closed/TiagoVenceslau/dsu-blueprint.svg" alt="Closed Issues">
-<img src="https://img.shields.io/github/issues-pr-closed/TiagoVenceslau/dsu-blueprint.svg" alt="Pull Requests">
-<img src="https://img.shields.io/badge/Maintained%3F-yes-green.svg" alt="Maintained"></p>
-<p><a href="https://github.com/TiagoVenceslau/dsu-blueprint"><img src="https://github-readme-stats.vercel.app/api/pin/?username=TiagoVenceslau&amp;repo=dsu-blueprint" alt="Readme Card"></a></p>
-<h3>Related</h3>
-<p><a href="https://github.com/TiagoVenceslau/html5-validation"><img src="https://github-readme-stats.vercel.app/api/pin/?username=TiagoVenceslau&amp;repo=html5-validation" alt="HTML5 Validation"></a>
-<a href="https://github.com/TiagoVenceslau/decorator-validation"><img src="https://github-readme-stats.vercel.app/api/pin/?username=TiagoVenceslau&amp;repo=decorator-validation" alt="Decorator Validation"></a></p>
-<h3>Social</h3>
-<p><a href="https://www.linkedin.com/in/tiagovenceslau/"><img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&amp;logo=linkedin&amp;logoColor=white" alt="LinkedIn"></a></p>
-<h4>Disclaimer:</h4>
-<p>badges found <a href="https://dev.to/envoy_/150-badges-for-github-pnk">here</a>, <a href="https://github.com/alexandresanlim/Badges4-README.md-Profile#-social-">here</a> and <a href="https://github.com/Ileriayo/markdown-badges">here</a></p></article>
+        <article>
+            <pre class="prettyprint source linenums"><code>import {DSU, KeySSI} from "../opendsu";
+import {DSUModel} from "../model";
+import {createObjectToValueChain, getValueFromModelChain} from "./utils";
+
+/**
+ * stores recursively created DSUs in order for later operations to reference them (mounting, etc)
+ *
+ * @class DSUCache
+ * @namespace repository
+ */
+export class DSUCache&lt;T extends DSUModel>{
+    private _cache: {[indexer: string]: {[indexer: string]: {dsu: DSU, keySSI: KeySSI}[]}} = {};
+
+    /**
+     * caches the DSU, by associating it with the {@param obj}'s name, and {@param propKey}
+     *
+     * @param {T} obj
+     * @param {string} propKey
+     * @param {DSU} dsu
+     * @param {KeySSI} keySSI
+     * @param {string} [parent] only meant to be used by bound objects resulting from {@link DSUCache#bindToParent}
+     */
+    cache(obj: T, propKey: string, dsu: DSU, keySSI: KeySSI, parent?: string): void{
+        const name = obj.constructor.name;
+        const chain = `${parent ? `${parent}.` : ''}${name}.${propKey}`;
+        createObjectToValueChain(this._cache, chain, {
+            dsu: dsu,
+            keySSI: keySSI
+        });
+    }
+
+    /**
+     * returns the cached {@link DSU}
+     *
+     * @param {T | string} obj
+     * @param {string} propKey
+     * @param {string} [parent] only meant to be used by bound objects resulting from {@link DSUCache#bindToParent} to reverse the hierarchical structure
+     */
+    get(obj: T | string, propKey: string, parent?: string): {dsu: DSU, keySSI: KeySSI}[] | undefined {
+        const name: string = typeof  obj === 'string' ? obj : (obj.name || obj.constructor.name);
+        const chain = `${parent ? `${parent}.` : ''}${name}.${propKey}`;
+        try {
+            return getValueFromModelChain(this._cache, chain);
+        } catch (e) {
+            try {
+                const split: string[]  = chain.split('.');
+                const parents = split.splice(split.length - 3, 3)
+                const args = [split.pop(), parents.pop()] as string[];
+                // @ts-ignore
+                return this.get(...args, split.join('.'));
+            } catch (e) {
+                return undefined;
+            }
+        }
+    }
+
+    /**
+     *
+     * @param {T} parentModel
+     * @param {string} propKey
+     * @return a {@link isDSUCache} validatable {@link DSUCache} bound to the {@param parentModel}s name and {@prop propKey} to enable recursive storage
+     */
+    bindToParent(parentModel: T, propKey: string): DSUCache&lt;T> {
+        const self: DSUCache&lt;T> = this;
+        const name: string = parentModel.name || parentModel.constructor.name;
+        const chain = `${name}.${propKey}`;
+        const proxyObj = {
+            cache: (obj: T, propKey: string, dsu: DSU, keySSI: KeySSI) => self.cache.call(self, obj, propKey, dsu, keySSI, chain),
+            get: (obj: T, propKey: string) => self.get.call(self, obj, propKey, chain),
+            bindToParent: (parentModel: T, propKey: string) => self.bindToParent.call(self, parentModel, propKey)
+        }
+
+        return proxyObj as DSUCache&lt;T>;
+    }
+}
+
+/**
+ * Because of the binding, this method should be used instead of 'instanceof DSUCache'
+ * @param {any} obj
+ */
+export function isDSUCache(obj: any){
+    return obj &amp;&amp; obj.get &amp;&amp; obj.bindToParent &amp;&amp; obj.cache;
+}</code></pre>
+        </article>
     </section>
-
-
 
 
 

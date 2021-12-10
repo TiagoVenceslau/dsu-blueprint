@@ -92,7 +92,7 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-dsu-blueprint.html">dsu-blueprint</a></li></ul><h3>Namespaces</h3><ul><li><a href="dsu-blueprint.cli.html">cli</a></li><li><a href="dsu-blueprint.fs.html">fs</a></li><li><a href="dsu-blueprint.openDSU.html">openDSU</a></li><li><a href="fs.decorators.html">decorators</a></li><li><a href="model.decorators.html">decorators</a></li><li><a href="OpenDSU.html">OpenDSU</a></li><li><a href="repository.html">repository</a></li></ul><h3>Classes</h3><ul><li><a href="OpenDSURepository_OpenDSURepository.html">OpenDSURepository</a></li></ul><h3><a href="global.html">Global</a></h3></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-dsu-blueprint.html">dsu-blueprint</a></li></ul><h3>Namespaces</h3><ul><li><a href="dsu-blueprint.cli.html">cli</a></li><li><a href="dsu-blueprint.fs.html">fs</a></li><li><a href="dsu-blueprint.openDSU.html">openDSU</a></li><li><a href="fs.decorators.html">decorators</a></li><li><a href="model.decorators.html">decorators</a></li><li><a href="OpenDSU.html">OpenDSU</a></li><li><a href="repository.html">repository</a></li></ul><h3>Classes</h3><ul><li><a href="OpenDSURepository_OpenDSURepository.html">OpenDSURepository</a></li></ul><h3>Global</h3><ul><li><a href="global.html#createObjectToValueChain">createObjectToValueChain</a></li><li><a href="global.html#getValueFromModelChain">getValueFromModelChain</a></li><li><a href="global.html#isDSUCache">isDSUCache</a></li></ul></div>
                 
             </nav>
         </div>
@@ -223,14 +223,14 @@ export const addFileFS = (fsPath: string, dsuPath?: string, options?: DSUIOOptio
         propertyKey
     );
 
-    const handler: DSUEditingHandler = function&lt;T extends DBModel>(this: OpenDSURepository&lt;T>, dsuCache: DSUCache&lt;T>, obj: T, dsu: DSU, decorator: DSUEditMetadata, callback: DSUCallback&lt;T>): void {
+    const handler: DSUEditingHandler = function&lt;T extends DBModel>(this: OpenDSURepository&lt;T>, dsuCache: DSUCache&lt;T>, obj: T | {}, dsu: DSU, decorator: DSUEditMetadata, callback: DSUCallback&lt;T>): void {
         const {props} = decorator;
         let {dsuPath, fsPath, options} = props;
         fsPath = getPath().join(this.pathAdaptor, fsPath);
         dsu.addFile(fsPath, dsuPath, options, err => {
             if (err)
                 return criticalCallback(err, callback);
-            callback(undefined, obj, dsu);
+            callback(undefined, obj as T, dsu);
         });
     }
 
@@ -260,14 +260,14 @@ export const addFolderFS = (fsPath?: string, dsuPath?: string, options?: DSUIOOp
         propertyKey
     );
 
-    const handler: DSUEditingHandler = function&lt;T extends DBModel>(this: OpenDSURepository&lt;T>, dsuCache: DSUCache&lt;T>, obj: T, dsu: DSU, decorator: DSUEditMetadata, callback: DSUCallback&lt;T>): void {
+    const handler: DSUEditingHandler = function&lt;T extends DBModel>(this: OpenDSURepository&lt;T>, dsuCache: DSUCache&lt;T>, obj: T | {}, dsu: DSU, decorator: DSUEditMetadata, callback: DSUCallback&lt;T>): void {
         const {props} = decorator;
         let {dsuPath, fsPath, options} = props;
         fsPath = getPath().join(this.pathAdaptor, fsPath);
         dsu.addFolder(fsPath, dsuPath, options, err => {
             if (err)
                 return criticalCallback(err, callback);
-            callback(undefined, obj, dsu);
+            callback(undefined, obj as T, dsu);
         });
     }
 

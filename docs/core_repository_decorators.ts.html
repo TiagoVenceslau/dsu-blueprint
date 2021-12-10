@@ -92,7 +92,7 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-dsu-blueprint.html">dsu-blueprint</a></li></ul><h3>Namespaces</h3><ul><li><a href="dsu-blueprint.cli.html">cli</a></li><li><a href="dsu-blueprint.fs.html">fs</a></li><li><a href="dsu-blueprint.openDSU.html">openDSU</a></li><li><a href="fs.decorators.html">decorators</a></li><li><a href="model.decorators.html">decorators</a></li><li><a href="OpenDSU.html">OpenDSU</a></li><li><a href="repository.html">repository</a></li></ul><h3>Classes</h3><ul><li><a href="OpenDSURepository_OpenDSURepository.html">OpenDSURepository</a></li></ul><h3><a href="global.html">Global</a></h3></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-dsu-blueprint.html">dsu-blueprint</a></li></ul><h3>Namespaces</h3><ul><li><a href="dsu-blueprint.cli.html">cli</a></li><li><a href="dsu-blueprint.fs.html">fs</a></li><li><a href="dsu-blueprint.openDSU.html">openDSU</a></li><li><a href="fs.decorators.html">decorators</a></li><li><a href="model.decorators.html">decorators</a></li><li><a href="OpenDSU.html">OpenDSU</a></li><li><a href="repository.html">repository</a></li></ul><h3>Classes</h3><ul><li><a href="OpenDSURepository_OpenDSURepository.html">OpenDSURepository</a></li></ul><h3>Global</h3><ul><li><a href="global.html#createObjectToValueChain">createObjectToValueChain</a></li><li><a href="global.html#getValueFromModelChain">getValueFromModelChain</a></li><li><a href="global.html#isDSUCache">isDSUCache</a></li></ul></div>
                 
             </nav>
         </div>
@@ -113,10 +113,10 @@
 import {DSUEditMetadata, DSUModel} from "../model";
 import {repository} from "@tvenceslau/db-decorators/lib/repository/decorators";
 import {DSUEditingHandler} from "./types";
-import {DSUCallback, OpenDSURepository} from "./repository";
+import {DSUCallback, OpenDSURepository, ReadCallback} from "./repository";
 import {DSUCache} from "./cache";
 import {DSU, DSUIOOptions, KeySSI} from "../opendsu";
-import {criticalCallback, CriticalError, DBOperations, warn} from "@tvenceslau/db-decorators/lib";
+import {criticalCallback, CriticalError, DBOperations, OperationKeys, warn} from "@tvenceslau/db-decorators/lib";
 import {getDSUOperationsRegistry} from "./registry";
 
 const getDSUModelKey = (key: string) => DsuKeys.REFLECT + key;
@@ -136,7 +136,7 @@ export function fromCache&lt;T extends DSUModel>(model: {new(): T}, derive: bool
     return (target: T, propertyKey: string) => {
         const metadata: DSUEditMetadata = {
             operation: DSUOperation.EDITING,
-            phase: DBOperations.CREATE,
+            phase: [OperationKeys.CREATE, OperationKeys.READ],
             derive: derive,
             options: mountOptions,
             dsuPath: mountPath ? mountPath : propertyKey,
@@ -148,12 +148,13 @@ export function fromCache&lt;T extends DSUModel>(model: {new(): T}, derive: bool
             propertyKey
         );
 
-        const handler: DSUEditingHandler = function&lt;T extends DSUModel>(this: OpenDSURepository&lt;T>, dsuCache: DSUCache&lt;T>, model: T, parentDsu: DSU, decorator: DSUEditMetadata, callback: DSUCallback&lt;T>){
+        const createHandler: DSUEditingHandler = function&lt;T extends DSUModel>(this: OpenDSURepository&lt;T>, dsuCache: DSUCache&lt;T>, model: T | {}, parentDsu: DSU, decorator: DSUEditMetadata, callback: DSUCallback&lt;T>){
             const {dsuPath, options, derive} = decorator.props;
 
             const cached = dsuCache.get(model as T, decorator.prop);
             if (!cached)
-                throw new CriticalError(`Could not find matching cached DSU`);
+                return criticalCallback(new Error(`Could not find matching cached DSU`), callback);
+
             if (cached.length > 1)
                 warn(`Cached DSUs for this property exceed the ones allowed. using only the first one`);
             const {keySSI} = cached[0];
@@ -163,11 +164,11 @@ export function fromCache&lt;T extends DSUModel>(model: {new(): T}, derive: bool
             parentDsu.mount(dsuPath, ssi, options, (err) => {
                 if (err)
                     return criticalCallback(err, callback);
-                callback(undefined, model);
+                callback(undefined, model as T);
             });
         }
 
-        getDSUOperationsRegistry().register(handler, DSUOperation.EDITING, target, propertyKey);
+        getDSUOperationsRegistry().register(createHandler, DSUOperation.EDITING, OperationKeys.CREATE, target, propertyKey);
     }
 }
 
