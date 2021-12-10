@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,7 +7,7 @@
   
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Decorator Validation Engine cli</title>
+  <title>Decorator Validation Engine cli/utils.ts</title>
 
   <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -97,195 +99,98 @@
         <div class="core" id="main-content-wrapper">
             <div class="content">
                 <header class="page-title">
-                    <p>Namespace</p>
-                    <h1>cli</h1>
+                    <p>Source</p>
+                    <h1>cli/utils.ts</h1>
                 </header>
                 
 
 
 
-
-<section>
-
-<header>
-    
-        <h2>cli</h2>
-        
-    
-</header>
-
-<article>
-    <div class="container-overview">
-    
-        
-            <div class="description"><p>Available Actions the Cli supports</p></div>
-        
-
-        
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    
-
-    
-
-    
-
-    
-        <p class="tag-source">
-            <a href="cli_types.ts.html" class="button">View Source</a>
-            <span>
-                <a href="cli_types.ts.html">cli/types.ts</a>, <a href="cli_types.ts.html#line2">line 2</a>
-            </span>
-        </p>
-    
-</dl>
-
-
-        
-    
-    </div>
-    
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
-
-
-
-
-
-
-
-<section>
-
-<header>
-    
-        <h2>cli</h2>
-        
-    
-</header>
-
-<article>
-    <div class="container-overview">
-    
-        
-            <div class="description"><p>Builds a DSU from a transpiled <code>DSUBlueprint</code> file or Updates it</p></div>
-        
-
-        
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
     
-
-    
-    
-
-    
-
-    
-
-    
-        <p class="tag-source">
-            <a href="cli_utils.ts.html" class="button">View Source</a>
-            <span>
-                <a href="cli_utils.ts.html">cli/utils.ts</a>, <a href="cli_utils.ts.html#line50">line 50</a>
-            </span>
-        </p>
-    
-</dl>
-
-
-        
-    
-    </div>
-    
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import {DSU, KeySSI, ObjectCallback, OpenDSURepository} from "../core";
+import {getFS, getPath} from "../fs";
+import {Callback, criticalCallback, Err} from "@tvenceslau/db-decorators/lib";
+import {CliOptions} from "./types";
+
+/**
+ * Overrides any custom options passed in process args into the default options provided
+ *
+ * @param {any} defaultOpts the default options to the overwritten when necessary
+ * @param {string} args the process.argv
+ *
+ * @function
+ * @namespace cli
+ * @memberOf dsu-blueprint
+ */
+export function argParser(defaultOpts: {[indexer: string]: any}, args: string[]){
+    let config = JSON.parse(JSON.stringify(defaultOpts));
+    if (!args)
+        return config;
+    args = args.slice(2);
+    const recognized = Object.keys(config);
+    const notation = recognized.map(r => '--' + r);
+    args.forEach(arg => {
+        if (arg.includes('=')){
+            let splits = arg.split('=');
+            if (notation.indexOf(splits[0]) !== -1) {
+                let result
+                try {
+                    result = eval(splits[1]);
+                } catch (e) {
+                    result = splits[1];
+                }
+                config[splits[0].substring(2)] = result;
+            }
+        }
+    });
+    return config;
+}
+
+export function parseEnvJS(strEnv: string): {}{
+    return JSON.parse(strEnv.replace(/^export\sdefault\s/, ''));
+}
+
+export function getEnvJs(app: string, pathToApps: string, callback: ObjectCallback){
+    const appPath = getPath().join(process.cwd(), pathToApps, "trust-loader-config", app, "loader", "environment.js");
+    getFS().readFile(appPath, undefined, (err: Err, data: Buffer) => {
+        if (err)
+            return callback(`Could not find Application ${app} at ${{appPath}} : ${err}`);
+        return callback(undefined, parseEnvJS(data.toString()));
+    });
+}
+
+/**
+ * Builds a DSU from a transpiled {@link DSUBlueprint} file or Updates it
+ * @param {CliOptions} config the cli options
+ * @param {Callback} callback
+ * @function
+ * @namespace cli
+ */
+export function buildOrUpdate(config: CliOptions, callback: Callback){
+    let blueprintFile;
+    try {
+        blueprintFile = require(config.blueprint);
+    } catch (e) {
+        return criticalCallback(e, callback);
+    }
+    const BLUEPRINT = blueprintFile.default;
+    if (!BLUEPRINT)
+        return criticalCallback(`Could not find BLUEPRINT export`, callback);
+
+    const blueprint = new BLUEPRINT();
+
+    const repo = new OpenDSURepository(BLUEPRINT, config.domain, config.pathAdaptor || './');
+
+    repo.create(blueprint, (err: Err, newModel: typeof BLUEPRINT, dsu: DSU, keySSI: KeySSI) => {
+        if (err)
+            return callback(err);
+        callback(undefined, newModel, dsu, keySSI);
+    });
+}</code></pre>
+        </article>
+    </section>
 
 
 
