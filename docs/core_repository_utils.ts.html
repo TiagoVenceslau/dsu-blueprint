@@ -123,8 +123,6 @@ import {
     getAnchoringOptionsByDSUType,
     getKeySsiSpace,
     getResolver,
-    KeySSI,
-    KeySSIType
 } from "../opendsu";
 import {
     Callback, criticalCallback, CriticalError, Err,
@@ -142,6 +140,7 @@ import {
 import {getDSUOperationsRegistry} from "./registry";
 import {ModelKeys} from "@tvenceslau/decorator-validation/lib";
 import {DSUCache} from "./cache";
+import {KeySSI, KeySSIType} from "../opendsu/apis/keyssi";
 
 /**
  * Util method to retrieve the proper {@link DSU} factory method according to the {@link KeySSI} type
@@ -464,7 +463,7 @@ export function getValueFromModelChain(model: {[indexer: string]: any}, ...chain
                 result = result[s];
             });
         } catch (e) {
-            throw new CriticalError(`Could not resolve value chain ${c}`);
+            throw new Error(`Could not resolve value chain ${c}`);
         }
 
         return result;
@@ -588,7 +587,6 @@ export function handleEditingPropertyDecorators&lt;T extends DSUModel>(this: Ope
     });
 }
 
-
 export function handleUpdateCreationPropertyDecorator&lt;T extends DSUModel>(this: OpenDSURepository&lt;T>, dsuCache: DSUCache&lt;T>, model: T, oldModel: T, dsu: DSU, decorators: DSUDecorator[], ...args: (any | DSUMultipleCallback&lt;T>)[]){
     const callback: DSUMultipleCallback&lt;DSUModel> = args.pop();
     if (!callback)
@@ -662,7 +660,6 @@ export function readFromDecorators&lt;T extends DSUModel>(this: OpenDSURepositor
         callback(undefined, newModel as T, dsu);
     });
 }
-
 
 export function updateFromDecorators&lt;T extends DSUModel>(this: OpenDSURepository&lt;T>, model: T, oldModel: T, dsu: DSU, dsuCache: DSUCache&lt;T>, ...args: (any | DSUCallback&lt;T>)[]){
     const callback: DSUCallback&lt;T> = args.pop();
