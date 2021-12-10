@@ -42,7 +42,8 @@ export enum KeySSIType {
     SEED = "seed",
     ARRAY = "array",
     CONST = "const",
-    WALLET = "wallet"
+    WALLET = "wallet",
+    sREAD = "sread"
 }
 
 export interface KeyssiApi {
