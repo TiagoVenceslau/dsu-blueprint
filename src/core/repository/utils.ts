@@ -352,7 +352,7 @@ export function getValueFromModelChain(model: {[indexer: string]: any}, ...chain
                 result = result[s];
             });
         } catch (e) {
-            throw new CriticalError(`Could not resolve value chain ${c}`);
+            throw new Error(`Could not resolve value chain ${c}`);
         }
 
         return result;
