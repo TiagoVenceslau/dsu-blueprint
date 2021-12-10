@@ -1,5 +1,5 @@
-import {model, ModelKeys} from "@tvenceslau/decorator-validation/lib";
-import {DSU, DSUAnchoringOptions, DSUIOOptions, KeySSI, KeySSIType} from "../opendsu/types";
+import {model} from "@tvenceslau/decorator-validation/lib";
+import {DSU, DSUAnchoringOptions, DSUIOOptions} from "../opendsu/types";
 import {DsuKeys, DSUOperation} from "./constants";
 import {DSUModel} from "./DSUModel";
 import {getDSUOperationsRegistry, getRepoRegistry} from "../repository/registry";
@@ -19,6 +19,7 @@ import {
     ModelCallback,
     OperationKeys
 } from "@tvenceslau/db-decorators/lib";
+import {KeySSI, KeySSIType} from "../opendsu/apis/keyssi";
 
 const getDSUModelKey = (key: string) => DsuKeys.REFLECT + key;
 

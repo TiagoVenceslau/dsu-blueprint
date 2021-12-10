@@ -2,10 +2,10 @@ import {DsuKeys, DSUOperation} from "../model/constants";
 import {DSUEditMetadata, DSUModel} from "../model";
 import {repository} from "@tvenceslau/db-decorators/lib/repository/decorators";
 import {DSUEditingHandler} from "./types";
-import {DSUCallback, OpenDSURepository, ReadCallback} from "./repository";
+import {DSUCallback, OpenDSURepository} from "./repository";
 import {DSUCache} from "./cache";
-import {DSU, DSUIOOptions, KeySSI} from "../opendsu";
-import {criticalCallback, CriticalError, DBOperations, OperationKeys, warn} from "@tvenceslau/db-decorators/lib";
+import {DSU, DSUIOOptions} from "../opendsu";
+import {criticalCallback, OperationKeys, warn} from "@tvenceslau/db-decorators/lib";
 import {getDSUOperationsRegistry} from "./registry";
 
 const getDSUModelKey = (key: string) => DsuKeys.REFLECT + key;

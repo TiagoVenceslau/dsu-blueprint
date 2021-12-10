@@ -12,8 +12,6 @@ import {
     getAnchoringOptionsByDSUType,
     getKeySsiSpace,
     getResolver,
-    KeySSI,
-    KeySSIType
 } from "../opendsu";
 import {
     Callback, criticalCallback, CriticalError, Err,
@@ -31,6 +29,7 @@ import {
 import {getDSUOperationsRegistry} from "./registry";
 import {ModelKeys} from "@tvenceslau/decorator-validation/lib";
 import {DSUCache} from "./cache";
+import {KeySSI, KeySSIType} from "../opendsu/apis/keyssi";
 
 /**
  * Util method to retrieve the proper {@link DSU} factory method according to the {@link KeySSI} type

@@ -1,6 +1,7 @@
 import {constructFromObject, DBOperations, onUpdate, readonly, timestamp} from "@tvenceslau/db-decorators/lib";
 import {maxlength, minlength, required} from "@tvenceslau/decorator-validation/lib";
-import {DSUBlueprint, DSUModel, KeySSIType} from "../core";
+import {DSUBlueprint, DSUModel} from "../core";
+import {KeySSIType} from "../core/opendsu/apis/keyssi";
 
 @DSUBlueprint(undefined, KeySSIType.ARRAY, undefined, undefined, true, "createdOn")
 export class ArrayDSUModel extends DSUModel{

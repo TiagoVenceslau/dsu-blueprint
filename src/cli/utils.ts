@@ -1,7 +1,8 @@
-import {DSU, KeySSI, ObjectCallback, OpenDSURepository} from "../core";
+import {DSU, ObjectCallback, OpenDSURepository} from "../core";
 import {getFS, getPath} from "../fs";
 import {Callback, criticalCallback, Err} from "@tvenceslau/db-decorators/lib";
 import {CliOptions} from "./types";
+import {KeySSI} from "../core/opendsu/apis/keyssi";
 
 /**
  * Overrides any custom options passed in process args into the default options provided

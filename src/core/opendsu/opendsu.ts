@@ -1,5 +1,8 @@
 import {CriticalError} from "@tvenceslau/db-decorators/lib";
-import {DSUAnchoringOptions, HttpApi, KeyssiApi, KeySSIType, OpenDSU, ResolverApi} from "./types";
+import {DSUAnchoringOptions, OpenDSU} from "./types";
+import {ResolverApi} from "./apis/resolver";
+import {KeyssiApi, KeySSIType} from "./apis/keyssi";
+import {HttpApi} from "./apis/http";
 
 /**
  * Handles the integration with the OpenDSU Framework

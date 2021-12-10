@@ -1,12 +1,12 @@
 import {
     AnchoringOptsOrDSUCallback, DSU,
-    KeySSI,
     SimpleDSUCallback
 } from "../opendsu/types";
 import {DSUCreationMetadata, DSUModel} from "../model";
 import {DSUCallback, OpenDSURepository, ReadCallback} from "./repository";
 import {DSUCache} from "./cache";
 import {ModelCallback} from "@tvenceslau/db-decorators/lib";
+import {KeySSI} from "../opendsu/apis/keyssi";
 
 export type ArraySSISpecificArgs = [vn: string, hint: string];
 

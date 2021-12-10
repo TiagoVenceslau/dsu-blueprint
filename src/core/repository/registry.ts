@@ -4,7 +4,6 @@ import {OpenDSURepository} from "./repository";
 import {DSUModel} from "../model";
 import {IRegistry} from "@tvenceslau/decorator-validation/lib/utils/registry";
 import {all, CriticalError} from "@tvenceslau/db-decorators/lib";
-import {getModelRegistry} from "@tvenceslau/decorator-validation/lib";
 
 export class DSUOperationRegistry implements IRegistry<DSUOperationHandler>{
     private cache: { [indexer: string]: any } = {};

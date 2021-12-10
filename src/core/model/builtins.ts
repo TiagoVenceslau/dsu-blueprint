@@ -1,7 +1,7 @@
 import {DSUModel} from "./DSUModel";
 import {dsu, DSUBlueprint} from "./decorators";
-import {KeySSIType} from "../opendsu/types";
 import {constructFromObject} from "@tvenceslau/db-decorators/lib";
+import {KeySSIType} from "../opendsu/apis/keyssi";
 
 @DSUBlueprint(undefined, KeySSIType.SEED)
 export class SeedDSU extends DSUModel{

@@ -1,6 +1,7 @@
-import {DSU, DSUStorage, ObjectCallback} from "../core/opendsu/types";
+import {DSU, ObjectCallback} from "../core/opendsu/types";
 import {Callback, Err} from "@tvenceslau/db-decorators/lib";
 import {get$$} from "../core/opendsu";
+import {DSUStorage} from "../core/opendsu/apis/storage";
 
 export function impersonateDSUStorage(originalDsu: DSU): DSUStorage {
     const dsu: DSUStorage = originalDsu as DSUStorage;

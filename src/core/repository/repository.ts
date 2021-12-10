@@ -6,7 +6,7 @@ import {
     LoggedError,
     ModelCallback
 } from "@tvenceslau/db-decorators/lib";
-import {DSU, KeySSI} from "../opendsu/types";
+import {DSU} from "../opendsu/types";
 import {createFromDecorators, readFromDecorators, safeParseKeySSI, updateFromDecorators} from "./utils";
 import DBModel from "@tvenceslau/db-decorators/lib/model/DBModel";
 import {repository} from "@tvenceslau/db-decorators/lib/repository/decorators";
@@ -14,6 +14,7 @@ import {getResolver} from "../opendsu";
 import ModelErrorDefinition from "@tvenceslau/decorator-validation/lib/Model/ModelErrorDefinition";
 import {getModelRegistry} from "@tvenceslau/decorator-validation/lib";
 import {DSUCache, isDSUCache} from "./cache";
+import {KeySSI} from "../opendsu/apis/keyssi";
 
 export type DSUKey = string | KeySSI;
 

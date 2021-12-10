@@ -1,6 +1,7 @@
-import {DSU, KeySSI} from "../opendsu";
+import {DSU} from "../opendsu";
 import {DSUModel} from "../model";
 import {createObjectToValueChain, getValueFromModelChain} from "./utils";
+import {KeySSI} from "../opendsu/apis/keyssi";
 
 /**
  * stores recursively created DSUs in order for later operations to reference them (mounting, etc)

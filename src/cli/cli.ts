@@ -1,7 +1,8 @@
-import {DSU, DSUModel, KeySSI} from "../core";
+import {DSU, DSUModel} from "../core";
 import {Callback, CriticalError, Err, error, info} from "@tvenceslau/db-decorators/lib";
 import {CliActions, CliOptions} from "./types";
 import {argParser, buildOrUpdate} from "./utils";
+import {KeySSI} from "../core/opendsu/apis/keyssi";
 
 const defaultOptions: CliOptions = {
     action: CliActions.BUILD,

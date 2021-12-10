@@ -1,7 +1,8 @@
 import {constructFromObject} from "@tvenceslau/db-decorators/lib";
 import {email} from "@tvenceslau/decorator-validation/lib";
-import {DbDsuBlueprint, dsu, DSUBlueprint, dsuFile, DSUModel, fromCache, KeySSIType} from "../core";
+import {DbDsuBlueprint, dsu, DSUBlueprint, dsuFile, DSUModel, fromCache} from "../core";
 import {addFileFS, addFolderFS, dsuFS} from "../fs";
+import {KeySSIType} from "../core/opendsu/apis/keyssi";
 
 @DSUBlueprint(undefined, KeySSIType.SEED)
 export class IdDsuBlueprint extends DSUModel{
