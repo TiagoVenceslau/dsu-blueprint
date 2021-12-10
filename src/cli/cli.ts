@@ -1,5 +1,5 @@
 import {DSU, DSUModel, KeySSI} from "../core";
-import {CriticalError, Err, info} from "@tvenceslau/db-decorators/lib";
+import {Callback, CriticalError, Err, error, info} from "@tvenceslau/db-decorators/lib";
 import {CliActions, CliOptions} from "./types";
 import {argParser, buildOrUpdate} from "./utils";
 
@@ -7,13 +7,14 @@ const defaultOptions: CliOptions = {
     action: CliActions.BUILD,
     domain: "default",
     blueprint: "./build/build.js",
+    seedFile: "seed",
     pathAdaptor: './',
     pathToOpenDSU: '../../../../../../privatesky/psknode/bundles/openDSU.js'
 }
 
 const config: CliOptions = argParser(defaultOptions, process.argv);
-
-const openDSUPath = require('path').join(config.pathAdaptor, config.pathToOpenDSU);
+const fs = require('fs'), path = require('path');
+const openDSUPath = path.join(config.pathAdaptor, config.pathToOpenDSU);
 
 let opendsu;
 try{
@@ -25,10 +26,18 @@ try{
 if (!opendsu)
     throw new CriticalError(`Could not load OpenDSU`);
 
+function storeKeySSI(data: string, callback: Callback){
+    fs.writeFile(path.join(config.pathAdaptor, config.seedFile), data, callback)
+}
+
 function resultCallback(err: Err, model: DSUModel, dsu: DSU, keySSI: KeySSI){
     if (err)
         throw err;
-    info(`DSU {0} built with keySSI {1}`, model.constructor.name, keySSI.getIdentifier());
+    storeKeySSI(keySSI.getIdentifier(), (err) => {
+        if (err)
+            error("Could not save seed file: {0}", err);
+        info(`{0} built via {1} with keySSI {2}`, path.basename(path.join(process.cwd(), config.pathAdaptor)), model.constructor.name, keySSI.getIdentifier());
+    });
 }
 
 switch (config.action){

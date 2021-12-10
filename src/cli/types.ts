@@ -16,6 +16,10 @@ export type CliOptions = {
      */
     blueprint: string,
     /**
+     * The name of the KeySSI containing file after a build. defaults to "seed"
+     */
+    seedFile: string,
+    /**
      * used in conjunction with {@link pathToOpenDSU}
      *
      * relative path adaptor pointing to folder with Seed File and the root to the Blueprint path
