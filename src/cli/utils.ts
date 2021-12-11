@@ -11,8 +11,9 @@ import {KeySSI} from "../core/opendsu/apis/keyssi";
  *
  * @return {{}} updated options
  *
- * 
- * @module cli
+ * @function argParser
+ *
+ * @memberOf cli
  */
 export function argParser(defaultOpts: {[indexer: string]: any}, args: string[]){
     let config = JSON.parse(JSON.stringify(defaultOpts));
@@ -43,8 +44,9 @@ export function argParser(defaultOpts: {[indexer: string]: any}, args: string[])
  * @param {CliOptions} config the cli options
  * @param {DSUCallback<DSUModel>} callback
  *
+ * @function buildOrUpdate
  * 
- * @module cli
+ * @emberOf cli
  */
 export function buildOrUpdate(config: CliOptions, callback: DSUCallback<DSUModel>): void{
     let blueprintFile;

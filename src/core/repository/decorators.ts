@@ -2,7 +2,7 @@ import {DsuKeys, DSUOperation} from "../model/constants";
 import {DSUEditMetadata, DSUModel, getDSUModelKey} from "../model";
 import {repository} from "@tvenceslau/db-decorators/lib/repository/decorators";
 import {DSUEditingHandler} from "./types";
-import {DSUCallback, OpenDSURepository} from "./repository";
+import {DSUCallback, OpenDSURepository, ReadCallback} from "./repository";
 import {DSUCache} from "./cache";
 import {DSU, DSUIOOptions} from "../opendsu";
 import {criticalCallback, OperationKeys, warn} from "@tvenceslau/db-decorators/lib";
@@ -36,7 +36,7 @@ export function fromCache<T extends DSUModel>(model: {new(): T}, derive: boolean
             propertyKey
         );
 
-        const createHandler: DSUEditingHandler = function<T extends DSUModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, model: T | {}, parentDsu: DSU, decorator: DSUEditMetadata, callback: DSUCallback<T>){
+        const createHandler: DSUEditingHandler = function<T extends DSUModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, model: T | {}, parentDsu: DSU, decorator: DSUEditMetadata, callback: DSUCallback<T> | ReadCallback){
             const {dsuPath, options, derive} = decorator.props;
 
             const cached = dsuCache.get(model as T, decorator.prop);

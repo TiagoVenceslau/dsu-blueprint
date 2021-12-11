@@ -4,10 +4,16 @@
  * Available actions: {@link CliActions}
  *
  * Available options: {@link CliOptions} eg for option 'action':
- * <pre>
- *     node ./node_modules/@tvenceslau/dsu-blueprint/lib/cli --action=build
- * </pre>
  *
- * @module cli
+ * @example
+ * node ./node_modules/@tvenceslau/dsu-blueprint/lib/cli --action=build
+ *
+ * @module Cli
  */
+
+/**
+ * @namespace cli
+ * @memberOf Cli
+ */
+
 export * from './cli';

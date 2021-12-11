@@ -7,8 +7,8 @@ import {KeySSI} from "../core/opendsu/apis/keyssi";
 /**
  * Defaults options for the CLI interface
  *
- * @const
- * @module cli
+ * @constant defaultOptions
+ * @memberOf cli
  */
 const defaultOptions: CliOptions = {
     action: CliActions.BUILD,

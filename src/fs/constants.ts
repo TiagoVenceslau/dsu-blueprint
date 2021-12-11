@@ -1,7 +1,10 @@
 /**
- * @const
- * @namespace constants
- * @module filesystem
+ * Reflection Keys for FileSystem
+ *
+ * @constant
+ *
+ * @category Constants
+ * @memberOf filesystem
  */
 export const DsuFsKeys = {
     MOUNT_FS: "mountFS",

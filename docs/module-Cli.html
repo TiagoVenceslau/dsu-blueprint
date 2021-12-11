@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -7,7 +5,7 @@
   
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Declarative OpenDSU creation and management API core/repository/cache.ts</title>
+  <title>Declarative OpenDSU creation and management API Cli</title>
 
   <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -99,106 +97,440 @@
         <div class="core" id="main-content-wrapper">
             <div class="content">
                 <header class="page-title">
-                    <p>Source</p>
-                    <h1>core/repository/cache.ts</h1>
+                    <p>Module</p>
+                    <h1>Cli</h1>
                 </header>
                 
 
 
 
+
+<section>
+
+<header>
     
-    <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>import {DSU} from "../opendsu";
-import {DSUModel} from "../model";
-import {createObjectToValueChain, getValueFromValueChain} from "./utils";
-import {KeySSI} from "../opendsu/apis/keyssi";
+        
+            
+        
+            
+        
+    
+</header>
 
-/**
- * Stores recursively created DSUs in order for later operations to reference them (mounting, etc)
- *
- * @class DSUCache
- *
- * @module repository
- */
-export class DSUCache&lt;T extends DSUModel>{
-    private _cache: {[indexer: string]: {[indexer: string]: {dsu: DSU, keySSI: KeySSI}[]}} = {};
+<article>
+    <div class="container-overview">
+    
+        
+            <div class="description"><script type="text/javascript" src="https://unpkg.com/mermaid@7.1.0/dist/mermaid.min.js"></script><p>Exposes a Command Line interface to interact with transpiled <code>DSUBlueprint</code>s</p>
+<p>Available actions: <a href="CliActions.html"><code>CliActions</code></a></p>
+<p>Available options: <code>CliOptions</code> eg for option 'action':</p></div>
+        
 
-    /**
-     * caches the DSU, by associating it with the {@param obj}'s name, and {@param propKey}
-     *
-     * @param {T} obj
-     * @param {string} propKey
-     * @param {DSU} dsu
-     * @param {KeySSI} keySSI
-     * @param {string} [parent] only meant to be used by bound objects resulting from {@link DSUCache#bindToParent}
-     */
-    cache(obj: T, propKey: string, dsu: DSU, keySSI: KeySSI, parent?: string): void{
-        const name = obj.constructor.name;
-        const chain = `${parent ? `${parent}.` : ''}${name}.${propKey}`;
-        createObjectToValueChain(this._cache, chain, {
-            dsu: dsu,
-            keySSI: keySSI
-        });
-    }
+        
+            
 
-    /**
-     * returns the cached {@link DSU}
-     *
-     * @param {T | string} obj
-     * @param {string} propKey
-     * @param {string} [parent] only meant to be used by bound objects resulting from {@link DSUCache#bindToParent} to reverse the hierarchical structure
-     */
-    get(obj: T | string, propKey: string, parent?: string): {dsu: DSU, keySSI: KeySSI}[] | undefined {
-        const name: string = typeof  obj === 'string' ? obj : (obj.name || obj.constructor.name);
-        const chain = `${parent ? `${parent}.` : ''}${name}.${propKey}`;
-        try {
-            return getValueFromValueChain(this._cache, chain);
-        } catch (e) {
-            try {
-                const split: string[]  = chain.split('.');
-                const parents = split.splice(split.length - 3, 3)
-                const args = [split.pop(), parents.pop()] as string[];
-                // @ts-ignore
-                return this.get(...args, split.join('.'));
-            } catch (e) {
-                return undefined;
-            }
-        }
-    }
 
-    /**
-     *
-     * @param {T} parentModel
-     * @param {string} propKey
-     * @return a {@link isDSUCache} validatable {@link DSUCache} bound to the {@param parentModel}s name and {@prop propKey} to enable recursive storage
-     */
-    bindToParent(parentModel: T, propKey: string): DSUCache&lt;T> {
-        const self: DSUCache&lt;T> = this;
-        const name: string = parentModel.name || parentModel.constructor.name;
-        const chain = `${name}.${propKey}`;
-        const proxyObj = {
-            cache: (obj: T, propKey: string, dsu: DSU, keySSI: KeySSI) => self.cache.call(self, obj, propKey, dsu, keySSI, chain),
-            get: (obj: T, propKey: string) => self.get.call(self, obj, propKey, chain),
-            bindToParent: (parentModel: T, propKey: string) => self.bindToParent.call(self, parentModel, propKey)
-        }
 
-        return proxyObj as DSUCache&lt;T>;
-    }
-}
 
-/**
- * Because of the binding, this method should be used instead of 'instanceof DSUCache'
- *
- * @param {any} obj
- *
- * @module repository
- */
-export function isDSUCache(obj: any){
-    return obj &amp;&amp; obj.get &amp;&amp; obj.bindToParent &amp;&amp; obj.cache;
-}</code></pre>
-        </article>
-    </section>
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="cli_index.ts.html" class="button">View Source</a>
+            <span>
+                <a href="cli_index.ts.html">cli/index.ts</a>, <a href="cli_index.ts.html#line2">line 2</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    
+        <pre class="prettyprint"><code>node ./node_modules/@tvenceslau/dsu-blueprint/lib/cli --action=build</code></pre>
+    
+
+
+
+        
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="index.ts.html" class="button">View Source</a>
+            <span>
+                <a href="index.ts.html">index.ts</a>, <a href="index.ts.html#line21">line 21</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+    
+    </div>
+    
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+
+
+
+<section>
+
+<header>
+    
+        
+            
+        
+            
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+            <div class="description"><script type="text/javascript" src="https://unpkg.com/mermaid@7.1.0/dist/mermaid.min.js"></script><p>CLI Module</p>
+<p>Separate module to handle CLI actions. Only accessible via the Filesystem Build</p></div>
+        
+
+        
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="cli_index.ts.html" class="button">View Source</a>
+            <span>
+                <a href="cli_index.ts.html">cli/index.ts</a>, <a href="cli_index.ts.html#line2">line 2</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    
+        <pre class="prettyprint"><code>node ./node_modules/@tvenceslau/dsu-blueprint/lib/cli --action=build</code></pre>
+    
+
+
+
+        
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="index.ts.html" class="button">View Source</a>
+            <span>
+                <a href="index.ts.html">index.ts</a>, <a href="index.ts.html#line21">line 21</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+    
+    </div>
+    
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
 
 
 

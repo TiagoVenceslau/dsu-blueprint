@@ -1,5 +1,6 @@
 /**
- * @module filesystem
+ * @namespace filesystem
+ * @memberOf FileSystem
  */
 
 export * from './utils';

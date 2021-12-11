@@ -92,7 +92,7 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-cli.html">cli</a></li><li><a href="module-core.html">core</a></li><li><a href="module-dsu-blueprint.html">dsu-blueprint</a></li><li><a href="module-filesystem.html">filesystem</a></li><li><a href="module-repository.html">repository</a></li><li><a href="module-web.html">web</a></li></ul><h3>Namespaces</h3><ul><li><a href="dsu-blueprint.OpenDSU.html">OpenDSU</a></li><li><a href="model.decorators.html">decorators</a></li><li><a href="module-web-decorators.html">decorators</a></li><li><a href="OpenDSU.html">OpenDSU</a></li><li><a href="repository.html">repository</a></li></ul><h3>Classes</h3><ul><li><a href="module-web.WebServiceImp.html">WebServiceImp</a></li><li><a href="OpenDSU.factory.DSUFactoryRegistry.html">DSUFactoryRegistry</a></li><li><a href="OpenDSU.factory.KeySSIFactoryRegistry.html">KeySSIFactoryRegistry</a></li><li><a href="OpenDSURepository_OpenDSURepository.html">OpenDSURepository</a></li></ul><h3>Interfaces</h3><ul><li><a href="ConstantsApi.html">ConstantsApi</a></li><li><a href="DSU.html">DSU</a></li><li><a href="EnvironmentTypes.html">EnvironmentTypes</a></li><li><a href="fs.html">fs</a></li><li><a href="path.html">path</a></li><li><a href="WalletDsu.html">WalletDsu</a></li><li><a href="WebService.html">WebService</a></li></ul><h3>Global</h3><ul><li><a href="global.html#createObjectToValueChain">createObjectToValueChain</a></li><li><a href="global.html#DsuKeys">DsuKeys</a></li><li><a href="global.html#DSUOperation">DSUOperation</a></li><li><a href="global.html#getValueFromValueChain">getValueFromValueChain</a></li></ul></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-Cli.html">Cli</a></li><li><a href="module-Core.html">Core</a></li><li><a href="module-filesystem.html">filesystem</a></li><li><a href="module-repository.html">repository</a></li></ul><h3>Namespaces</h3><ul><li><a href="Cli.cli.html">cli</a></li><li><a href="core.model.html">model</a></li><li><a href="core.web.html">web</a></li><li><a href="dsu-blueprint.OpenDSU.html">OpenDSU</a></li><li><a href="FileSystem.filesystem.html">filesystem</a></li><li><a href="model.decorators.html">decorators</a></li><li><a href="module-Core-core.html">core</a></li><li><a href="OpenDSU.html">OpenDSU</a></li><li><a href="repository.html">repository</a></li></ul><h3>Classes</h3><ul><li><a href="core.model.ArrayDSU.html">ArrayDSU</a></li><li><a href="core.model.DbDsuBlueprint.html">DbDsuBlueprint</a></li><li><a href="core.model.SeedDSU.html">SeedDSU</a></li><li><a href="core.model.WalletDSU.html">WalletDSU</a></li><li><a href="OpenDSU.factory.DSUFactoryRegistry.html">DSUFactoryRegistry</a></li><li><a href="OpenDSU.factory.KeySSIFactoryRegistry.html">KeySSIFactoryRegistry</a></li><li><a href="OpenDSURepository_OpenDSURepository.html">OpenDSURepository</a></li><li><a href="WebServiceImp_WebServiceImp.html">WebServiceImp</a></li></ul><h3>Interfaces</h3><ul><li><a href="ConstantsApi.html">ConstantsApi</a></li><li><a href="DSU.html">DSU</a></li><li><a href="EnvironmentTypes.html">EnvironmentTypes</a></li><li><a href="fs.html">fs</a></li><li><a href="path.html">path</a></li><li><a href="WalletDsu.html">WalletDsu</a></li></ul><h3>Global</h3><ul><li><a href="global.html#buildOrUpdate">buildOrUpdate</a></li><li><a href="global.html#createObjectToValueChain">createObjectToValueChain</a></li><li><a href="global.html#getValueFromValueChain">getValueFromValueChain</a></li></ul></div><div class="category"><h2>Services</h2><h3>Classes</h3><ul><li><a href="core.web.WebServiceImp.html">WebServiceImp</a></li></ul><h3>Interfaces</h3><ul><li><a href="core.web.WebService.html">WebService</a></li></ul></div>
                 
             </nav>
         </div>
@@ -135,7 +135,7 @@ import {
     OperationKeys
 } from "@tvenceslau/db-decorators/lib";
 import {KeySSI, KeySSISpecificArgs, KeySSIType} from "../opendsu/apis/keyssi";
-import {ConstantsApi, DSUFactoryMethod} from "../opendsu";
+import {ConstantsApi} from "../opendsu";
 import {
     DSUPostProcess,
     getDSUFactoryRegistry,
@@ -143,8 +143,25 @@ import {
     KeySSIFactoryResponse
 } from "../opendsu/factory";
 
+/**
+ * Builds the final DSU Reflection Key
+ *
+ * @function
+ *
+ * @param {string} key
+ *
+ * @return {string} the full key
+ *
+ * @memberOf core.model
+ */
 export const getDSUModelKey = (key: string) => DsuKeys.REFLECT + key;
 
+/**
+ * Metadata passed to {@link DSUClassCreationHandler}s
+ *
+ * @typedef DSUClassCreationMetadata
+ * @memberOf core.model
+ */
 export type DSUClassCreationMetadata = {
     [indexer: string]: any;
     dsu: {
@@ -160,6 +177,8 @@ export type DSUClassCreationMetadata = {
 }
 
 /**
+ * DSU Blueprint Decorator
+ *
  * Defines a class as a DSU Blueprint, enabling:
  *  - Automatic CRUD operations, just by updating its corresponding {@link DSUModel} instance and running it through the appropriate {@link OpenDSURepository};
  *  - Automatic validations &amp;&amp; easily extendable for added validations;
@@ -169,13 +188,6 @@ export type DSUClassCreationMetadata = {
  *  TODO:
  *  Because everything is declarative, the hash of the {@link DSUModel} class file string literal + the hash of the dsu-blueprint bundle file
  *  can be used stored as DSU metadata and serve as proof of authenticity in theory. I guess if we store this lib.
- *
- * @prop {string | undefined} [domain] the DSU domain. default to undefined. when undefined, its the repository that controls the domain;
- * @prop {KeySSIType} [keySSIType] the KeySSI type used to anchor the DSU
- * @prop {KeySSISpecificArgs | undefined} [specificKeyArgs]  OpenDSU related arguments, specific to each KeySSI implementation.
- * @prop {DSUAnchoringOptions | undefined} [options] defaults to undefined.
- * @prop {boolean} [batchMode] defaults to true. decides if batchMode is meant to be used for this DSU
- * @prop {string[]} [props] any object properties that must be passed to the KeySSI generation function (eg: for Array SSIs)
  *
  * Supported {@link KeySSIType}s:
  *  - {@link KeySSIType.SEED}: Expects:
@@ -197,9 +209,28 @@ export type DSUClassCreationMetadata = {
  *          - {@link fromCache};
  *          - {@link mount}
  *
- * @decorator DSUBlueprint
- * @namespace decorators
- * @memberOf model
+ * {@link OpenDSURepository} {@link OperationKeys}'s this decorator acts on:
+ *  - {@link OperationKeys.CREATE}: Creates the {@link DSUBlueprint}:
+ *      - Gets the keySSI and the {@link DSUFactoryMethod}'s {@link DSUAnchoringOptions} from the {@link KeySSIFactoryRegistry};
+ *      - Creates the {@link DSU} via the {@link DSUFactoryRegistry#build}
+ *  - {@link OperationKeys.READ}:
+ *  - {@link OperationKeys.UPDATE}:
+ *  - {@link OperationKeys.DELETE}:
+ *
+ *  {@link DSUOperation} phases this decorator acts on:
+ *  - {@link DSUOperation.CLASS}:
+ *
+ * @prop {string | undefined} [domain] the DSU domain. default to undefined. when undefined, its the repository that controls the domain;
+ * @prop {KeySSIType} [keySSIType] the KeySSI type used to anchor the DSU
+ * @prop {KeySSISpecificArgs | undefined} [specificKeyArgs]  OpenDSU related arguments, specific to each KeySSI implementation.
+ * @prop {DSUAnchoringOptions | undefined} [options] defaults to undefined.
+ * @prop {boolean} [batchMode] defaults to true. decides if batchMode is meant to be used for this DSU
+ * @prop {string[]} [props] any object properties that must be passed to the KeySSI generation function (eg: for Array SSIs)
+ *
+ * @function
+ *
+ * @category Decorators
+ * @memberOf core.model
  */
 export const DSUBlueprint = (domain: string | undefined = undefined, keySSIType: KeySSIType = KeySSIType.SEED, specificKeyArgs: KeySSISpecificArgs | undefined = undefined, options: DSUAnchoringOptions | undefined = undefined, batchMode: boolean = true, ...props: string[]) => (original: Function) => {
     getRepoRegistry().register(original.name);
@@ -268,6 +299,12 @@ export const DSUBlueprint = (domain: string | undefined = undefined, keySSIType:
     })(original);
 }
 
+/**
+ * Metadata passed to {@link DSUCreationHandler}s
+ *
+ * @typedef DSUCreationMetadata
+ * @memberOf core.model
+ */
 export type DSUCreationMetadata = {
     [indexer: string]: any;
 
@@ -282,7 +319,9 @@ export type DSUCreationMetadata = {
 
 /**
  *
+ *
  * @typedef T extends DSUModel
+ *
  * @param {{new: T}} dsu
  * @param {boolean | number} [derive] decides if the resulting mount uses the Seed or the Read (or how many times it derives the key)
  * @param {string} [mountPath] defines the mount path, overriding the property name;
@@ -290,9 +329,10 @@ export type DSUCreationMetadata = {
  * @param {string[]} [modelArgs] optional model KeySSI generation params
  * @param {any[]} [args] optional KeySSI generation params
  *
- * @decorator dsu
- * @namespace decorators
- * @memberOf model
+ * @function
+ *
+ * @category Decorators
+ * @memberOf core.model
  */
 export function dsu&lt;T extends DSUModel>(dsu: {new(): T}, derive: boolean | number = false, mountPath?: string, mountOptions?: DSUIOOptions, modelArgs?: string[], ...args: any[]) {
     getRepoRegistry().register&lt;OpenDSURepository&lt;T>>(dsu);

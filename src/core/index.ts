@@ -1,9 +1,14 @@
-export * from './opendsu';
-export * from './model';
-export * from './repository';
+/**
+ * @module Core
+ */
+
 /**
  * Web interaction Api to enable interaction with web related services (including the ApiHub)
  *
- * @module core
+ * @namespace core
  */
+
+export * from './opendsu';
+export * from './model';
+export * from './repository';
 export * from './web';

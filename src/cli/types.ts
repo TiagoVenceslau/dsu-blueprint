@@ -1,8 +1,8 @@
 /**
  * Accepted params to the cli interface
  *
- * @type CliOptions
- * @module cli
+ * @typedef CliOptions
+ * @memberOf cli
  */
 export type CliOptions = {
     /**
@@ -41,8 +41,11 @@ export type CliOptions = {
 
 /**
  * Available Actions the Cli supports
+ *
  * @enum CliActions
- * @module cli
+ *
+ * @category Constants
+ * @memberOf cli
  */
 export enum CliActions {
     /**

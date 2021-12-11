@@ -1,7 +1,12 @@
 import {Callback, CriticalError, Err} from "@tvenceslau/db-decorators/lib";
 import {get$$, getHttpApi} from "../opendsu";
-import {isEqual} from "@tvenceslau/decorator-validation/lib";
 
+/**
+ * @type WebServiceOptions
+ *
+ * @category Services
+ * @memberOf core.web
+ */
 export type WebServiceOptions = {
     hosts: string,
     seedFileName: string,
@@ -15,8 +20,9 @@ export type WebServiceOptions = {
 /**
  * Reference interface for a {@link WebService}
  *
- * @interface
- * @namespace web
+ * @interface WebService
+ * @category Services
+ * @memberOf core.web
  */
 export interface WebService {
     options: WebServiceOptions;
@@ -33,8 +39,8 @@ export interface WebService {
  *
  * @class WebServiceImp
  *
- * @namespace services
- * @module web
+ * @category Services
+ * @memberOf core.web
  */
 export class WebServiceImp implements WebService {
     readonly options: WebServiceOptions;
@@ -181,10 +187,10 @@ let activeWebService: WebService;
  * @param {WebServiceOptions} [options]
  * @return WebService
  *
- * 
+ * @function
  *
- * @namespace services
- * @module web
+ * @category Services
+ * @memberOf core.web
  */
 export function getWebService(options?: WebServiceOptions): WebService {
     if (!activeWebService)
@@ -200,8 +206,10 @@ export function getWebService(options?: WebServiceOptions): WebService {
  *
  * @param {WebService} webService
  *
- * @namespace services
- * @module web
+ * @function
+ *
+ * @category Services
+ * @memberOf core.web
  */
 export function setWebService(webService: WebService): void {
     activeWebService = webService;

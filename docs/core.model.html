@@ -1,0 +1,2328 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Declarative OpenDSU creation and management API model</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+             
+                <a href="index.html">
+                    <h1 class="navbar-item">OpenDSU Blueprint</h1>
+                </a>
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    API Documentation
+                </a>
+                
+                 
+                    
+                        <a
+                            class="link user-link "
+                            href="https://github.com/TiagoVenceslau/dsu-blueprint#readme"
+                        >
+                            Github Repository
+                        </a>
+                    
+                        <a
+                            class="link user-link "
+                            href="https://github.com/TiagoVenceslau"
+                        >
+                            Github Profile
+                        </a>
+                    
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+                <div class="search-wrapper">
+                    <input id="search" type="text" placeholder="Search docs..." class="input">
+                </div>
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-Cli.html">Cli</a></li><li><a href="module-Core.html">Core</a></li><li><a href="module-filesystem.html">filesystem</a></li><li><a href="module-repository.html">repository</a></li></ul><h3>Namespaces</h3><ul><li><a href="Cli.cli.html">cli</a></li><li><a href="core.model.html">model</a></li><li><a href="core.web.html">web</a></li><li><a href="dsu-blueprint.OpenDSU.html">OpenDSU</a></li><li><a href="FileSystem.filesystem.html">filesystem</a></li><li><a href="model.decorators.html">decorators</a></li><li><a href="module-Core-core.html">core</a></li><li><a href="OpenDSU.html">OpenDSU</a></li><li><a href="repository.html">repository</a></li></ul><h3>Classes</h3><ul><li><a href="core.model.ArrayDSU.html">ArrayDSU</a></li><li><a href="core.model.DbDsuBlueprint.html">DbDsuBlueprint</a></li><li><a href="core.model.SeedDSU.html">SeedDSU</a></li><li><a href="core.model.WalletDSU.html">WalletDSU</a></li><li><a href="OpenDSU.factory.DSUFactoryRegistry.html">DSUFactoryRegistry</a></li><li><a href="OpenDSU.factory.KeySSIFactoryRegistry.html">KeySSIFactoryRegistry</a></li><li><a href="OpenDSURepository_OpenDSURepository.html">OpenDSURepository</a></li><li><a href="WebServiceImp_WebServiceImp.html">WebServiceImp</a></li></ul><h3>Interfaces</h3><ul><li><a href="ConstantsApi.html">ConstantsApi</a></li><li><a href="DSU.html">DSU</a></li><li><a href="EnvironmentTypes.html">EnvironmentTypes</a></li><li><a href="fs.html">fs</a></li><li><a href="path.html">path</a></li><li><a href="WalletDsu.html">WalletDsu</a></li></ul><h3>Global</h3><ul><li><a href="global.html#buildOrUpdate">buildOrUpdate</a></li><li><a href="global.html#createObjectToValueChain">createObjectToValueChain</a></li><li><a href="global.html#getValueFromValueChain">getValueFromValueChain</a></li></ul></div><div class="category"><h2>Services</h2><h3>Classes</h3><ul><li><a href="core.web.WebServiceImp.html">WebServiceImp</a></li></ul><h3>Interfaces</h3><ul><li><a href="core.web.WebService.html">WebService</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Namespace</p>
+                    <h1>model</h1>
+                </header>
+                
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>model</h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+            <div class="description"><script type="text/javascript" src="https://unpkg.com/mermaid@7.1.0/dist/mermaid.min.js"></script></div>
+        
+
+        
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="core_model_index.ts.html" class="button">View Source</a>
+            <span>
+                <a href="core_model_index.ts.html">core/model/index.ts</a>, <a href="core_model_index.ts.html#line2">line 2</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+        
+    
+    </div>
+    
+    
+
+    
+
+    
+        <h3 class="subsection-title">Classes</h3>
+
+        <dl>
+            <dt><a href="core.model.ArrayDSU.html">ArrayDSU</a></dt>
+            <dd><p>Built In <code>DSUBlueprint</code> for the Base KeySSI type <code>ArraySSI</code></p>
+<p>This class is decorated via <code>DSUBlueprint</code> with:</p>
+<ul>
+<li>domain: undefined;</li>
+<li>keySSIType: <code>KeySSIType.ARRAY</code></li>
+</ul>.</dd>
+        
+            <dt><a href="core.model.DbDsuBlueprint.html">DbDsuBlueprint</a></dt>
+            <dd><p>Built In <code>DSUBlueprint</code> for a <code>DBApi</code> database</p>
+<p>This class is decorated via <code>DSUBlueprint</code> with:</p>
+<ul>
+<li>domain: undefined;</li>
+<li>keySSIType: <code>KeySSIType.SEED</code></li>
+</ul>.</dd>
+        
+            <dt><a href="core.model.SeedDSU.html">SeedDSU</a></dt>
+            <dd><p>Built In <code>DSUBlueprint</code> for the Base KeySSI type <code>SeedSSI</code></p>
+<p>This class is decorated via <code>DSUBlueprint</code> with:</p>
+<ul>
+<li>domain: undefined;</li>
+<li>keySSIType: <code>KeySSIType.SEED</code></li>
+</ul>.</dd>
+        
+            <dt><a href="core.model.WalletDSU.html">WalletDSU</a></dt>
+            <dd><p>Built In <code>DSUBlueprint</code> for the Base KeySSI type <code>WalletSSI</code></p>
+<p>This class is decorated via <code>DSUBlueprint</code> with:</p>
+<ul>
+<li>domain: undefined;</li>
+<li>keySSIType: <code>KeySSIType.Wallet</code></li>
+</ul>.</dd>
+        </dl>
+    
+
+    
+
+    
+
+    
+
+    
+        <div class='vertical-section'>
+            <h1>Members</h1>
+            <div class="members">
+            
+                <div class="member">
+
+<h4 class="name" id=".exports.DsuKeys">
+    <a class="href-link" href="#.exports.DsuKeys">#</a>
+    
+        
+            <span class='tag'>static</span>
+        
+    
+    <span class="code-name">
+        exports.DsuKeys
+    </span>
+    
+</h4>
+
+
+<p class="summary"><p>Identifying keys for reflection operations and other constants</p>.</p>
+
+
+
+<div class="description">
+    <script type="text/javascript" src="https://unpkg.com/mermaid@7.1.0/dist/mermaid.min.js"></script><p>Identifying keys for reflection operations and other constants</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="core_model_constants.ts.html" class="button">View Source</a>
+            <span>
+                <a href="core_model_constants.ts.html">core/model/constants.ts</a>, <a href="core_model_constants.ts.html#line10">line 10</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+<h4 class="name" id=".exports.DSUOperation">
+    <a class="href-link" href="#.exports.DSUOperation">#</a>
+    
+        
+            <span class='tag'>static</span>
+        
+    
+    <span class="code-name">
+        exports.DSUOperation
+    </span>
+    
+</h4>
+
+
+<p class="summary"><p>Describe the 3 distinct stages of a DSUOperation on a <code>DSUBlueprint</code>:</p>
+<ul>
+<li>CREATION: handles the creation of all nested <a href="DSU.html"><code>DSU</code></a>s (typically from the <code>dsu</code> decorator)</li>
+<li>CLASS: handles the creation of the actual 'end' <a href="DSU.html"><code>DSU</code></a> (typically from the <a href="DSU.html"><code>DSU</code></a> decorator)</li>
+<li>EDITING: handles the editing of the end <a href="DSU.html"><code>DSU</code></a> and all its available operations:</li>
+<li><code>dsuFile</code></li>
+<li><code>fromCache</code></li>
+<li><code>mount</code></li>
+</ul>.</p>
+
+
+
+<div class="description">
+    <script type="text/javascript" src="https://unpkg.com/mermaid@7.1.0/dist/mermaid.min.js"></script><p>Describe the 3 distinct stages of a DSUOperation on a <code>DSUBlueprint</code>:</p>
+<ul>
+<li>CREATION: handles the creation of all nested <a href="DSU.html"><code>DSU</code></a>s (typically from the <code>dsu</code> decorator)</li>
+<li>CLASS: handles the creation of the actual 'end' <a href="DSU.html"><code>DSU</code></a> (typically from the <a href="DSU.html"><code>DSU</code></a> decorator)</li>
+<li>EDITING: handles the editing of the end <a href="DSU.html"><code>DSU</code></a> and all its available operations:</li>
+<li><code>dsuFile</code></li>
+<li><code>fromCache</code></li>
+<li><code>mount</code></li>
+</ul>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="core_model_constants.ts.html" class="button">View Source</a>
+            <span>
+                <a href="core_model_constants.ts.html">core/model/constants.ts</a>, <a href="core_model_constants.ts.html#line35">line 35</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+<h4 class="name" id=".module.exports">
+    <a class="href-link" href="#.module.exports">#</a>
+    
+        
+            <span class='tag'>static</span>
+        
+    
+    <span class="code-name">
+        module.exports
+    </span>
+    
+</h4>
+
+
+<p class="summary"><p>Open DSU Model Decorators</p>.</p>
+
+
+
+<div class="description">
+    <script type="text/javascript" src="https://unpkg.com/mermaid@7.1.0/dist/mermaid.min.js"></script><p>Open DSU Model Decorators</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="core_model_index.ts.html" class="button">View Source</a>
+            <span>
+                <a href="core_model_index.ts.html">core/model/index.ts</a>, <a href="core_model_index.ts.html#line10">line 10</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+<h4 class="name" id=".module.exports">
+    <a class="href-link" href="#.module.exports">#</a>
+    
+        
+            <span class='tag'>static</span>
+        
+    
+    <span class="code-name">
+        module.exports
+    </span>
+    
+</h4>
+
+
+<p class="summary"><p>Open DSU Model</p>.</p>
+
+
+
+<div class="description">
+    <script type="text/javascript" src="https://unpkg.com/mermaid@7.1.0/dist/mermaid.min.js"></script><p>Open DSU Model</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="core_model_index.ts.html" class="button">View Source</a>
+            <span>
+                <a href="core_model_index.ts.html">core/model/index.ts</a>, <a href="core_model_index.ts.html#line16">line 16</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+<h4 class="name" id=".module.exports">
+    <a class="href-link" href="#.module.exports">#</a>
+    
+        
+            <span class='tag'>static</span>
+        
+    
+    <span class="code-name">
+        module.exports
+    </span>
+    
+</h4>
+
+
+<p class="summary"><p>DSU Model Registry</p>.</p>
+
+
+
+<div class="description">
+    <script type="text/javascript" src="https://unpkg.com/mermaid@7.1.0/dist/mermaid.min.js"></script><p>DSU Model Registry</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="core_model_index.ts.html" class="button">View Source</a>
+            <span>
+                <a href="core_model_index.ts.html">core/model/index.ts</a>, <a href="core_model_index.ts.html#line22">line 22</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+<h4 class="name" id=".module.exports">
+    <a class="href-link" href="#.module.exports">#</a>
+    
+        
+            <span class='tag'>static</span>
+        
+    
+    <span class="code-name">
+        module.exports
+    </span>
+    
+</h4>
+
+
+<p class="summary"><p>Model Constants</p>.</p>
+
+
+
+<div class="description">
+    <script type="text/javascript" src="https://unpkg.com/mermaid@7.1.0/dist/mermaid.min.js"></script><p>Model Constants</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="core_model_index.ts.html" class="button">View Source</a>
+            <span>
+                <a href="core_model_index.ts.html">core/model/index.ts</a>, <a href="core_model_index.ts.html#line30">line 30</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+<h4 class="name" id=".module.exports">
+    <a class="href-link" href="#.module.exports">#</a>
+    
+        
+            <span class='tag'>static</span>
+        
+    
+    <span class="code-name">
+        module.exports
+    </span>
+    
+</h4>
+
+
+<p class="summary"><p>BuiltIn <code>DSUModel</code>s</p>.</p>
+
+
+
+<div class="description">
+    <script type="text/javascript" src="https://unpkg.com/mermaid@7.1.0/dist/mermaid.min.js"></script><p>BuiltIn <code>DSUModel</code>s</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="core_model_index.ts.html" class="button">View Source</a>
+            <span>
+                <a href="core_model_index.ts.html">core/model/index.ts</a>, <a href="core_model_index.ts.html#line36">line 36</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+            </div>
+        </div>
+    
+
+    
+        <div class='vertical-section'>
+            <h1>Methods</h1>
+            <div class="members">
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".exports.DSUBlueprint">
+        <a class="href-link" href="#.exports.DSUBlueprint">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                exports.DSUBlueprint<span class="signature">()</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>DSU Blueprint Decorator</p>
+<p>Defines a class as a DSU Blueprint, enabling:</p>
+<ul>
+<li>Automatic CRUD operations, just by updating its corresponding <code>DSUModel</code> instance and running it through the appropriate <a href="OpenDSURepository.html"><code>OpenDSURepository</code></a>;</li>
+<li>Automatic validations &amp;&amp; easily extendable for added validations;</li>
+<li>Automatic serialization -&gt; transmission -&gt; deserialization;</li>
+<li>Controlled accesses: Ability easily to add business logic at key points of any CRUD operations</li>
+</ul>
+<p>TODO:
+Because everything is declarative, the hash of the <code>DSUModel</code> class file string literal + the hash of the dsu-blueprint bundle file
+can be used stored as DSU metadata and serve as proof of authenticity in theory.</p></p>
+    
+    
+    <div class="description">
+        <script type="text/javascript" src="https://unpkg.com/mermaid@7.1.0/dist/mermaid.min.js"></script><p>DSU Blueprint Decorator</p>
+<p>Defines a class as a DSU Blueprint, enabling:</p>
+<ul>
+<li>Automatic CRUD operations, just by updating its corresponding <code>DSUModel</code> instance and running it through the appropriate <a href="OpenDSURepository.html"><code>OpenDSURepository</code></a>;</li>
+<li>Automatic validations &amp;&amp; easily extendable for added validations;</li>
+<li>Automatic serialization -&gt; transmission -&gt; deserialization;</li>
+<li>Controlled accesses: Ability easily to add business logic at key points of any CRUD operations</li>
+</ul>
+<p>TODO:
+Because everything is declarative, the hash of the <code>DSUModel</code> class file string literal + the hash of the dsu-blueprint bundle file
+can be used stored as DSU metadata and serve as proof of authenticity in theory. I guess if we store this lib.</p>
+<p>Supported <code>KeySSIType</code>s:</p>
+<ul>
+<li><code>KeySSIType.SEED</code>: Expects:
+<ul>
+<li>keySsiType: <code>KeySSIType.SEED</code>;</li>
+<li>specificKeyArgs: <code>SeedSSISpecificArgs</code> | undefined;</li>
+<li>props: none</li>
+</ul>
+</li>
+<li><code>KeySSIType.ARRAY</code>: Expects:
+<ul>
+<li>keySsiType: <code>KeySSIType.ARRAY</code>;</li>
+<li>specificKeyArgs: <code>ArraySSISpecificArgs</code> | undefined;</li>
+<li>props: {string[] | undefined} array of property names in the value chain notation <a href="global.html#getValueFromValueChain"><code>getValueFromValueChain</code></a> <a href="global.html#createObjectToValueChain"><code>createObjectToValueChain</code></a> that will be resolved from the <code>DSUModel</code>'s content and used to pass as <code>KeySSI</code> generation Arguments. <strong>Must resolve to strings</strong></li>
+<li>extra Key generation args {string[] | undefined} that are passed to the <a href="OpenDSURepository.html"><code>OpenDSURepository</code></a>'s methods will be appended to the ones from the props and also used to generate the <code>KeySSI</code></li>
+</ul>
+</li>
+<li><code>KeySSIType.WALLET</code>: Expects:
+<ul>
+<li>keySsiType: <code>KeySSIType.WALLET</code>;</li>
+<li>specificKeyArgs: <code>WalletSSISpecificArgs</code> | undefined;</li>
+<li>props: {string[] | undefined}: array of property names in the value chain notation <a href="global.html#getValueFromValueChain"><code>getValueFromValueChain</code></a> <a href="global.html#createObjectToValueChain"><code>createObjectToValueChain</code></a> that will be resolved from the <code>DSUModel</code>'s content and used to pass as <code>KeySSI</code> generation Arguments. <strong>Must resolve to strings</strong></li>
+<li>extra Key generation args {string[] | undefined} that are passed to the <a href="OpenDSURepository.html"><code>OpenDSURepository</code></a>'s methods will be appended to the ones from the props and also used to generate the <code>KeySSI</code></li>
+<li>One Supported decorator under the <a href="ConstantsApi.html#CODE_FOLDER"><code>ConstantsApi#CODE_FOLDER</code></a> property key (defaults to 'code'). Supported decorators are:
+<ul>
+<li><code>fromWeb</code>;</li>
+<li><code>fromCache</code>;</li>
+<li><code>mount</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><a href="OpenDSURepository.html"><code>OpenDSURepository</code></a> <code>OperationKeys</code>'s this decorator acts on:</p>
+<ul>
+<li><code>OperationKeys.CREATE</code>: Creates the <code>DSUBlueprint</code>:
+<ul>
+<li>Gets the keySSI and the <code>DSUFactoryMethod</code>'s <code>DSUAnchoringOptions</code> from the <a href="KeySSIFactoryRegistry.html"><code>KeySSIFactoryRegistry</code></a>;</li>
+<li>Creates the <a href="DSU.html"><code>DSU</code></a> via the <a href="DSUFactoryRegistry.html#build"><code>DSUFactoryRegistry#build</code></a></li>
+</ul>
+</li>
+<li><code>OperationKeys.READ</code>:</li>
+<li><code>OperationKeys.UPDATE</code>:</li>
+<li><code>OperationKeys.DELETE</code>:</li>
+</ul>
+<p><code>DSUOperation</code> phases this decorator acts on:</p>
+<ul>
+<li><code>DSUOperation.CLASS</code>:</li>
+</ul>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+<div class="table-container">
+    <table class="props table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+            <th>Attributes</th>
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>domain</code></td>
+    
+
+    <td class="type">
+    
+        
+<span class="param-type">string</span>
+|
+
+<span class="param-type">undefined</span>
+
+
+    
+    </td>
+
+    
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
+
+        
+        </td>
+    
+
+    
+
+    <td class="description last"><p>the DSU domain. default to undefined. when undefined, its the repository that controls the domain;</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>keySSIType</code></td>
+    
+
+    <td class="type">
+    
+        
+<span class="param-type">KeySSIType</span>
+
+
+    
+    </td>
+
+    
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
+
+        
+        </td>
+    
+
+    
+
+    <td class="description last"><p>the KeySSI type used to anchor the DSU</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>specificKeyArgs</code></td>
+    
+
+    <td class="type">
+    
+        
+<span class="param-type">KeySSISpecificArgs</span>
+|
+
+<span class="param-type">undefined</span>
+
+
+    
+    </td>
+
+    
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
+
+        
+        </td>
+    
+
+    
+
+    <td class="description last"><p>OpenDSU related arguments, specific to each KeySSI implementation.</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>options</code></td>
+    
+
+    <td class="type">
+    
+        
+<span class="param-type">DSUAnchoringOptions</span>
+|
+
+<span class="param-type">undefined</span>
+
+
+    
+    </td>
+
+    
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
+
+        
+        </td>
+    
+
+    
+
+    <td class="description last"><p>defaults to undefined.</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>batchMode</code></td>
+    
+
+    <td class="type">
+    
+        
+<span class="param-type">boolean</span>
+
+
+    
+    </td>
+
+    
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
+
+        
+        </td>
+    
+
+    
+
+    <td class="description last"><p>defaults to true. decides if batchMode is meant to be used for this DSU</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>props</code></td>
+    
+
+    <td class="type">
+    
+        
+<span class="param-type">Array.&lt;string></span>
+
+
+    
+    </td>
+
+    
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
+
+        
+        </td>
+    
+
+    
+
+    <td class="description last"><p>any object properties that must be passed to the KeySSI generation function (eg: for Array SSIs)</p></td>
+</tr>
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="core_model_decorators.ts.html" class="button">View Source</a>
+            <span>
+                <a href="core_model_decorators.ts.html">core/model/decorators.ts</a>, <a href="core_model_decorators.ts.html#line77">line 77</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".exports.getDSUModelKey">
+        <a class="href-link" href="#.exports.getDSUModelKey">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                exports.getDSUModelKey<span class="signature">(key)</span><span class="type-signature"> &rarr; {string}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>Builds the final DSU Reflection Key</p>.</p>
+    
+    
+    <div class="description">
+        <script type="text/javascript" src="https://unpkg.com/mermaid@7.1.0/dist/mermaid.min.js"></script><p>Builds the final DSU Reflection Key</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>key</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">string</span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="core_model_decorators.ts.html" class="button">View Source</a>
+            <span>
+                <a href="core_model_decorators.ts.html">core/model/decorators.ts</a>, <a href="core_model_decorators.ts.html#line20">line 20</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><p>the full key</p></div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type">string</span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".T">
+        <a class="href-link" href="#.T">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                T<span class="signature">(dsu, derive<span class="signature-attributes">opt</span>, mountPath<span class="signature-attributes">opt</span>, mountOptions<span class="signature-attributes">opt</span>, modelArgs<span class="signature-attributes">opt</span>, args<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+    <div class="description">
+        <script type="text/javascript" src="https://unpkg.com/mermaid@7.1.0/dist/mermaid.min.js"></script>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+            <th>Attributes</th>
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>dsu</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">Object</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>derive</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">boolean</span>
+|
+
+<span class="param-type">number</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"><p>decides if the resulting mount uses the Seed or the Read (or how many times it derives the key)</p></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>mountPath</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">string</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"><p>defines the mount path, overriding the property name;</p></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>mountOptions</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">DSUIOOptions</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"><p>defines the mount path, overriding the property name;</p></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>modelArgs</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">Array.&lt;string></span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"><p>optional model KeySSI generation params</p></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>args</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">Array.&lt;any></span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"><p>optional KeySSI generation params</p></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="core_model_decorators.ts.html" class="button">View Source</a>
+            <span>
+                <a href="core_model_decorators.ts.html">core/model/decorators.ts</a>, <a href="core_model_decorators.ts.html#line126">line 126</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+            </div>
+        </div>
+    
+
+    
+        <div class='vertical-section'>
+            <h1>Type Definitions</h1>
+            <div class="members">
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<span class="param-type">object</span>
+
+
+    </span>
+
+<h4 class="name" id=".DSUClassCreationMetadata">
+    <a class="href-link" href="#.DSUClassCreationMetadata">#</a>
+    
+    <span class="code-name">
+        DSUClassCreationMetadata
+    </span>
+    
+</h4>
+
+
+<p class="summary"><p>Metadata passed to <code>DSUClassCreationHandler</code>s</p>.</p>
+
+
+
+<div class="description">
+    <script type="text/javascript" src="https://unpkg.com/mermaid@7.1.0/dist/mermaid.min.js"></script><p>Metadata passed to <code>DSUClassCreationHandler</code>s</p>
+</div>
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+<div class="table-container">
+    <table class="props table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>indexer:</code></td>
+    
+
+    <td class="type">
+    
+        
+<span class="param-type">any</span>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>string</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>dsu</code></td>
+    
+
+    <td class="type">
+    
+        
+<span class="param-type">object</span>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"></td>
+</tr>
+
+  
+      
+<tr class="deep-level-1">
+    
+        <td class="name"><code>operation</code></td>
+    
+
+    <td class="type">
+    
+        
+<span class="param-type">string</span>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"></td>
+</tr>
+
+  
+      
+<tr class="deep-level-1">
+    
+        <td class="name"><code>phase</code></td>
+    
+
+    <td class="type">
+    
+        
+<span class="param-type">Array</span>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"></td>
+</tr>
+
+  
+      
+<tr class="deep-level-1">
+    
+        <td class="name"><code>domain</code></td>
+    
+
+    <td class="type">
+    
+        
+<span class="param-type">string</span>
+|
+
+<span class="param-type">undefined</span>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"></td>
+</tr>
+
+  
+      
+<tr class="deep-level-1">
+    
+        <td class="name"><code>keySSIType</code></td>
+    
+
+    <td class="type">
+    
+        
+<span class="param-type">KeySSIType</span>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"></td>
+</tr>
+
+  
+      
+<tr class="deep-level-1">
+    
+        <td class="name"><code>batchMode</code></td>
+    
+
+    <td class="type">
+    
+        
+<span class="param-type">boolean</span>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"></td>
+</tr>
+
+  
+      
+<tr class="deep-level-1">
+    
+        <td class="name"><code>specificKeyArgs</code></td>
+    
+
+    <td class="type">
+    
+        
+<span class="param-type">KeySSISpecificArgs</span>
+|
+
+<span class="param-type">undefined</span>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"></td>
+</tr>
+
+  
+      
+<tr class="deep-level-1">
+    
+        <td class="name"><code>props</code></td>
+    
+
+    <td class="type">
+    
+        
+<span class="param-type">Array</span>
+|
+
+<span class="param-type">undefined</span>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"></td>
+</tr>
+
+  
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="core_model_decorators.ts.html" class="button">View Source</a>
+            <span>
+                <a href="core_model_decorators.ts.html">core/model/decorators.ts</a>, <a href="core_model_decorators.ts.html#line346">line 346</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<span class="param-type">object</span>
+
+
+    </span>
+
+<h4 class="name" id=".DSUCreationMetadata">
+    <a class="href-link" href="#.DSUCreationMetadata">#</a>
+    
+    <span class="code-name">
+        DSUCreationMetadata
+    </span>
+    
+</h4>
+
+
+<p class="summary"><p>Metadata passed to <code>DSUCreationHandler</code>s</p>.</p>
+
+
+
+<div class="description">
+    <script type="text/javascript" src="https://unpkg.com/mermaid@7.1.0/dist/mermaid.min.js"></script><p>Metadata passed to <code>DSUCreationHandler</code>s</p>
+</div>
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+<div class="table-container">
+    <table class="props table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>indexer:</code></td>
+    
+
+    <td class="type">
+    
+        
+<span class="param-type">any</span>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>string</p></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>operation</code></td>
+    
+
+    <td class="type">
+    
+        
+<span class="param-type">string</span>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>phase</code></td>
+    
+
+    <td class="type">
+    
+        
+<span class="param-type">Array</span>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>dsu</code></td>
+    
+
+    <td class="type">
+    
+        
+<span class="param-type">string</span>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>derive</code></td>
+    
+
+    <td class="type">
+    
+        
+<span class="param-type">boolean</span>
+|
+
+<span class="param-type">number</span>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>options</code></td>
+    
+
+    <td class="type">
+    
+        
+<span class="param-type">DSUIOOptions</span>
+|
+
+<span class="param-type">undefined</span>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>dsuPath</code></td>
+    
+
+    <td class="type">
+    
+        
+<span class="param-type">string</span>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"></td>
+</tr>
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="core_model_decorators.ts.html" class="button">View Source</a>
+            <span>
+                <a href="core_model_decorators.ts.html">core/model/decorators.ts</a>, <a href="core_model_decorators.ts.html#line363">line 363</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+            </div>
+        </div>
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+            </div>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+<script src="scripts/search.js"> </script>
+
+</body>
+</html>

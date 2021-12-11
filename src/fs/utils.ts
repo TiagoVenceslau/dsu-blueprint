@@ -122,8 +122,9 @@ export function getPath(): path {
  *
  * @param {string} strEnv the contents of the environment.js file
  *
- * 
- * @module filesystem
+ * @function parseEnvJS
+ *
+ * @memberOf filesystem
  */
 export function parseEnvJS(strEnv: string): {}{
     return JSON.parse(strEnv.replace(/^export\sdefault\s/, ''));
@@ -136,8 +137,9 @@ export function parseEnvJS(strEnv: string): {}{
  * @param {string} pathToApps
  * @param {ObjectCallback} callback
  *
- * 
- * @module filesystem
+ * @function parseEnvJS
+ *
+ * @memberOf filesystem
  */
 export function getEnvJs(app: string, pathToApps: string, callback: ObjectCallback){
     const appPath = getPath().join(process.cwd(), pathToApps, "trust-loader-config", app, "loader", "environment.js");

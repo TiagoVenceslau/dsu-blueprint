@@ -7,7 +7,7 @@
   
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Declarative OpenDSU creation and management API core/repository/cache.ts</title>
+  <title>Declarative OpenDSU creation and management API core/model/builtins.ts</title>
 
   <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -100,7 +100,7 @@
             <div class="content">
                 <header class="page-title">
                     <p>Source</p>
-                    <h1>core/repository/cache.ts</h1>
+                    <h1>core/model/builtins.ts</h1>
                 </header>
                 
 
@@ -109,93 +109,88 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import {DSU} from "../opendsu";
-import {DSUModel} from "../model";
-import {createObjectToValueChain, getValueFromValueChain} from "./utils";
-import {KeySSI} from "../opendsu/apis/keyssi";
+            <pre class="prettyprint source linenums"><code>import {DSUModel} from "./DSUModel";
+import {dsu, DSUBlueprint} from "./decorators";
+import {constructFromObject} from "@tvenceslau/db-decorators/lib";
+import {KeySSIType} from "../opendsu/apis/keyssi";
+import {fromWeb} from "../web";
+import {ConstantsApi} from "../opendsu";
 
 /**
- * Stores recursively created DSUs in order for later operations to reference them (mounting, etc)
+ * Built In {@link DSUBlueprint} for the Base KeySSI type {@link SeedSSI}
  *
- * @class DSUCache
+ * This class is decorated via {@link DSUBlueprint} with:
+ *  - domain: undefined;
+ *  - keySSIType: {@link KeySSIType.SEED}
  *
- * @module repository
+ * @class SeedDSU
+ *
+ * @memberOf core.model
  */
-export class DSUCache&lt;T extends DSUModel>{
-    private _cache: {[indexer: string]: {[indexer: string]: {dsu: DSU, keySSI: KeySSI}[]}} = {};
+@DSUBlueprint(undefined, KeySSIType.SEED)
+export class SeedDSU extends DSUModel{
 
-    /**
-     * caches the DSU, by associating it with the {@param obj}'s name, and {@param propKey}
-     *
-     * @param {T} obj
-     * @param {string} propKey
-     * @param {DSU} dsu
-     * @param {KeySSI} keySSI
-     * @param {string} [parent] only meant to be used by bound objects resulting from {@link DSUCache#bindToParent}
-     */
-    cache(obj: T, propKey: string, dsu: DSU, keySSI: KeySSI, parent?: string): void{
-        const name = obj.constructor.name;
-        const chain = `${parent ? `${parent}.` : ''}${name}.${propKey}`;
-        createObjectToValueChain(this._cache, chain, {
-            dsu: dsu,
-            keySSI: keySSI
-        });
-    }
-
-    /**
-     * returns the cached {@link DSU}
-     *
-     * @param {T | string} obj
-     * @param {string} propKey
-     * @param {string} [parent] only meant to be used by bound objects resulting from {@link DSUCache#bindToParent} to reverse the hierarchical structure
-     */
-    get(obj: T | string, propKey: string, parent?: string): {dsu: DSU, keySSI: KeySSI}[] | undefined {
-        const name: string = typeof  obj === 'string' ? obj : (obj.name || obj.constructor.name);
-        const chain = `${parent ? `${parent}.` : ''}${name}.${propKey}`;
-        try {
-            return getValueFromValueChain(this._cache, chain);
-        } catch (e) {
-            try {
-                const split: string[]  = chain.split('.');
-                const parents = split.splice(split.length - 3, 3)
-                const args = [split.pop(), parents.pop()] as string[];
-                // @ts-ignore
-                return this.get(...args, split.join('.'));
-            } catch (e) {
-                return undefined;
-            }
-        }
-    }
-
-    /**
-     *
-     * @param {T} parentModel
-     * @param {string} propKey
-     * @return a {@link isDSUCache} validatable {@link DSUCache} bound to the {@param parentModel}s name and {@prop propKey} to enable recursive storage
-     */
-    bindToParent(parentModel: T, propKey: string): DSUCache&lt;T> {
-        const self: DSUCache&lt;T> = this;
-        const name: string = parentModel.name || parentModel.constructor.name;
-        const chain = `${name}.${propKey}`;
-        const proxyObj = {
-            cache: (obj: T, propKey: string, dsu: DSU, keySSI: KeySSI) => self.cache.call(self, obj, propKey, dsu, keySSI, chain),
-            get: (obj: T, propKey: string) => self.get.call(self, obj, propKey, chain),
-            bindToParent: (parentModel: T, propKey: string) => self.bindToParent.call(self, parentModel, propKey)
-        }
-
-        return proxyObj as DSUCache&lt;T>;
-    }
 }
 
 /**
- * Because of the binding, this method should be used instead of 'instanceof DSUCache'
+ * Built In {@link DSUBlueprint} for the Base KeySSI type {@link WalletSSI}
  *
- * @param {any} obj
+ * This class is decorated via {@link DSUBlueprint} with:
+ *  - domain: undefined;
+ *  - keySSIType: {@link KeySSIType.Wallet}
  *
- * @module repository
+ * @class WalletDSU
+ *
+ * @memberOf core.model
  */
-export function isDSUCache(obj: any){
-    return obj &amp;&amp; obj.get &amp;&amp; obj.bindToParent &amp;&amp; obj.cache;
+@DSUBlueprint(undefined, KeySSIType.WALLET)
+export class WalletDSU extends DSUModel{
+    /**
+     * Placeholder where the wallet code will be mounted.
+     * Property name &lt;strong> has to be&lt;/strong> {@link ConstantsApi#CODE_FOLDER}
+     */
+    @fromWeb('dsu-blueprint', "primary")
+    code?: string = undefined;
+}
+
+/**
+ * Built In {@link DSUBlueprint} for the Base KeySSI type {@link ArraySSI}
+ *
+ * This class is decorated via {@link DSUBlueprint} with:
+ *  - domain: undefined;
+ *  - keySSIType: {@link KeySSIType.ARRAY}
+ *
+ * @class ArrayDSU
+ *
+ * @memberOf core.model
+ */
+@DSUBlueprint(undefined, KeySSIType.ARRAY)
+export class ArrayDSU extends DSUModel{
+
+}
+
+/**
+ * Built In {@link DSUBlueprint} for a {@link DBApi} database
+ *
+ * This class is decorated via {@link DSUBlueprint} with:
+ *  - domain: undefined;
+ *  - keySSIType: {@link KeySSIType.SEED}
+ *
+ * @class DbDsuBlueprint
+ *
+ * @memberOf core.model
+ */
+@DSUBlueprint(undefined, KeySSIType.SEED)
+export class DbDsuBlueprint extends DSUModel{
+
+    @dsu&lt;SeedDSU>(SeedDSU)
+    data?: SeedDSU = undefined;
+
+    constructor(blueprint?: DbDsuBlueprint | {}) {
+        super();
+        constructFromObject&lt;DbDsuBlueprint>(this, blueprint);
+        this.data = new SeedDSU(this.data);
+    }
 }</code></pre>
         </article>
     </section>

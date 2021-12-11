@@ -13,10 +13,9 @@ import {DsuFsKeys, FSOptions} from "./constants";
  * @param {string} key
  * @return string
  *
- * 
+ * @function getFsKey
  *
- * @namespace decorators
- * @module filesystem
+ * @memberOf filesystem
  */
 const getFsKey = (key: string) => DsuKeys.REFLECT + key;
 
@@ -27,78 +26,80 @@ const getFsKey = (key: string) => DsuKeys.REFLECT + key;
  * @param {string} [mountPath] defines the mount path, overriding the property name;
  * @param {string} [mountOptions] sets the {@link DSUIOOptions} fot the mount operation
  *
- * 
+ * @function dsuFS
  *
- * @namespace decorators
- * @module filesystem
+ * @category Decorators
+ * @memberOf filesystem
  */
-export const dsuFS = (app: string, derive: boolean = false, mountPath?: string, mountOptions?: DSUIOOptions) => (target: any, propertyKey: string) => {
-    Reflect.defineMetadata(
-        getFsKey(DsuFsKeys.MOUNT_FS),
-        {
-            operation: DSUOperation.EDITING,
-            phase: DBOperations.CREATE,
-            app: app,
-            derive: derive,
-            options: mountOptions,
-            dsuPath: mountPath ? mountPath : propertyKey
-        },
-        target,
-        propertyKey
-    );
+export function dsuFS(app: string, derive: boolean = false, mountPath?: string, mountOptions?: DSUIOOptions) {
+    return (target: any, propertyKey: string) => {
+        Reflect.defineMetadata(
+            getFsKey(DsuFsKeys.MOUNT_FS),
+            {
+                operation: DSUOperation.EDITING,
+                phase: DBOperations.CREATE,
+                app: app,
+                derive: derive,
+                options: mountOptions,
+                dsuPath: mountPath ? mountPath : propertyKey
+            },
+            target,
+            propertyKey
+        );
 
-    const handler: DSUEditingHandler = function<T extends DBModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, obj: any, dsu: DSU, decorator: DSUEditMetadata, callback: DSUCallback<T>): void {
-        const {props} = decorator;
-        const {dsuPath, options, derive, app} = props;
-        const seedPath = getPath().join(this.pathAdaptor, app, FSOptions.seedFileName);
+        const handler: DSUEditingHandler = function <T extends DBModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, obj: any, dsu: DSU, decorator: DSUEditMetadata, callback: DSUCallback<T>): void {
+            const {props} = decorator;
+            const {dsuPath, options, derive, app} = props;
+            const seedPath = getPath().join(this.pathAdaptor, app, FSOptions.seedFileName);
 
-        const handleOperation = function(seedPath: string, dsuPath: string, callback: Callback){
-            getFS().readFile(seedPath, undefined, (err, keySSI) => {
-                if (err || !keySSI)
-                    return criticalCallback(err || new Error(`Missing data`), callback);
-                try {
-                    keySSI = getKeySSIApi().parse(keySSI.toString());
-                    if (derive)
-                        keySSI = keySSI.derive();
+            const handleOperation = function (seedPath: string, dsuPath: string, callback: Callback) {
+                getFS().readFile(seedPath, undefined, (err, keySSI) => {
+                    if (err || !keySSI)
+                        return criticalCallback(err || new Error(`Missing data`), callback);
+                    try {
+                        keySSI = getKeySSIApi().parse(keySSI.toString());
+                        if (derive)
+                            keySSI = keySSI.derive();
 
-                } catch (e){
-                    return criticalCallback(`Could not parse KeySSI for App ${app}`, callback);
-                }
-                dsu.mount(dsuPath, keySSI.getIdentifier(), options, (err) => {
-                    if (err)
-                        return criticalCallback(err, callback);
-                    callback(undefined, obj, dsu)
-                })
-            });
-        }
-        if (!seedPath.match(/[\\/]\*[\\/]/))
-            return handleOperation(seedPath, dsuPath, callback);
-
-        let basePath = seedPath.split("*");
-        getFS().readdir(basePath[0], undefined, (err, folders) => {
-            if (err || !folders || !folders.length)
-                return criticalCallback(err || new Error(`Could not find referenced folders`), callback);
-
-            const mountIterator = function(folders: string[], callback: Callback){
-                const folder = folders.shift();
-                if (!folder)
-                    return callback();
-                handleOperation(getPath().join(basePath[0], folder, basePath[1]), `${dsuPath}/${folder}`, (err) => {
-                    if (err)
-                        return criticalCallback(err, callback);
-                    mountIterator(folders, callback);
+                    } catch (e) {
+                        return criticalCallback(`Could not parse KeySSI for App ${app}`, callback);
+                    }
+                    dsu.mount(dsuPath, keySSI.getIdentifier(), options, (err) => {
+                        if (err)
+                            return criticalCallback(err, callback);
+                        callback(undefined, obj, dsu)
+                    })
                 });
             }
+            if (!seedPath.match(/[\\/]\*[\\/]/))
+                return handleOperation(seedPath, dsuPath, callback);
 
-            mountIterator(folders.slice(), (err) => {
-                if (err)
-                    return callback(err);
-                callback(undefined, obj, dsu);
+            let basePath = seedPath.split("*");
+            getFS().readdir(basePath[0], undefined, (err, folders) => {
+                if (err || !folders || !folders.length)
+                    return criticalCallback(err || new Error(`Could not find referenced folders`), callback);
+
+                const mountIterator = function (folders: string[], callback: Callback) {
+                    const folder = folders.shift();
+                    if (!folder)
+                        return callback();
+                    handleOperation(getPath().join(basePath[0], folder, basePath[1]), `${dsuPath}/${folder}`, (err) => {
+                        if (err)
+                            return criticalCallback(err, callback);
+                        mountIterator(folders, callback);
+                    });
+                }
+
+                mountIterator(folders.slice(), (err) => {
+                    if (err)
+                        return callback(err);
+                    callback(undefined, obj, dsu);
+                });
             });
-        });
-    }
+        }
 
-    getDSUOperationsRegistry().register(handler, DSUOperation.EDITING, OperationKeys.CREATE, target, propertyKey);
+        getDSUOperationsRegistry().register(handler, DSUOperation.EDITING, OperationKeys.CREATE, target, propertyKey);
+    }
 }
 
 /**
@@ -106,37 +107,39 @@ export const dsuFS = (app: string, derive: boolean = false, mountPath?: string, 
  * @param {string} [dsuPath]  defines the path in the dsu where to store the file overriding the property name;
  * @param {string} [options] sets the {@link DSUIOOptions} fot the write operation
  *
- * 
+ * @function addFileFS
  *
- * @namespace decorators
- * @module filesystem
+ * @category Decorators
+ * @memberOf filesystem
  */
-export const addFileFS = (fsPath: string, dsuPath?: string, options?: DSUIOOptions) => (target: any, propertyKey: string) => {
-    Reflect.defineMetadata(
-        getFsKey(DsuFsKeys.ADD_FILE_FS),
-        {
-            operation: DSUOperation.EDITING,
-            phase: DBOperations.CREATE,
-            fsPath: fsPath,
-            dsuPath: dsuPath ? dsuPath : propertyKey,
-            options: options
-        },
-        target,
-        propertyKey
-    );
+export function addFileFS(fsPath: string, dsuPath?: string, options?: DSUIOOptions) {
+    return (target: any, propertyKey: string) => {
+        Reflect.defineMetadata(
+            getFsKey(DsuFsKeys.ADD_FILE_FS),
+            {
+                operation: DSUOperation.EDITING,
+                phase: DBOperations.CREATE,
+                fsPath: fsPath,
+                dsuPath: dsuPath ? dsuPath : propertyKey,
+                options: options
+            },
+            target,
+            propertyKey
+        );
 
-    const handler: DSUEditingHandler = function<T extends DBModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, obj: T | {}, dsu: DSU, decorator: DSUEditMetadata, callback: DSUCallback<T> | ReadCallback): void {
-        const {props} = decorator;
-        let {dsuPath, fsPath, options} = props;
-        fsPath = getPath().join(this.pathAdaptor, fsPath);
-        dsu.addFile(fsPath, dsuPath, options, err => {
-            if (err)
-                return criticalCallback(err, callback);
-            callback(undefined, obj as T, dsu);
-        });
+        const handler: DSUEditingHandler = function <T extends DBModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, obj: T | {}, dsu: DSU, decorator: DSUEditMetadata, callback: DSUCallback<T> | ReadCallback): void {
+            const {props} = decorator;
+            let {dsuPath, fsPath, options} = props;
+            fsPath = getPath().join(this.pathAdaptor, fsPath);
+            dsu.addFile(fsPath, dsuPath, options, err => {
+                if (err)
+                    return criticalCallback(err, callback);
+                callback(undefined, obj as T, dsu);
+            });
+        }
+
+        getDSUOperationsRegistry().register(handler, DSUOperation.EDITING, OperationKeys.CREATE, target, propertyKey);
     }
-
-    getDSUOperationsRegistry().register(handler, DSUOperation.EDITING, OperationKeys.CREATE, target, propertyKey);
 }
 
 /**
@@ -144,35 +147,37 @@ export const addFileFS = (fsPath: string, dsuPath?: string, options?: DSUIOOptio
  * @param {string} [dsuPath]  defines the path in the dsu where to store the file overriding the property name;
  * @param {string} [options] sets the {@link DSUIOOptions} fot the write operation
  *
- * 
+ * @function addFolderFS
  *
- * @namespace decorators
- * @module filesystem
+ * @category Decorators
+ * @memberOf filesystem
  */
-export const addFolderFS = (fsPath?: string, dsuPath?: string, options?: DSUIOOptions) => (target: any, propertyKey: string) => {
-    Reflect.defineMetadata(
-        getFsKey(DsuFsKeys.ADD_FOLDER_FS),
-        {
-            operation: DSUOperation.EDITING,
-            phase: DBOperations.CREATE,
-            fsPath: fsPath ? fsPath : propertyKey,
-            dsuPath: dsuPath ? dsuPath : propertyKey,
-            options: options
-        },
-        target,
-        propertyKey
-    );
+export function addFolderFS(fsPath?: string, dsuPath?: string, options?: DSUIOOptions) {
+    return (target: any, propertyKey: string) => {
+        Reflect.defineMetadata(
+            getFsKey(DsuFsKeys.ADD_FOLDER_FS),
+            {
+                operation: DSUOperation.EDITING,
+                phase: DBOperations.CREATE,
+                fsPath: fsPath ? fsPath : propertyKey,
+                dsuPath: dsuPath ? dsuPath : propertyKey,
+                options: options
+            },
+            target,
+            propertyKey
+        );
 
-    const handler: DSUEditingHandler = function<T extends DBModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, obj: T | {}, dsu: DSU, decorator: DSUEditMetadata, callback: DSUCallback<T> | ReadCallback): void {
-        const {props} = decorator;
-        let {dsuPath, fsPath, options} = props;
-        fsPath = getPath().join(this.pathAdaptor, fsPath);
-        dsu.addFolder(fsPath, dsuPath, options, err => {
-            if (err)
-                return criticalCallback(err, callback);
-            callback(undefined, obj as T, dsu);
-        });
+        const handler: DSUEditingHandler = function <T extends DBModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, obj: T | {}, dsu: DSU, decorator: DSUEditMetadata, callback: DSUCallback<T> | ReadCallback): void {
+            const {props} = decorator;
+            let {dsuPath, fsPath, options} = props;
+            fsPath = getPath().join(this.pathAdaptor, fsPath);
+            dsu.addFolder(fsPath, dsuPath, options, err => {
+                if (err)
+                    return criticalCallback(err, callback);
+                callback(undefined, obj as T, dsu);
+            });
+        }
+
+        getDSUOperationsRegistry().register(handler, DSUOperation.EDITING, OperationKeys.CREATE, target, propertyKey);
     }
-
-    getDSUOperationsRegistry().register(handler, DSUOperation.EDITING, OperationKeys.CREATE, target, propertyKey);
 }

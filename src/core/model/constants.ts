@@ -1,7 +1,10 @@
 /**
  * Identifying keys for reflection operations and other constants
  *
- * @enum
+ * @enum DsuKeys
+ *
+ * @category Constants
+ * @memberOf core.model
  */
 export enum DsuKeys {
     REFLECT = 'opendsu.blueprint.',
@@ -23,7 +26,10 @@ export enum DsuKeys {
  *   - {@link fromCache}
  *   - {@link mount}
  *
- * @enum
+ * @enum DSUOperation
+ *
+ * @category Constants
+ * @memberOf core.model
  */
 export enum DSUOperation {
     CREATION = "creation",

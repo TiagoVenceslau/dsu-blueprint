@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,7 +7,7 @@
   
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Declarative OpenDSU creation and management API decorators</title>
+  <title>Declarative OpenDSU creation and management API core/model/index.ts</title>
 
   <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -90,109 +92,61 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-cli.html">cli</a></li><li><a href="module-core.html">core</a></li><li><a href="module-dsu-blueprint.html">dsu-blueprint</a></li><li><a href="module-filesystem.html">filesystem</a></li><li><a href="module-repository.html">repository</a></li><li><a href="module-web.html">web</a></li></ul><h3>Namespaces</h3><ul><li><a href="dsu-blueprint.OpenDSU.html">OpenDSU</a></li><li><a href="model.decorators.html">decorators</a></li><li><a href="module-web-decorators.html">decorators</a></li><li><a href="OpenDSU.html">OpenDSU</a></li><li><a href="repository.html">repository</a></li></ul><h3>Classes</h3><ul><li><a href="module-web.WebServiceImp.html">WebServiceImp</a></li><li><a href="OpenDSU.factory.DSUFactoryRegistry.html">DSUFactoryRegistry</a></li><li><a href="OpenDSU.factory.KeySSIFactoryRegistry.html">KeySSIFactoryRegistry</a></li><li><a href="OpenDSURepository_OpenDSURepository.html">OpenDSURepository</a></li></ul><h3>Interfaces</h3><ul><li><a href="ConstantsApi.html">ConstantsApi</a></li><li><a href="DSU.html">DSU</a></li><li><a href="EnvironmentTypes.html">EnvironmentTypes</a></li><li><a href="fs.html">fs</a></li><li><a href="path.html">path</a></li><li><a href="WalletDsu.html">WalletDsu</a></li><li><a href="WebService.html">WebService</a></li></ul><h3>Global</h3><ul><li><a href="global.html#createObjectToValueChain">createObjectToValueChain</a></li><li><a href="global.html#DsuKeys">DsuKeys</a></li><li><a href="global.html#DSUOperation">DSUOperation</a></li><li><a href="global.html#getValueFromValueChain">getValueFromValueChain</a></li></ul></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-Cli.html">Cli</a></li><li><a href="module-Core.html">Core</a></li><li><a href="module-filesystem.html">filesystem</a></li><li><a href="module-repository.html">repository</a></li></ul><h3>Namespaces</h3><ul><li><a href="Cli.cli.html">cli</a></li><li><a href="core.model.html">model</a></li><li><a href="core.web.html">web</a></li><li><a href="dsu-blueprint.OpenDSU.html">OpenDSU</a></li><li><a href="FileSystem.filesystem.html">filesystem</a></li><li><a href="model.decorators.html">decorators</a></li><li><a href="module-Core-core.html">core</a></li><li><a href="OpenDSU.html">OpenDSU</a></li><li><a href="repository.html">repository</a></li></ul><h3>Classes</h3><ul><li><a href="core.model.ArrayDSU.html">ArrayDSU</a></li><li><a href="core.model.DbDsuBlueprint.html">DbDsuBlueprint</a></li><li><a href="core.model.SeedDSU.html">SeedDSU</a></li><li><a href="core.model.WalletDSU.html">WalletDSU</a></li><li><a href="OpenDSU.factory.DSUFactoryRegistry.html">DSUFactoryRegistry</a></li><li><a href="OpenDSU.factory.KeySSIFactoryRegistry.html">KeySSIFactoryRegistry</a></li><li><a href="OpenDSURepository_OpenDSURepository.html">OpenDSURepository</a></li><li><a href="WebServiceImp_WebServiceImp.html">WebServiceImp</a></li></ul><h3>Interfaces</h3><ul><li><a href="ConstantsApi.html">ConstantsApi</a></li><li><a href="DSU.html">DSU</a></li><li><a href="EnvironmentTypes.html">EnvironmentTypes</a></li><li><a href="fs.html">fs</a></li><li><a href="path.html">path</a></li><li><a href="WalletDsu.html">WalletDsu</a></li></ul><h3>Global</h3><ul><li><a href="global.html#buildOrUpdate">buildOrUpdate</a></li><li><a href="global.html#createObjectToValueChain">createObjectToValueChain</a></li><li><a href="global.html#getValueFromValueChain">getValueFromValueChain</a></li></ul></div><div class="category"><h2>Services</h2><h3>Classes</h3><ul><li><a href="core.web.WebServiceImp.html">WebServiceImp</a></li></ul><h3>Interfaces</h3><ul><li><a href="core.web.WebService.html">WebService</a></li></ul></div>
                 
             </nav>
         </div>
         <div class="core" id="main-content-wrapper">
             <div class="content">
                 <header class="page-title">
-                    <p>Namespace</p>
-                    <h1>decorators</h1>
+                    <p>Source</p>
+                    <h1>core/model/index.ts</h1>
                 </header>
                 
 
 
 
-
-<section>
-
-<header>
     
-        <h2>
-            <span class="ancestors"><a href="module-web.html">web</a>~</span>decorators</h2>
-        
-    
-</header>
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @namespace core.model
+ */
 
-<article>
-    <div class="container-overview">
-    
-        
-            <div class="description"><p>Decorator collection to enable interaction with web related services (including the ApiHub)</p></div>
-        
-
-        
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    
-
-    
-
-    
-
-    
-        <p class="tag-source">
-            <a href="core_web_index.ts.html" class="button">View Source</a>
-            <span>
-                <a href="core_web_index.ts.html">core/web/index.ts</a>, <a href="core_web_index.ts.html#line9">line 9</a>
-            </span>
-        </p>
-    
-</dl>
-
-
-        
-    
-    </div>
-    
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
+/**
+ * Open DSU Model Decorators
+ *
+ * @memberOf core.model
+ */
+export * from './decorators';
+/**
+ * Open DSU Model
+ *
+ * @memberOf core.model
+ */
+export * from './DSUModel';
+/**
+ * DSU Model Registry
+ *
+ * @memberOf core.model
+ */
+export * from './registry';
+/**
+ * Model Constants
+ *
+ * @category Constants
+ *
+ * @memberOf core.model
+ */
+export * from './constants';
+/**
+ * BuiltIn {@link DSUModel}s
+ *
+ * @memberOf core.model
+ */
+export * from './builtins';</code></pre>
+        </article>
+    </section>
 
 
 

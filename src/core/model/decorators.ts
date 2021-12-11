@@ -24,7 +24,7 @@ import {
     OperationKeys
 } from "@tvenceslau/db-decorators/lib";
 import {KeySSI, KeySSISpecificArgs, KeySSIType} from "../opendsu/apis/keyssi";
-import {ConstantsApi, DSUFactoryMethod} from "../opendsu";
+import {ConstantsApi} from "../opendsu";
 import {
     DSUPostProcess,
     getDSUFactoryRegistry,
@@ -32,8 +32,25 @@ import {
     KeySSIFactoryResponse
 } from "../opendsu/factory";
 
+/**
+ * Builds the final DSU Reflection Key
+ *
+ * @function
+ *
+ * @param {string} key
+ *
+ * @return {string} the full key
+ *
+ * @memberOf core.model
+ */
 export const getDSUModelKey = (key: string) => DsuKeys.REFLECT + key;
 
+/**
+ * Metadata passed to {@link DSUClassCreationHandler}s
+ *
+ * @typedef DSUClassCreationMetadata
+ * @memberOf core.model
+ */
 export type DSUClassCreationMetadata = {
     [indexer: string]: any;
     dsu: {
@@ -49,6 +66,8 @@ export type DSUClassCreationMetadata = {
 }
 
 /**
+ * DSU Blueprint Decorator
+ *
  * Defines a class as a DSU Blueprint, enabling:
  *  - Automatic CRUD operations, just by updating its corresponding {@link DSUModel} instance and running it through the appropriate {@link OpenDSURepository};
  *  - Automatic validations && easily extendable for added validations;
@@ -58,13 +77,6 @@ export type DSUClassCreationMetadata = {
  *  TODO:
  *  Because everything is declarative, the hash of the {@link DSUModel} class file string literal + the hash of the dsu-blueprint bundle file
  *  can be used stored as DSU metadata and serve as proof of authenticity in theory. I guess if we store this lib.
- *
- * @prop {string | undefined} [domain] the DSU domain. default to undefined. when undefined, its the repository that controls the domain;
- * @prop {KeySSIType} [keySSIType] the KeySSI type used to anchor the DSU
- * @prop {KeySSISpecificArgs | undefined} [specificKeyArgs]  OpenDSU related arguments, specific to each KeySSI implementation.
- * @prop {DSUAnchoringOptions | undefined} [options] defaults to undefined.
- * @prop {boolean} [batchMode] defaults to true. decides if batchMode is meant to be used for this DSU
- * @prop {string[]} [props] any object properties that must be passed to the KeySSI generation function (eg: for Array SSIs)
  *
  * Supported {@link KeySSIType}s:
  *  - {@link KeySSIType.SEED}: Expects:
@@ -86,9 +98,28 @@ export type DSUClassCreationMetadata = {
  *          - {@link fromCache};
  *          - {@link mount}
  *
- * @decorator DSUBlueprint
- * @namespace decorators
- * @memberOf model
+ * {@link OpenDSURepository} {@link OperationKeys}'s this decorator acts on:
+ *  - {@link OperationKeys.CREATE}: Creates the {@link DSUBlueprint}:
+ *      - Gets the keySSI and the {@link DSUFactoryMethod}'s {@link DSUAnchoringOptions} from the {@link KeySSIFactoryRegistry};
+ *      - Creates the {@link DSU} via the {@link DSUFactoryRegistry#build}
+ *  - {@link OperationKeys.READ}:
+ *  - {@link OperationKeys.UPDATE}:
+ *  - {@link OperationKeys.DELETE}:
+ *
+ *  {@link DSUOperation} phases this decorator acts on:
+ *  - {@link DSUOperation.CLASS}:
+ *
+ * @prop {string | undefined} [domain] the DSU domain. default to undefined. when undefined, its the repository that controls the domain;
+ * @prop {KeySSIType} [keySSIType] the KeySSI type used to anchor the DSU
+ * @prop {KeySSISpecificArgs | undefined} [specificKeyArgs]  OpenDSU related arguments, specific to each KeySSI implementation.
+ * @prop {DSUAnchoringOptions | undefined} [options] defaults to undefined.
+ * @prop {boolean} [batchMode] defaults to true. decides if batchMode is meant to be used for this DSU
+ * @prop {string[]} [props] any object properties that must be passed to the KeySSI generation function (eg: for Array SSIs)
+ *
+ * @function
+ *
+ * @category Decorators
+ * @memberOf core.model
  */
 export const DSUBlueprint = (domain: string | undefined = undefined, keySSIType: KeySSIType = KeySSIType.SEED, specificKeyArgs: KeySSISpecificArgs | undefined = undefined, options: DSUAnchoringOptions | undefined = undefined, batchMode: boolean = true, ...props: string[]) => (original: Function) => {
     getRepoRegistry().register(original.name);
@@ -157,6 +188,12 @@ export const DSUBlueprint = (domain: string | undefined = undefined, keySSIType:
     })(original);
 }
 
+/**
+ * Metadata passed to {@link DSUCreationHandler}s
+ *
+ * @typedef DSUCreationMetadata
+ * @memberOf core.model
+ */
 export type DSUCreationMetadata = {
     [indexer: string]: any;
 
@@ -171,7 +208,9 @@ export type DSUCreationMetadata = {
 
 /**
  *
+ *
  * @typedef T extends DSUModel
+ *
  * @param {{new: T}} dsu
  * @param {boolean | number} [derive] decides if the resulting mount uses the Seed or the Read (or how many times it derives the key)
  * @param {string} [mountPath] defines the mount path, overriding the property name;
@@ -179,9 +218,10 @@ export type DSUCreationMetadata = {
  * @param {string[]} [modelArgs] optional model KeySSI generation params
  * @param {any[]} [args] optional KeySSI generation params
  *
- * @decorator dsu
- * @namespace decorators
- * @memberOf model
+ * @function
+ *
+ * @category Decorators
+ * @memberOf core.model
  */
 export function dsu<T extends DSUModel>(dsu: {new(): T}, derive: boolean | number = false, mountPath?: string, mountOptions?: DSUIOOptions, modelArgs?: string[], ...args: any[]) {
     getRepoRegistry().register<OpenDSURepository<T>>(dsu);
