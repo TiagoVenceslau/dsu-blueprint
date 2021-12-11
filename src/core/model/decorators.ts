@@ -7,7 +7,7 @@ import {
     DSUCache,
     DSUCallback, DSUClassCreationHandler,
     DSUCreationHandler, DSUCreationUpdateHandler,
-    DSUEditingHandler, DSUFactoryMethod, fromCache, getDSUFactory, getKeySSIFactory,
+    DSUEditingHandler, DSUFactoryMethod, fromCache, getDSUFactory, getKeySSIFactory, handleDSUTypes,
     OpenDSURepository, ReadCallback
 } from "../repository";
 import DBModel from "@tvenceslau/db-decorators/lib/model/DBModel";
@@ -19,7 +19,7 @@ import {
     ModelCallback,
     OperationKeys
 } from "@tvenceslau/db-decorators/lib";
-import {KeySSI, KeySSIType} from "../opendsu/apis/keyssi";
+import {KeySSI, KeySSISpecificArgs, KeySSIType} from "../opendsu/apis/keyssi";
 import {getAnchoringOptionsByDSUType} from "../opendsu";
 
 const getDSUModelKey = (key: string) => DsuKeys.REFLECT + key;
@@ -32,7 +32,7 @@ export type DSUClassCreationMetadata = {
         domain: string | undefined,
         keySSIType: KeySSIType,
         batchMode: boolean,
-        specificKeyArgs: string[] | undefined,
+        specificKeyArgs: KeySSISpecificArgs | undefined,
         props: string[] | undefined
     }
     ,
@@ -43,7 +43,7 @@ export type DSUClassCreationMetadata = {
  *
  * @prop {string | undefined} [domain] the DSU domain. default to undefined. when undefined, its the repository that controls the domain;
  * @prop {KeySSIType} [keySSIType] the KeySSI type used to anchor the DSU
- * @prop {string[] | undefined} [specificKeyArgs]  OpenDSU related arguments, specific to each KeySSI implementation. {@link getKeySSIFactory}
+ * @prop {KeySSISpecificArgs | undefined} [specificKeyArgs]  OpenDSU related arguments, specific to each KeySSI implementation. {@link getKeySSIFactory}
  * @prop {DSUAnchoringOptions | undefined} [options] defaults to undefined. decides if batchMode is meant to be used for this DSU
  * @prop {boolean} [batchMode] defaults to true. decides if batchMode is meant to be used for this DSU
  * @prop {string[]} [props] any object properties that must be passed to the KeySSI generation function (eg: for Array SSIs)
@@ -51,7 +51,7 @@ export type DSUClassCreationMetadata = {
  * @namespace decorators
  * @memberOf model
  */
-export const DSUBlueprint = (domain: string | undefined = undefined, keySSIType: KeySSIType = KeySSIType.SEED, specificKeyArgs: string[] | undefined = undefined, options: DSUAnchoringOptions | undefined = undefined, batchMode: boolean = true, ...props: string[]) => (original: Function) => {
+export const DSUBlueprint = (domain: string | undefined = undefined, keySSIType: KeySSIType = KeySSIType.SEED, specificKeyArgs: KeySSISpecificArgs | undefined = undefined, options: DSUAnchoringOptions | undefined = undefined, batchMode: boolean = true, ...props: string[]) => (original: Function) => {
     getRepoRegistry().register(original.name);
 
     const createHandler: DSUClassCreationHandler = function<T extends DSUModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, model: T, decorator: DSUClassCreationMetadata, ...keyGenArgs:  (string | DSUCallback<T>)[]){
@@ -76,7 +76,7 @@ export const DSUBlueprint = (domain: string | undefined = undefined, keySSIType:
                     keyArgs[keyArgs.length -1].push(...keyGenArgs)
                 else // set add the value
                     keyArgs.push(keyGenArgs);
-
+            // add the KeySSIType specific arguments if they exit
             if (specificKeyArgs && specificKeyArgs.length)
                 keyArgs.push(...specificKeyArgs);
 
@@ -91,13 +91,18 @@ export const DSUBlueprint = (domain: string | undefined = undefined, keySSIType:
         dsuFactory(keySSI, options, (err, dsu) => {
             if (err || !dsu)
                 return criticalCallback(err || new Error(`No DSU received`), callback);
-
-            dsu.getKeySSIAsObject((err, keySSI) => {
-                if (err)
-                    return errorCallback(err, callback);
-                callback(undefined, model, dsu, keySSI, batchMode);
-            });
+            callback(undefined, model, handleDSUTypes(keySSI.getTypeName() as KeySSIType, dsu), batchMode);
         });
+    }
+
+    const updateHandler: DSUCreationUpdateHandler = function<T extends DSUModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, model: T, oldModel: T, dsuObj: DSU, decorator: any, callback: DSUCallback<T>): void {
+        const {batchMode} = decorator.dsu;
+
+        if (batchMode)
+            dsuObj.beginBatch();
+
+        callback(undefined, model, dsuObj);
+
     }
 
     const metadata: DSUClassCreationMetadata = {
@@ -119,6 +124,7 @@ export const DSUBlueprint = (domain: string | undefined = undefined, keySSIType:
             instance.constructor
         );
         getDSUOperationsRegistry().register(createHandler, DSUOperation.CLASS, OperationKeys.CREATE, instance, DsuKeys.CONSTRUCTOR);
+        getDSUOperationsRegistry().register(createHandler, DSUOperation.CLASS, OperationKeys.UPDATE, instance, DsuKeys.CONSTRUCTOR);
     })(original);
 }
 

@@ -6,11 +6,11 @@ import {
     DSUMultipleCallback,
     OpenDSURepository
 } from "./repository";
-import {DsuKeys, DSUModel, DSUOperation} from "../model";
+import {DsuKeys, DSUModel, DSUOperation, WalletDSU} from "../model";
 import {
     DSU,
     getKeySsiSpace,
-    getResolver,
+    getResolver, WalletDsu,
 } from "../opendsu";
 import {
     all,
@@ -111,14 +111,13 @@ export function safeParseKeySSI(keySSI: string, callback: Callback){
  *
  * @typedef T extends DSUModel
  * @param {T} model {@link DSUBlueprint} decorated {@link DSUModel}
- * @param {string} fallbackDomain The domain to be used when its not defined in the DSU Blueprint
  * @param {DSUCache<T> | undefined} [dsuCache] undefined for new transactions, inherited otherwise
  * @param {any[] | DSUCallback[]} keyGenArgs key generation args when required (for Array SSIs for instance). The last arg will be considered to be the {@link DSUCallback<T>};
  *
  * @function
  * @namespace repository
  */
-export function createFromDecorators<T extends DSUModel>(this: OpenDSURepository<T>, model: T, fallbackDomain: string, dsuCache: DSUCache<T> | undefined, ...keyGenArgs: (any | DSUCallback<T>)[]){
+export function createFromDecorators<T extends DSUModel>(this: OpenDSURepository<T>, model: T, dsuCache: DSUCache<T> | undefined, ...keyGenArgs: (any | DSUCallback<T>)[]){
     const callback: DSUCallback<T> = keyGenArgs.pop();
     if (!callback)
         throw new CriticalError(`Missing callback`);
@@ -138,7 +137,7 @@ export function createFromDecorators<T extends DSUModel>(this: OpenDSURepository
     }
 
     if (!splitDecorators)
-        return handleDSUClassDecorators.call(this, dsuCache, model, fallbackDomain, ...keyGenArgs, (err?: Err, newModel?: T, dsu?: DSU, keySSI?: KeySSI) => {
+        return handleDSUClassDecorators.call(this, dsuCache, model, OperationKeys.CREATE, ...keyGenArgs, (err?: Err, newModel?: T, dsu?: DSU, keySSI?: KeySSI) => {
             if (err || !newModel || !dsu)
                 return cb(err || new CriticalError(`Invalid results`));
             batchCallback(undefined, dsu, newModel, dsu, cb);
@@ -150,7 +149,7 @@ export function createFromDecorators<T extends DSUModel>(this: OpenDSURepository
         if (err)
             return callback(err);
 
-        handleDSUClassDecorators.call(this, dsuCache as DSUCache<T>, model, fallbackDomain, ...keyGenArgs, (err: Err, updatedModel?: T, dsu?: DSU, isBatchMode: boolean = false) => {
+        handleDSUClassDecorators.call(this, dsuCache as DSUCache<T>, model, OperationKeys.CREATE, ...keyGenArgs, (err: Err, updatedModel?: T, dsu?: DSU, isBatchMode: boolean = false) => {
             if (err || !updatedModel || !dsu)
                 return callback(err || new CriticalError("Invalid Results"));
 
@@ -169,16 +168,16 @@ export function createFromDecorators<T extends DSUModel>(this: OpenDSURepository
 /**
  * Will create a {@link DSU} based on the definitions of the {@link DSUBlueprint}
  *
- * @param {T} model {@link DSUBlueprint} decorated {@link DSUModel}
  * @param {DSUCache} dsuCache
- * @param {string} fallbackDomain The repository's fallback anchoring domain when not defined by the {@link DSUBlueprint}
+ * @param {T} model {@link DSUBlueprint} decorated {@link DSUModel}
+ * @param {OperationKeys} [operation] accepts {@link OperationKeys.CREATE} or {@link OperationKeys.UPDATE}. defaults to the first
  * @param {string[]} [args] parameters to be passed to the KeyGeneration Function, after the ones originated from the {@link DSUModel}'s properties, as defined in the {@link DSUBlueprint}
  *       The last arg will be considered to be the {@link DSUCallback<T>};
  *
  * @function
  * @namespace repository
  */
-export function handleDSUClassDecorators<T extends DSUModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, model: T, fallbackDomain: string, ...args: (any | DSUCallback<T>)[]){
+export function handleDSUClassDecorators<T extends DSUModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, model: T, operation: string = OperationKeys.CREATE, ...args: (any | DSUCallback<T>)[]){
     const callback: DSUCallback<T> = args.pop();
     if (!callback)
         throw new LoggedError(`Missing callback`);
@@ -561,20 +560,24 @@ export function updateFromDecorators<T extends DSUModel>(this: OpenDSURepository
             })
         })
 
-        const decorator: {key: string, props: any} | undefined = getClassDecorators(DsuKeys.REFLECT, model).find(d => d.key === DsuKeys.CONSTRUCTOR)
-
-        if (!decorator)
-            return criticalCallback(new Error(`No DSU decorator Found on Model`), callback);
-
-        let {batchMode} = decorator.props.dsu;
-
-        if (batchMode)
-            dsu.beginBatch();
-
-        handleEditingPropertyDecorators.call(self, dsuCache, model, dsu, splitDecorators.editing || [], OperationKeys.UPDATE, (err: Err, otherModel: T) => {
-            if (err || !otherModel)
-                return batchCallback(err || new Error("Invalid Results"), dsu, callback);
-            batchCallback(undefined, dsu, otherModel, dsu, callback);
+        handleDSUClassDecorators.call(self, dsuCache, model, OperationKeys.UPDATE, (err: Err, newModel?: T, dsu?: DSU) => {
+            if (err || ! newModel || !dsu)
+                return callback(err || new Error(`Missing results`));
+            handleEditingPropertyDecorators.call(self, dsuCache, model, dsu, splitDecorators.editing || [], OperationKeys.UPDATE, (err: Err, otherModel: T) => {
+                if (err || !otherModel)
+                    return batchCallback(err || new Error("Invalid Results"), dsu, callback);
+                batchCallback(undefined, dsu, otherModel, dsu, callback);
+            });
         });
     });
+}
+
+export function handleDSUTypes(keySSIType: KeySSIType, dsu: DSU): DSU {
+    switch (keySSIType) {
+        case KeySSIType.WALLET:
+            const wallet = dsu as WalletDsu;
+            return wallet.getWritableDSU() as DSU;
+        default:
+            return dsu as DSU;
+    }
 }

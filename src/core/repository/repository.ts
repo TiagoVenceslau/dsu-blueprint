@@ -18,7 +18,7 @@ import {KeySSI} from "../opendsu/apis/keyssi";
 
 export type DSUKey = string | KeySSI;
 
-export type DSUCallback<T extends DBModel> = (err?: Err, model?: T, dsu?: DSU, keySSI?: KeySSI, ...args: any[]) => void;
+export type DSUCallback<T extends DBModel> = (err?: Err, model?: T, dsu?: DSU, ...args: any[]) => void;
 
 export type ReadCallback = (err?: Err, model?: {[indexer: string]: any}, dsu?: DSU, keySSI?: KeySSI, ...args: any[]) => void;
 
@@ -58,7 +58,7 @@ export class OpenDSURepository<T extends DSUModel> extends AsyncRepositoryImp<T>
      * @param {string} domain the anchoring domain
      * @param {string} [pathAdaptor] only required for Filesystem operations and is meant to handle the relative path differences when necessary. Must point to the folder where './privatesky' is available
      */
-    constructor(clazz: {new (): T}, domain: string = "default", pathAdaptor: string = './'){
+    constructor(clazz: {new(...args: any[]): T}, domain: string = "default", pathAdaptor: string = './'){
         super(clazz);
         this.fallbackDomain = domain;
         this.pathAdaptor = pathAdaptor;
@@ -90,7 +90,7 @@ export class OpenDSURepository<T extends DSUModel> extends AsyncRepositoryImp<T>
         debug(`Creating {0} DSU from model {1}`, this.clazz.name, model.toString())
 
         const instance = getModelRegistry().build(model);
-        createFromDecorators.call(this, instance, this.fallbackDomain, dsuCache, ...args, (err: Err, newModel: T | undefined, dsu: DSU | undefined, keySSI: KeySSI | undefined) => {
+        createFromDecorators.call(this, instance, dsuCache, ...args, (err: Err, newModel: T | undefined, dsu: DSU | undefined, keySSI: KeySSI | undefined) => {
             if (err || !newModel || !dsu || !keySSI)
                 return callback(err || new LoggedError(`Missing Arguments...`));
             debug(`{0} DSU created. Resulting Model: {1}, KeySSI: {2}`, this.clazz.name, newModel.toString(), keySSI.getIdentifier());

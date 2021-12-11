@@ -8,12 +8,6 @@ import {DSUCache} from "./cache";
 import {ModelCallback} from "@tvenceslau/db-decorators/lib";
 import {KeySSI} from "../opendsu/apis/keyssi";
 
-export type ArraySSISpecificArgs = [vn: string, hint: string];
-
-export type WalletSSISpecificArgs = [hint: string];
-
-export type SeedSSISpecificArgs = [specificString: string, control: string, vn: string, hint: string];
-
 export type DSUFactoryMethod = (keySSI: KeySSI, options?: AnchoringOptsOrDSUCallback, callback?: SimpleDSUCallback) => void;
 
 export type DSUCreationHandler = <T extends DSUModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, model: T, decorator: DSUCreationMetadata, ...keyGenArgs: (string | ModelCallback<T>)[]) => void;

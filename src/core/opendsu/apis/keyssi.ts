@@ -36,6 +36,14 @@ export interface ArraySSI extends KeySSI {
 export interface WalletSSI extends KeySSI {
 }
 
+export type ArraySSISpecificArgs = [vn: string, hint: string];
+
+export type WalletSSISpecificArgs = [hint: string];
+
+export type SeedSSISpecificArgs = [specificString: string, control: string, vn: string, hint: string];
+
+export type KeySSISpecificArgs = ArraySSISpecificArgs | WalletSSISpecificArgs | SeedSSISpecificArgs;
+
 export type KeySSICallback = GenericCallback<KeySSI>;
 
 export enum KeySSIType {
