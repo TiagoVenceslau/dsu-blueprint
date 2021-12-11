@@ -1,9 +1,18 @@
+/**
+ * @const
+ * @namespace constants
+ * @module filesystem
+ */
 export const DsuFsKeys = {
     MOUNT_FS: "mountFS",
     ADD_FILE_FS: 'addFileFS',
     ADD_FOLDER_FS: 'addFolderFS'
 }
-
+/**
+ * @const
+ * @namespace constants
+ * @module filesystem
+ */
 export const FSOptions  = {
     // publicSecretsKey: '-$Identity-',
     // environmentKey: "-$Environment-",

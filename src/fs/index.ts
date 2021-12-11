@@ -1,6 +1,5 @@
 /**
- * @namespace fs
- * @memberOf dsu-blueprint
+ * @module filesystem
  */
 
 export * from './utils';

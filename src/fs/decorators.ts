@@ -3,7 +3,7 @@ import {DSU, DSUIOOptions, getKeySSIApi} from "../core/opendsu";
 import {getFS, getPath} from "./utils";
 import {Callback, criticalCallback, DBOperations, Err, OperationKeys} from "@tvenceslau/db-decorators/lib";
 import {getDSUOperationsRegistry} from "../core/repository/registry";
-import {DSUCache, DSUCallback, DSUEditingHandler, OpenDSURepository} from "../core/repository";
+import {DSUCache, DSUCallback, DSUEditingHandler, OpenDSURepository, ReadCallback} from "../core/repository";
 import DBModel from "@tvenceslau/db-decorators/lib/model/DBModel";
 import {DsuFsKeys, FSOptions} from "./constants";
 
@@ -16,9 +16,11 @@ const getFsKey = (key: string) => DsuKeys.REFLECT + key;
  * @param {string} [mountPath] defines the mount path, overriding the property name;
  * @param {string} [mountOptions] sets the {@link DSUIOOptions} fot the mount operation
  *
- * @decorator dsuFS
+ * @function dsuFS
+ *
+ * @decorator
  * @namespace decorators
- * @memberOf fs
+ * @module filesystem
  */
 export const dsuFS = (app: string, derive: boolean = false, mountPath?: string, mountOptions?: DSUIOOptions) => (target: any, propertyKey: string) => {
     Reflect.defineMetadata(
@@ -94,9 +96,11 @@ export const dsuFS = (app: string, derive: boolean = false, mountPath?: string, 
  * @param {string} [dsuPath]  defines the path in the dsu where to store the file overriding the property name;
  * @param {string} [options] sets the {@link DSUIOOptions} fot the write operation
  *
- * @decorator addFileFS
+ * @function addFileFS
+ *
+ * @decorator
  * @namespace decorators
- * @memberOf fs
+ * @module filesystem
  */
 export const addFileFS = (fsPath: string, dsuPath?: string, options?: DSUIOOptions) => (target: any, propertyKey: string) => {
     Reflect.defineMetadata(
@@ -112,7 +116,7 @@ export const addFileFS = (fsPath: string, dsuPath?: string, options?: DSUIOOptio
         propertyKey
     );
 
-    const handler: DSUEditingHandler = function<T extends DBModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, obj: T | {}, dsu: DSU, decorator: DSUEditMetadata, callback: DSUCallback<T>): void {
+    const handler: DSUEditingHandler = function<T extends DBModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, obj: T | {}, dsu: DSU, decorator: DSUEditMetadata, callback: DSUCallback<T> | ReadCallback): void {
         const {props} = decorator;
         let {dsuPath, fsPath, options} = props;
         fsPath = getPath().join(this.pathAdaptor, fsPath);
@@ -131,9 +135,11 @@ export const addFileFS = (fsPath: string, dsuPath?: string, options?: DSUIOOptio
  * @param {string} [dsuPath]  defines the path in the dsu where to store the file overriding the property name;
  * @param {string} [options] sets the {@link DSUIOOptions} fot the write operation
  *
- * @decorator addFolderFS
+ * @function addFolderFS
+ *
+ * @decorator
  * @namespace decorators
- * @memberOf fs
+ * @module filesystem
  */
 export const addFolderFS = (fsPath?: string, dsuPath?: string, options?: DSUIOOptions) => (target: any, propertyKey: string) => {
     Reflect.defineMetadata(
@@ -149,7 +155,7 @@ export const addFolderFS = (fsPath?: string, dsuPath?: string, options?: DSUIOOp
         propertyKey
     );
 
-    const handler: DSUEditingHandler = function<T extends DBModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, obj: T | {}, dsu: DSU, decorator: DSUEditMetadata, callback: DSUCallback<T>): void {
+    const handler: DSUEditingHandler = function<T extends DBModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, obj: T | {}, dsu: DSU, decorator: DSUEditMetadata, callback: DSUCallback<T> | ReadCallback): void {
         const {props} = decorator;
         let {dsuPath, fsPath, options} = props;
         fsPath = getPath().join(this.pathAdaptor, fsPath);

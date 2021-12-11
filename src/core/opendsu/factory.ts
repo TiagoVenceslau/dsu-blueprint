@@ -77,7 +77,7 @@ export abstract class FactoryRegistry<T> implements IRegistry<T>{
 /**
  * Registry class to hold the various KeySSI factory methods and properly apply validation to the received arguments
  *
- * @class
+ * @class KeySSIFactoryRegistry
  * @namespace OpenDSU
  */
 export class KeySSIFactoryRegistry extends FactoryRegistry<KeySSIFactory>{

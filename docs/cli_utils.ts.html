@@ -92,7 +92,7 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-dsu-blueprint.html">dsu-blueprint</a></li></ul><h3>Namespaces</h3><ul><li><a href="cli.html">cli</a></li><li><a href="dsu-blueprint.cli.html">cli</a></li><li><a href="dsu-blueprint.fs.html">fs</a></li><li><a href="dsu-blueprint.openDSU.html">openDSU</a></li><li><a href="fs.decorators.html">decorators</a></li><li><a href="model.decorators.html">decorators</a></li><li><a href="OpenDSU.html">OpenDSU</a></li><li><a href="repository.html">repository</a></li><li><a href="web.html">web</a></li></ul><h3>Classes</h3><ul><li><a href="OpenDSURepository_OpenDSURepository.html">OpenDSURepository</a></li></ul><h3>Interfaces</h3><ul><li><a href="ConstantsApi.html">ConstantsApi</a></li><li><a href="DSU.html">DSU</a></li><li><a href="EnvironmentTypes.html">EnvironmentTypes</a></li><li><a href="WalletDsu.html">WalletDsu</a></li><li><a href="WebService.html">WebService</a></li></ul><h3>Global</h3><ul><li><a href="global.html#createObjectToValueChain">createObjectToValueChain</a></li><li><a href="global.html#DsuKeys">DsuKeys</a></li><li><a href="global.html#DSUOperation">DSUOperation</a></li><li><a href="global.html#getValueFromValueChain">getValueFromValueChain</a></li><li><a href="global.html#isDSUCache">isDSUCache</a></li></ul></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-cli.html">cli</a></li><li><a href="module-dsu-blueprint.html">dsu-blueprint</a></li><li><a href="module-filesystem.html">filesystem</a></li></ul><h3>Namespaces</h3><ul><li><a href="dsu-blueprint.openDSU.html">openDSU</a></li><li><a href="model.decorators.html">decorators</a></li><li><a href="OpenDSU.html">OpenDSU</a></li><li><a href="repository.html">repository</a></li><li><a href="web.html">web</a></li></ul><h3>Classes</h3><ul><li><a href="OpenDSURepository_OpenDSURepository.html">OpenDSURepository</a></li></ul><h3>Interfaces</h3><ul><li><a href="ConstantsApi.html">ConstantsApi</a></li><li><a href="DSU.html">DSU</a></li><li><a href="EnvironmentTypes.html">EnvironmentTypes</a></li><li><a href="fs.html">fs</a></li><li><a href="path.html">path</a></li><li><a href="WalletDsu.html">WalletDsu</a></li><li><a href="WebService.html">WebService</a></li></ul><h3>Global</h3><ul><li><a href="global.html#createObjectToValueChain">createObjectToValueChain</a></li><li><a href="global.html#DsuKeys">DsuKeys</a></li><li><a href="global.html#DSUOperation">DSUOperation</a></li><li><a href="global.html#getValueFromValueChain">getValueFromValueChain</a></li><li><a href="global.html#isDSUCache">isDSUCache</a></li></ul></div>
                 
             </nav>
         </div>
@@ -109,9 +109,8 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import {DSU, ObjectCallback, OpenDSURepository} from "../core";
-import {getFS, getPath} from "../fs";
-import {Callback, criticalCallback, Err} from "@tvenceslau/db-decorators/lib";
+            <pre class="prettyprint source linenums"><code>import {DSU, DSUCallback, DSUModel, OpenDSURepository} from "../core";
+import {criticalCallback, Err} from "@tvenceslau/db-decorators/lib";
 import {CliOptions} from "./types";
 import {KeySSI} from "../core/opendsu/apis/keyssi";
 
@@ -121,9 +120,10 @@ import {KeySSI} from "../core/opendsu/apis/keyssi";
  * @param {any} defaultOpts the default options to the overwritten when necessary
  * @param {string} args the process.argv
  *
- * @function
- * @namespace cli
- * @memberOf dsu-blueprint
+ * @return {{}} updated options
+ *
+ * @function argParser
+ * @module cli
  */
 export function argParser(defaultOpts: {[indexer: string]: any}, args: string[]){
     let config = JSON.parse(JSON.stringify(defaultOpts));
@@ -149,32 +149,20 @@ export function argParser(defaultOpts: {[indexer: string]: any}, args: string[])
     return config;
 }
 
-export function parseEnvJS(strEnv: string): {}{
-    return JSON.parse(strEnv.replace(/^export\sdefault\s/, ''));
-}
-
-export function getEnvJs(app: string, pathToApps: string, callback: ObjectCallback){
-    const appPath = getPath().join(process.cwd(), pathToApps, "trust-loader-config", app, "loader", "environment.js");
-    getFS().readFile(appPath, undefined, (err: Err, data: Buffer) => {
-        if (err)
-            return callback(`Could not find Application ${app} at ${{appPath}} : ${err}`);
-        return callback(undefined, parseEnvJS(data.toString()));
-    });
-}
-
 /**
  * Builds a DSU from a transpiled {@link DSUBlueprint} file or Updates it
  * @param {CliOptions} config the cli options
- * @param {Callback} callback
- * @function
- * @namespace cli
+ * @param {DSUCallback&lt;DSUModel>} callback
+ *
+ * @function buildOrUpdate
+ * @module cli
  */
-export function buildOrUpdate(config: CliOptions, callback: Callback){
+export function buildOrUpdate(config: CliOptions, callback: DSUCallback&lt;DSUModel>): void{
     let blueprintFile;
     try {
         blueprintFile = require(config.blueprint);
     } catch (e) {
-        return criticalCallback(e, callback);
+        return criticalCallback(e as Error, callback);
     }
     const BLUEPRINT = blueprintFile.default;
     if (!BLUEPRINT)

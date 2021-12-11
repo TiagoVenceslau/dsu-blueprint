@@ -92,7 +92,7 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-dsu-blueprint.html">dsu-blueprint</a></li></ul><h3>Namespaces</h3><ul><li><a href="cli.html">cli</a></li><li><a href="dsu-blueprint.cli.html">cli</a></li><li><a href="dsu-blueprint.fs.html">fs</a></li><li><a href="dsu-blueprint.openDSU.html">openDSU</a></li><li><a href="fs.decorators.html">decorators</a></li><li><a href="model.decorators.html">decorators</a></li><li><a href="OpenDSU.html">OpenDSU</a></li><li><a href="repository.html">repository</a></li><li><a href="web.html">web</a></li></ul><h3>Classes</h3><ul><li><a href="OpenDSURepository_OpenDSURepository.html">OpenDSURepository</a></li></ul><h3>Interfaces</h3><ul><li><a href="ConstantsApi.html">ConstantsApi</a></li><li><a href="DSU.html">DSU</a></li><li><a href="EnvironmentTypes.html">EnvironmentTypes</a></li><li><a href="WalletDsu.html">WalletDsu</a></li><li><a href="WebService.html">WebService</a></li></ul><h3>Global</h3><ul><li><a href="global.html#createObjectToValueChain">createObjectToValueChain</a></li><li><a href="global.html#DsuKeys">DsuKeys</a></li><li><a href="global.html#DSUOperation">DSUOperation</a></li><li><a href="global.html#getValueFromValueChain">getValueFromValueChain</a></li><li><a href="global.html#isDSUCache">isDSUCache</a></li></ul></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-cli.html">cli</a></li><li><a href="module-dsu-blueprint.html">dsu-blueprint</a></li><li><a href="module-filesystem.html">filesystem</a></li></ul><h3>Namespaces</h3><ul><li><a href="dsu-blueprint.openDSU.html">openDSU</a></li><li><a href="model.decorators.html">decorators</a></li><li><a href="OpenDSU.html">OpenDSU</a></li><li><a href="repository.html">repository</a></li><li><a href="web.html">web</a></li></ul><h3>Classes</h3><ul><li><a href="OpenDSURepository_OpenDSURepository.html">OpenDSURepository</a></li></ul><h3>Interfaces</h3><ul><li><a href="ConstantsApi.html">ConstantsApi</a></li><li><a href="DSU.html">DSU</a></li><li><a href="EnvironmentTypes.html">EnvironmentTypes</a></li><li><a href="fs.html">fs</a></li><li><a href="path.html">path</a></li><li><a href="WalletDsu.html">WalletDsu</a></li><li><a href="WebService.html">WebService</a></li></ul><h3>Global</h3><ul><li><a href="global.html#createObjectToValueChain">createObjectToValueChain</a></li><li><a href="global.html#DsuKeys">DsuKeys</a></li><li><a href="global.html#DSUOperation">DSUOperation</a></li><li><a href="global.html#getValueFromValueChain">getValueFromValueChain</a></li><li><a href="global.html#isDSUCache">isDSUCache</a></li></ul></div>
                 
             </nav>
         </div>
@@ -114,7 +114,7 @@ import {DSU, DSUIOOptions, getKeySSIApi} from "../core/opendsu";
 import {getFS, getPath} from "./utils";
 import {Callback, criticalCallback, DBOperations, Err, OperationKeys} from "@tvenceslau/db-decorators/lib";
 import {getDSUOperationsRegistry} from "../core/repository/registry";
-import {DSUCache, DSUCallback, DSUEditingHandler, OpenDSURepository} from "../core/repository";
+import {DSUCache, DSUCallback, DSUEditingHandler, OpenDSURepository, ReadCallback} from "../core/repository";
 import DBModel from "@tvenceslau/db-decorators/lib/model/DBModel";
 import {DsuFsKeys, FSOptions} from "./constants";
 
@@ -127,9 +127,11 @@ const getFsKey = (key: string) => DsuKeys.REFLECT + key;
  * @param {string} [mountPath] defines the mount path, overriding the property name;
  * @param {string} [mountOptions] sets the {@link DSUIOOptions} fot the mount operation
  *
- * @decorator dsuFS
+ * @function dsuFS
+ *
+ * @decorator
  * @namespace decorators
- * @memberOf fs
+ * @module filesystem
  */
 export const dsuFS = (app: string, derive: boolean = false, mountPath?: string, mountOptions?: DSUIOOptions) => (target: any, propertyKey: string) => {
     Reflect.defineMetadata(
@@ -205,9 +207,11 @@ export const dsuFS = (app: string, derive: boolean = false, mountPath?: string, 
  * @param {string} [dsuPath]  defines the path in the dsu where to store the file overriding the property name;
  * @param {string} [options] sets the {@link DSUIOOptions} fot the write operation
  *
- * @decorator addFileFS
+ * @function addFileFS
+ *
+ * @decorator
  * @namespace decorators
- * @memberOf fs
+ * @module filesystem
  */
 export const addFileFS = (fsPath: string, dsuPath?: string, options?: DSUIOOptions) => (target: any, propertyKey: string) => {
     Reflect.defineMetadata(
@@ -223,7 +227,7 @@ export const addFileFS = (fsPath: string, dsuPath?: string, options?: DSUIOOptio
         propertyKey
     );
 
-    const handler: DSUEditingHandler = function&lt;T extends DBModel>(this: OpenDSURepository&lt;T>, dsuCache: DSUCache&lt;T>, obj: T | {}, dsu: DSU, decorator: DSUEditMetadata, callback: DSUCallback&lt;T>): void {
+    const handler: DSUEditingHandler = function&lt;T extends DBModel>(this: OpenDSURepository&lt;T>, dsuCache: DSUCache&lt;T>, obj: T | {}, dsu: DSU, decorator: DSUEditMetadata, callback: DSUCallback&lt;T> | ReadCallback): void {
         const {props} = decorator;
         let {dsuPath, fsPath, options} = props;
         fsPath = getPath().join(this.pathAdaptor, fsPath);
@@ -242,9 +246,11 @@ export const addFileFS = (fsPath: string, dsuPath?: string, options?: DSUIOOptio
  * @param {string} [dsuPath]  defines the path in the dsu where to store the file overriding the property name;
  * @param {string} [options] sets the {@link DSUIOOptions} fot the write operation
  *
- * @decorator addFolderFS
+ * @function addFolderFS
+ *
+ * @decorator
  * @namespace decorators
- * @memberOf fs
+ * @module filesystem
  */
 export const addFolderFS = (fsPath?: string, dsuPath?: string, options?: DSUIOOptions) => (target: any, propertyKey: string) => {
     Reflect.defineMetadata(
@@ -260,7 +266,7 @@ export const addFolderFS = (fsPath?: string, dsuPath?: string, options?: DSUIOOp
         propertyKey
     );
 
-    const handler: DSUEditingHandler = function&lt;T extends DBModel>(this: OpenDSURepository&lt;T>, dsuCache: DSUCache&lt;T>, obj: T | {}, dsu: DSU, decorator: DSUEditMetadata, callback: DSUCallback&lt;T>): void {
+    const handler: DSUEditingHandler = function&lt;T extends DBModel>(this: OpenDSURepository&lt;T>, dsuCache: DSUCache&lt;T>, obj: T | {}, dsu: DSU, decorator: DSUEditMetadata, callback: DSUCallback&lt;T> | ReadCallback): void {
         const {props} = decorator;
         let {dsuPath, fsPath, options} = props;
         fsPath = getPath().join(this.pathAdaptor, fsPath);

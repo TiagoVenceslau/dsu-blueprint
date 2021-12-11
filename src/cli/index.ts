@@ -8,8 +8,7 @@
  *     node ./node_modules/@tvenceslau/dsu-blueprint/lib/cli --action=build
  * </pre>
  *
- * @namespace cli
- * @memberOf dsu-blueprint
+ * @module cli
  */
 
 export * from './cli';

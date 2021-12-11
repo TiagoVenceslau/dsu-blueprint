@@ -4,6 +4,12 @@ import {CliActions, CliOptions} from "./types";
 import {argParser, buildOrUpdate} from "./utils";
 import {KeySSI} from "../core/opendsu/apis/keyssi";
 
+/**
+ * Defaults options for the CLI interface
+ *
+ * @const
+ * @module cli
+ */
 const defaultOptions: CliOptions = {
     action: CliActions.BUILD,
     domain: "default",
@@ -21,7 +27,7 @@ let opendsu;
 try{
     opendsu = require(openDSUPath);
 } catch (e) {
-    throw new CriticalError(e);
+    throw new CriticalError(e as Error);
 }
 
 if (!opendsu)
@@ -31,9 +37,9 @@ function storeKeySSI(data: string, callback: Callback){
     fs.writeFile(path.join(config.pathAdaptor, config.seedFile), data, callback)
 }
 
-function resultCallback(err: Err, model: DSUModel, dsu: DSU, keySSI: KeySSI){
-    if (err)
-        throw err;
+function resultCallback(err: Err, model?: DSUModel, dsu?: DSU, keySSI?: KeySSI){
+    if (err || !model || !dsu || !keySSI)
+        throw err || new Error("Missing Results");
     storeKeySSI(keySSI.getIdentifier(), (err) => {
         if (err)
             error("Could not save seed file: {0}", err);

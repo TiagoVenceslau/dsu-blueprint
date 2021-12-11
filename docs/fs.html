@@ -5,7 +5,7 @@
   
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Decorator Validation Engine cli</title>
+  <title>Decorator Validation Engine fs</title>
 
   <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -90,15 +90,15 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-dsu-blueprint.html">dsu-blueprint</a></li></ul><h3>Namespaces</h3><ul><li><a href="cli.html">cli</a></li><li><a href="dsu-blueprint.cli.html">cli</a></li><li><a href="dsu-blueprint.fs.html">fs</a></li><li><a href="dsu-blueprint.openDSU.html">openDSU</a></li><li><a href="fs.decorators.html">decorators</a></li><li><a href="model.decorators.html">decorators</a></li><li><a href="OpenDSU.html">OpenDSU</a></li><li><a href="repository.html">repository</a></li><li><a href="web.html">web</a></li></ul><h3>Classes</h3><ul><li><a href="OpenDSURepository_OpenDSURepository.html">OpenDSURepository</a></li></ul><h3>Interfaces</h3><ul><li><a href="ConstantsApi.html">ConstantsApi</a></li><li><a href="DSU.html">DSU</a></li><li><a href="EnvironmentTypes.html">EnvironmentTypes</a></li><li><a href="WalletDsu.html">WalletDsu</a></li><li><a href="WebService.html">WebService</a></li></ul><h3>Global</h3><ul><li><a href="global.html#createObjectToValueChain">createObjectToValueChain</a></li><li><a href="global.html#DsuKeys">DsuKeys</a></li><li><a href="global.html#DSUOperation">DSUOperation</a></li><li><a href="global.html#getValueFromValueChain">getValueFromValueChain</a></li><li><a href="global.html#isDSUCache">isDSUCache</a></li></ul></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-cli.html">cli</a></li><li><a href="module-dsu-blueprint.html">dsu-blueprint</a></li><li><a href="module-filesystem.html">filesystem</a></li></ul><h3>Namespaces</h3><ul><li><a href="dsu-blueprint.openDSU.html">openDSU</a></li><li><a href="model.decorators.html">decorators</a></li><li><a href="OpenDSU.html">OpenDSU</a></li><li><a href="repository.html">repository</a></li><li><a href="web.html">web</a></li></ul><h3>Classes</h3><ul><li><a href="OpenDSURepository_OpenDSURepository.html">OpenDSURepository</a></li></ul><h3>Interfaces</h3><ul><li><a href="ConstantsApi.html">ConstantsApi</a></li><li><a href="DSU.html">DSU</a></li><li><a href="EnvironmentTypes.html">EnvironmentTypes</a></li><li><a href="fs.html">fs</a></li><li><a href="path.html">path</a></li><li><a href="WalletDsu.html">WalletDsu</a></li><li><a href="WebService.html">WebService</a></li></ul><h3>Global</h3><ul><li><a href="global.html#createObjectToValueChain">createObjectToValueChain</a></li><li><a href="global.html#DsuKeys">DsuKeys</a></li><li><a href="global.html#DSUOperation">DSUOperation</a></li><li><a href="global.html#getValueFromValueChain">getValueFromValueChain</a></li><li><a href="global.html#isDSUCache">isDSUCache</a></li></ul></div>
                 
             </nav>
         </div>
         <div class="core" id="main-content-wrapper">
             <div class="content">
                 <header class="page-title">
-                    <p>Namespace</p>
-                    <h1>cli</h1>
+                    <p>Interface</p>
+                    <h1>fs</h1>
                 </header>
                 
 
@@ -109,7 +109,7 @@
 
 <header>
     
-        <h2>cli</h2>
+        <h2>fs</h2>
         
     
 </header>
@@ -118,12 +118,7 @@
     <div class="container-overview">
     
         
-            <div class="description"><p>Exposes a Command Line interface to interact with transpiled <code>DSUBlueprint</code>s</p>
-<p>Available actions: <a href="CliActions.html"><code>CliActions</code></a></p>
-<p>Available options: <a href="global.html#CliOptions"><code>CliOptions</code></a> eg for option 'action':</p>
-<pre>
-    node ./node_modules/@tvenceslau/dsu-blueprint/lib/cli --action=build
-</pre></div>
+            <div class="description"><p>Interface with the used node fs methods</p></div>
         
 
         
@@ -162,103 +157,9 @@
 
     
         <p class="tag-source">
-            <a href="cli_index.ts.html" class="button">View Source</a>
+            <a href="fs_utils.ts.html" class="button">View Source</a>
             <span>
-                <a href="cli_index.ts.html">cli/index.ts</a>, <a href="cli_index.ts.html#line2">line 2</a>
-            </span>
-        </p>
-    
-</dl>
-
-
-        
-    
-    </div>
-    
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
-
-
-
-
-
-
-
-<section>
-
-<header>
-    
-        <h2>cli</h2>
-        
-    
-</header>
-
-<article>
-    <div class="container-overview">
-    
-        
-            <div class="description"><p>Overrides any custom options passed in process args into the default options provided</p></div>
-        
-
-        
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    
-
-    
-
-    
-
-    
-        <p class="tag-source">
-            <a href="cli_utils.ts.html" class="button">View Source</a>
-            <span>
-                <a href="cli_utils.ts.html">cli/utils.ts</a>, <a href="cli_utils.ts.html#line5">line 5</a>
+                <a href="fs_utils.ts.html">fs/utils.ts</a>, <a href="fs_utils.ts.html#line116">line 116</a>
             </span>
         </p>
     
