@@ -82,7 +82,6 @@ export interface path {
 
 let  _path: path | undefined = undefined;
 
-
 /**
  * Caches and returns node's fs object if the environment is right
  * @return {path}

@@ -1,8 +1,15 @@
 import {IRegistry} from "@tvenceslau/decorator-validation/lib/utils/registry";
-import {criticalCallback, CriticalError, debug, LoggedError, warn} from "@tvenceslau/db-decorators/lib";
+import {criticalCallback, CriticalError, debug, LoggedError, logSync, warn} from "@tvenceslau/db-decorators/lib";
 import {OpenDSURepository} from "../repository";
-import {DSUModel} from "../model";
-import {AnchoringOptsOrDSUCallback, DSU, DSUAnchoringOptions, GenericCallback, SimpleDSUCallback} from "./types";
+import {DSUModel, WalletDSU} from "../model";
+import {
+    AnchoringOptsOrDSUCallback,
+    DSU,
+    DSUAnchoringOptions,
+    GenericCallback,
+    SimpleDSUCallback,
+    WalletDsu
+} from "./types";
 import {ArraySSI, KeySSI, KeySSIType, SeedSSI, WalletSSI} from "./apis";
 import {getKeySSIApi, getResolverApi} from "./opendsu";
 
@@ -244,7 +251,7 @@ export function getKeySSIFactoryFromType(type: KeySSIType): KeySSIFactory{
             }
         case KeySSIType.WALLET:
             return function(this: OpenDSURepository<DSUModel>, model: DSUModel, domain: string, specificKeyArgs: string[] | undefined, keyGenArgs: string[] | undefined, callback: KeySSIFactoryCallback){
-                if (!domain || !Array.isArray(keyGenArgs) || keyGenArgs.length)
+                if (!domain || !Array.isArray(keyGenArgs) || !keyGenArgs.length)
                     return criticalCallback(new Error('Missing parameters'), callback);
                 let keySSI: WalletSSI;
 
@@ -338,7 +345,15 @@ export function getDSUFactoryFromType(keySSIType: KeySSIType): DSUFactoryMethod 
 export function getDSUPostProcess(keySSIType: KeySSIType): DSUPostProcess | undefined {
     switch (keySSIType) {
         case KeySSIType.WALLET:
-            return undefined;
+            return (dsu: DSU, callback: SimpleDSUCallback) => {
+                let writableDSU: DSU;
+                try{
+                    writableDSU = (dsu as WalletDsu).getWritableDSU();
+                } catch (e) {
+                    return criticalCallback(e as Error, callback)
+                }
+                callback(undefined, writableDSU);
+            }
         default:
             return undefined;
     }

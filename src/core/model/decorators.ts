@@ -11,7 +11,6 @@ import {
     DSUCreationUpdateHandler,
     DSUEditingHandler,
     fromCache,
-    handleDSUTypes,
     OpenDSURepository,
     ReadCallback
 } from "../repository";
@@ -154,7 +153,7 @@ export const DSUBlueprint = (domain: string | undefined = undefined, keySSIType:
     return model({}, (instance) => {
         Reflect.defineMetadata(
             getDSUModelKey(DsuKeys.CONSTRUCTOR),
-            Object.assign(metadata, props || {}),
+            metadata,
             instance.constructor
         );
         getDSUOperationsRegistry().register(createHandler, DSUOperation.CLASS, OperationKeys.CREATE, instance, DsuKeys.CONSTRUCTOR);
@@ -202,7 +201,7 @@ export function dsu<T extends DSUModel>(dsu: {new(): T}, derive: boolean | numbe
             options: mountOptions,
             modelArgs: modelArgs,
             args: args
-        }
+        };
 
         Reflect.defineMetadata(
             getDSUModelKey(DsuKeys.DSU),
@@ -248,7 +247,7 @@ export function dsu<T extends DSUModel>(dsu: {new(): T}, derive: boolean | numbe
                         return callback(err);
                     callback(undefined, newModel, dsu, keySSI);
                 });
-            })
+            });
         }
 
         getDSUOperationsRegistry().register(updateHandler, DSUOperation.CREATION, OperationKeys.UPDATE, target, propertyKey);
@@ -423,7 +422,7 @@ export function mount(keySSI: string, mountPath?: string, options?: DSUIOOptions
                 if (err)
                     return criticalCallback(err, callback);
                 callback(undefined, obj as T, dsu);
-            })
+            });
         }
 
         const readHandler: DSUEditingHandler = function<T extends DSUModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, model: T | {}, parentDsu: DSU, decorator: DSUEditMetadata, callback: DSUCallback<T> | ReadCallback){
@@ -433,10 +432,9 @@ export function mount(keySSI: string, mountPath?: string, options?: DSUIOOptions
                     return criticalCallback(err || new Error('Missing KeySSI'), callback);
                 // @ts-ignore
                 model[decorator.prop] = keySSI;
-                callback(undefined, model as T, parentDsu)
+                callback(undefined, model as T, parentDsu);
             });
         }
-
 
         getDSUOperationsRegistry().register(createHandler, DSUOperation.EDITING, OperationKeys.CREATE, target, propertyKey);
         getDSUOperationsRegistry().register(readHandler, DSUOperation.EDITING, OperationKeys.READ, target, propertyKey);

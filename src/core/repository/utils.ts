@@ -6,11 +6,11 @@ import {
     DSUMultipleCallback,
     OpenDSURepository
 } from "./repository";
-import {DsuKeys, DSUModel, DSUOperation, WalletDSU} from "../model";
+import {DsuKeys, DSUModel, DSUOperation} from "../model";
 import {
-    DSU, DSUAnchoringOptions,
+    DSU,
     getKeySSIApi,
-    getResolverApi, WalletDsu,
+    WalletDsu,
 } from "../opendsu";
 import {
     all,
@@ -154,7 +154,10 @@ export function handleDSUClassDecorators<T extends DSUModel>(this: OpenDSUReposi
     if (!handler)
         return criticalCallback(`No handler found for ${decorator.props.dsu} - ${decorator.key} - ${decorator.props.dsu.operation}`, callback);
 
-    const {batchMode} = decorator.props.dsu
+    const {batchMode, props} = decorator.props.dsu;
+
+    if (props)
+        decorator.props.dsu.props = decorator.props.dsu.props ? getValueFromValueChain(model, ...decorator.props.dsu.props) : [];
 
     all(`[{0}] - calling DSU Property Creation Handler for model {1}`, this.constructor.name, model);
     handler.call(this, dsuCache, model, decorator.props, ...args, (err: Err, newModel?: DSUModel, dsu?: DSU) => {
@@ -542,17 +545,5 @@ export function handleDSUTypes(keySSIType: KeySSIType, dsu: DSU): DSU {
             return wallet.getWritableDSU() as DSU;
         default:
             return dsu as DSU;
-    }
-}
-
-export function getAnchoringOptionsByDSUType(type: KeySSIType, ...args: any[]): DSUAnchoringOptions | undefined {
-    switch(type){
-        case KeySSIType.WALLET:
-            const seed: string = args.pop();
-            if (!seed)
-                throw new CriticalError(`Wallet DSUs need a KeySSi to mount`);
-            return {dsuTypeSSI: seed};
-        default:
-            return undefined;
     }
 }

@@ -19,8 +19,7 @@ import URLValidator from "@tvenceslau/decorator-validation/lib/validation/Valida
  * @param {DSUIOOptions} [mountOptions] options to be passed to OpenDSU for the mounting operation
  *
  * @decorator fromCache
- * @namespace decorators
- * @memberOf model
+ * @namespace web
  */
 export function fromWeb(appOrUrl: string, slot: "primary" | "secondary" | undefined, mountPath?: string, mountOptions?: DSUIOOptions) {
     return (target: any, propertyKey: string) => {
