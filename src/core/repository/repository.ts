@@ -41,8 +41,11 @@ export type DSUEditDecorator = {
 /**
  * Provide the Base implementation to a global single OpenDSU Repository implementation
  * capable of, via the decorated properties of {@link DSUModel}s, handle all of the OpenDSU API related to CRUD operations
- * in a single, scalable, maintainable and declarative fashion
- **
+ * in a single, scalable, maintainable and declarative fashion, supporting:
+ *  - Automatic CRUD operations, just by updating its corresponding {@link DSUModel} instance and running it through the appropriate {@link OpenDSURepository};
+ *  - Automatic validations && easily extendable for added validations;
+ *  - Controlled accesses: Ability easily to add business logic at key points of any CRUD operations
+ *
  * @typedef T extends DSUModel
  * @class OpenDSURepository<T>
  * @extends AsyncRepositoryImp<T>
@@ -116,7 +119,7 @@ export class OpenDSURepository<T extends DSUModel> extends AsyncRepositoryImp<T>
         if (typeof key === 'string')
             return safeParseKeySSI(key, err => err
                 ? errorCallback(err, callback)
-                : self.delete(key, ...args, callback));
+                : self.delete.call(self, key, ...args, callback));
     }
 
     read(key?: DSUKey, ...args: any[]): void {
@@ -130,7 +133,7 @@ export class OpenDSURepository<T extends DSUModel> extends AsyncRepositoryImp<T>
         if (typeof key === 'string')
             return safeParseKeySSI(key, err => err
                 ? errorCallback(err, callback)
-                : self.read(key,  ...args, callback));
+                : self.read.call(self, key,  ...args, callback));
 
         debug(`Reading {0} DSU with SSI {1}`, this.clazz.name, key.getIdentifier());
 
@@ -162,7 +165,7 @@ export class OpenDSURepository<T extends DSUModel> extends AsyncRepositoryImp<T>
         if (typeof key === 'string')
             return safeParseKeySSI(key, err => err
                 ? errorCallback(err, callback)
-                : self.update(key, model, dsuCache, ...args, callback));
+                : self.update.call(self, key, model, dsuCache, ...args, callback));
 
         self.read(key, ...args, (err: Err, oldModel: T, dsu: DSU, keySSI: KeySSI) => {
             if (err)

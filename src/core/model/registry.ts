@@ -20,7 +20,6 @@ export class DSUModelRegistryImp implements IRegistry<DSUModelFactory>{
                 this.cache[obj.constructor.name] = obj;
             }
     }
-
 }
 
 let activeDSUModelRegistry: IRegistry<DSUModelFactory>;

@@ -5,10 +5,15 @@ import {DSUModel} from "./DSUModel";
 import {getDSUOperationsRegistry, getRepoRegistry} from "../repository/registry";
 import {
     DSUCache,
-    DSUCallback, DSUClassCreationHandler,
-    DSUCreationHandler, DSUCreationUpdateHandler,
-    DSUEditingHandler, DSUFactoryMethod, fromCache, getDSUFactory, getKeySSIFactory, handleDSUTypes,
-    OpenDSURepository, ReadCallback
+    DSUCallback,
+    DSUClassCreationHandler,
+    DSUCreationHandler,
+    DSUCreationUpdateHandler,
+    DSUEditingHandler,
+    fromCache,
+    handleDSUTypes,
+    OpenDSURepository,
+    ReadCallback
 } from "../repository";
 import DBModel from "@tvenceslau/db-decorators/lib/model/DBModel";
 import {
@@ -20,7 +25,13 @@ import {
     OperationKeys
 } from "@tvenceslau/db-decorators/lib";
 import {KeySSI, KeySSISpecificArgs, KeySSIType} from "../opendsu/apis/keyssi";
-import {getAnchoringOptionsByDSUType} from "../opendsu";
+import {ConstantsApi, DSUFactoryMethod} from "../opendsu";
+import {
+    DSUPostProcess,
+    getDSUFactoryRegistry,
+    getKeySSIFactoryRegistry,
+    KeySSIFactoryResponse
+} from "../opendsu/factory";
 
 export const getDSUModelKey = (key: string) => DsuKeys.REFLECT + key;
 
@@ -39,14 +50,43 @@ export type DSUClassCreationMetadata = {
 }
 
 /**
- * Defines a class as a DSU class for serialization purposes
+ * Defines a class as a DSU Blueprint, enabling:
+ *  - Automatic CRUD operations, just by updating its corresponding {@link DSUModel} instance and running it through the appropriate {@link OpenDSURepository};
+ *  - Automatic validations && easily extendable for added validations;
+ *  - Automatic serialization -> transmission -> deserialization;
+ *  - Controlled accesses: Ability easily to add business logic at key points of any CRUD operations
+ *
+ *  TODO:
+ *  Because everything is declarative, the hash of the {@link DSUModel} class file string literal + the hash of the dsu-blueprint bundle file
+ *  can be used stored as DSU metadata and serve as proof of authenticity in theory. I guess if we store this lib.
  *
  * @prop {string | undefined} [domain] the DSU domain. default to undefined. when undefined, its the repository that controls the domain;
  * @prop {KeySSIType} [keySSIType] the KeySSI type used to anchor the DSU
  * @prop {KeySSISpecificArgs | undefined} [specificKeyArgs]  OpenDSU related arguments, specific to each KeySSI implementation. {@link getKeySSIFactory}
- * @prop {DSUAnchoringOptions | undefined} [options] defaults to undefined. decides if batchMode is meant to be used for this DSU
+ * @prop {DSUAnchoringOptions | undefined} [options] defaults to undefined.
  * @prop {boolean} [batchMode] defaults to true. decides if batchMode is meant to be used for this DSU
  * @prop {string[]} [props] any object properties that must be passed to the KeySSI generation function (eg: for Array SSIs)
+ *
+ * Supported {@link KeySSIType}s:
+ *  - {@link KeySSIType.SEED}: Expects:
+ *      - keySsiType: {@link KeySSIType.SEED};
+ *      - specificKeyArgs: {@link SeedSSISpecificArgs} | undefined;
+ *      - props: none
+ *  - {@link KeySSIType.ARRAY}: Expects:
+ *      - keySsiType: {@link KeySSIType.ARRAY};
+ *      - specificKeyArgs: {@link ArraySSISpecificArgs} | undefined;
+ *      - props: {string[] | undefined} array of property names in the value chain notation {@link getValueFromValueChain} {@link createObjectToValueChain} that will be resolved from the {@link DSUModel}'s content and used to pass as {@link KeySSI} generation Arguments. <strong>Must resolve to strings</strong>
+ *      - extra Key generation args {string[] | undefined} that are passed to the {@link OpenDSURepository}'s methods will be appended to the ones from the props and also used to generate the {@link KeySSI}
+ *  - {@link KeySSIType.WALLET}: Expects:
+ *      - keySsiType: {@link KeySSIType.WALLET};
+ *      - specificKeyArgs: {@link WalletSSISpecificArgs} | undefined;
+ *      - props: {string[] | undefined}: array of property names in the value chain notation {@link getValueFromValueChain} {@link createObjectToValueChain} that will be resolved from the {@link DSUModel}'s content and used to pass as {@link KeySSI} generation Arguments. <strong>Must resolve to strings</strong>
+ *      - extra Key generation args {string[] | undefined} that are passed to the {@link OpenDSURepository}'s methods will be appended to the ones from the props and also used to generate the {@link KeySSI}
+ *      - One Supported decorator under the {@link ConstantsApi#CODE_FOLDER} property key (defaults to 'code'). Supported decorators are:
+ *          - {@link fromWeb};
+ *          - {@link fromCache};
+ *          - {@link mount}
+ *
  * @decorator DSUBlueprint
  * @namespace decorators
  * @memberOf model
@@ -61,37 +101,31 @@ export const DSUBlueprint = (domain: string | undefined = undefined, keySSIType:
 
         const {domain, keySSIType, specificKeyArgs, props, batchMode} = decorator.dsu;
 
-        let keySSI: KeySSI, dsuFactory: DSUFactoryMethod;
+        const keyArgs = [...(props || []), ...keyGenArgs] as string[];
 
-        try{
-            const factory = getKeySSIFactory(keySSIType);
+        getKeySSIFactoryRegistry().build(this, model, keySSIType, domain || this.fallbackDomain, specificKeyArgs, keyArgs, (err: Err, response?: KeySSIFactoryResponse) => {
+            if (err || !response)
+                return criticalCallback(err || new Error(`Missing KeySSI factory response`), callback);
+            const {keySSI, options} = response;
 
-            const keyArgs: any[] = [domain || this.fallbackDomain];
+            const dsuFactory: DSUFactoryMethod | undefined = getDSUFactoryRegistry().get(keySSIType) as DSUFactoryMethod;
+            if (!dsuFactory)
+                return criticalCallback(new Error(`Missing DSU Factory for KeySSIType ${keySSIType}`), callback)
 
-            if (props) // if there are model properties to be passed to the key gen method
-                keyArgs.push(props);
+            dsuFactory(keySSI, options, (err, dsu) => {
+                if (err || !dsu)
+                    return criticalCallback(err || new Error(`No DSU received`), callback);
 
-            if (keyGenArgs) // if there are key gen arguments to be passed to the key gen method
-                if (Array.isArray(keyArgs[keyArgs.length - 1])) // if there are already props, append to array
-                    keyArgs[keyArgs.length -1].push(...keyGenArgs)
-                else // set add the value
-                    keyArgs.push(keyGenArgs);
-            // add the KeySSIType specific arguments if they exit
-            if (specificKeyArgs && specificKeyArgs.length)
-                keyArgs.push(...specificKeyArgs);
+                const postProcess: DSUPostProcess | undefined = getDSUFactoryRegistry().get(keySSIType, true) as DSUPostProcess;
+                if (!postProcess)
+                    return callback(undefined, model, dsu, batchMode);
 
-            keySSI = factory(...keyArgs);
-            dsuFactory = getDSUFactory(keySSI);
-        } catch (e){
-            return criticalCallback(e as Error, callback);
-        }
-
-        const options = getAnchoringOptionsByDSUType(keySSI.getTypeName() as KeySSIType);
-
-        dsuFactory(keySSI, options, (err, dsu) => {
-            if (err || !dsu)
-                return criticalCallback(err || new Error(`No DSU received`), callback);
-            callback(undefined, model, handleDSUTypes(keySSI.getTypeName() as KeySSIType, dsu), batchMode);
+                postProcess(dsu, (err, dsu) => {
+                    if (err || !dsu)
+                        return criticalCallback(err || new Error(`Missing PostProcessed DSU`), callback);
+                    callback(undefined, model, dsu, batchMode);
+                });
+            });
         });
     }
 

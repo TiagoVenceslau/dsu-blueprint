@@ -1,6 +1,6 @@
 import {DSU} from "../opendsu";
 import {DSUModel} from "../model";
-import {createObjectToValueChain, getValueFromModelChain} from "./utils";
+import {createObjectToValueChain, getValueFromValueChain} from "./utils";
 import {KeySSI} from "../opendsu/apis/keyssi";
 
 /**
@@ -41,7 +41,7 @@ export class DSUCache<T extends DSUModel>{
         const name: string = typeof  obj === 'string' ? obj : (obj.name || obj.constructor.name);
         const chain = `${parent ? `${parent}.` : ''}${name}.${propKey}`;
         try {
-            return getValueFromModelChain(this._cache, chain);
+            return getValueFromValueChain(this._cache, chain);
         } catch (e) {
             try {
                 const split: string[]  = chain.split('.');

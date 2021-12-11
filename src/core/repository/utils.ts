@@ -8,7 +8,7 @@ import {
 } from "./repository";
 import {DsuKeys, DSUModel, DSUOperation, WalletDSU} from "../model";
 import {
-    DSU,
+    DSU, DSUAnchoringOptions,
     getKeySSIApi,
     getResolverApi, WalletDsu,
 } from "../opendsu";
@@ -24,48 +24,11 @@ import {
     DSUCreationHandler,
     DSUCreationUpdateHandler,
     DSUEditingHandler,
-    DSUFactoryMethod
 } from "./types";
 import {getDSUOperationsRegistry} from "./registry";
 import {ModelKeys} from "@tvenceslau/decorator-validation/lib";
 import {DSUCache} from "./cache";
 import {KeySSI, KeySSIType} from "../opendsu/apis/keyssi";
-
-/**
- * Util method to retrieve the proper {@link DSU} factory method according to the {@link KeySSI} type
- * @param {KeySSI} keySSI
- * @namespace repository
- */
-export function getDSUFactory(keySSI: KeySSI): DSUFactoryMethod{
-    switch (keySSI.getTypeName()) {
-        case KeySSIType.ARRAY:
-        case KeySSIType.WALLET:
-            return getResolverApi().createDSUForExistingSSI;
-        case KeySSIType.SEED:
-            return getResolverApi().createDSU;
-        default:
-            throw new LoggedError(`Unsupported DSU Factory ${keySSI.getTypeName()}`);
-    }
-}
-
-/**
- * Util method to retrieve the proper {@link KeySSI} factory method according to the {@link KeySSIType}
- * @param {KeySSIType} type
- * @return {Function} KeySSI factory method
- * @namespace repository
- */
-export function getKeySSIFactory(type: KeySSIType): (...args: any[]) => KeySSI{
-    switch (type){
-        case KeySSIType.ARRAY:
-            return getKeySSIApi().createArraySSI;
-        case KeySSIType.WALLET:
-            return getKeySSIApi().createTemplateWalletSSI;
-        case KeySSIType.SEED:
-            return getKeySSIApi().createTemplateSeedSSI;
-        default:
-            throw new LoggedError(`Unsupported KeySSI Type ${type}`);
-    }
-}
 
 /**
  * Util method that handles the {@link DSU}'s batch operation close
@@ -101,7 +64,7 @@ export function safeParseKeySSI(keySSI: string, callback: Callback){
     try{
         key = getKeySSIApi().parse(keySSI);
     } catch (e) {
-        return callback(e);
+        return callback(e as Error);
     }
     callback(undefined, key);
 }
@@ -287,7 +250,7 @@ export function handleCreationPropertyDecorators<T extends DSUModel>(this: OpenD
 
         const {modelArgs, args} = decorator.props;
 
-        const keyGenArgs: string[] = modelArgs ? getValueFromModelChain(model, ...modelArgs) : [];
+        const keyGenArgs: string[] = modelArgs ? getValueFromValueChain(model, ...modelArgs) : [];
         if (args)
             keyGenArgs.push(...args);
 
@@ -327,7 +290,7 @@ export function handleCreationPropertyDecorators<T extends DSUModel>(this: OpenD
  * @param {string[]} chains
  * @throws CriticalError if the value is not found in the object
  */
-export function getValueFromModelChain(model: {[indexer: string]: any}, ...chains: string[]): any[]{
+export function getValueFromValueChain(model: {[indexer: string]: any}, ...chains: string[]): any[]{
     return chains.map(c => {
         const split = c.split('.');
 
@@ -346,7 +309,7 @@ export function getValueFromModelChain(model: {[indexer: string]: any}, ...chain
 }
 
 /**
- * Inverse of {@link getValueFromModelChain}.
+ * Inverse of {@link getValueFromValueChain}.
  * given a {@param chain} like 'a.b.c' and an {@param obj} like {} and a value 'value'
  * will output:
  * <pre>
@@ -531,7 +494,7 @@ export function readFromDecorators<T extends DSUModel>(this: OpenDSURepository<T
             // @ts-ignore
             newModel = new self.clazz(newModel) as T;
         } catch (e) {
-            return criticalCallback(e, callback);
+            return criticalCallback(e as Error, callback);
         }
         callback(undefined, newModel as T, dsu);
     });
@@ -579,5 +542,17 @@ export function handleDSUTypes(keySSIType: KeySSIType, dsu: DSU): DSU {
             return wallet.getWritableDSU() as DSU;
         default:
             return dsu as DSU;
+    }
+}
+
+export function getAnchoringOptionsByDSUType(type: KeySSIType, ...args: any[]): DSUAnchoringOptions | undefined {
+    switch(type){
+        case KeySSIType.WALLET:
+            const seed: string = args.pop();
+            if (!seed)
+                throw new CriticalError(`Wallet DSUs need a KeySSi to mount`);
+            return {dsuTypeSSI: seed};
+        default:
+            return undefined;
     }
 }

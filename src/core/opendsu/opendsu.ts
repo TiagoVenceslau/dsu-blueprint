@@ -4,6 +4,7 @@ import {ResolverApi} from "./apis/resolver";
 import {KeyssiApi, KeySSIType} from "./apis/keyssi";
 import {HttpApi} from "./apis/http";
 import {BdnsApi, ConfigApi, ConstantsApi, CrypoApi, DBApi, EnclaveApi, SecurityContextApi, SystemApi} from "./apis";
+import {loadDefaultKeySSIFactories} from "./factory";
 
 /**
  * Handles the integration with the OpenDSU Framework
@@ -14,6 +15,8 @@ import {BdnsApi, ConfigApi, ConstantsApi, CrypoApi, DBApi, EnclaveApi, SecurityC
 let openDSU: OpenDSU;
 
 /**
+ * performs some forced lazy initialization and returns the {@link OpenDSU} object
+ *
  * @return OpenDSU the {@link OpenDSU} object;
  * @throws {CriticalError} when it fails to load
  * @namespace OpenDSU
@@ -22,6 +25,7 @@ export function getOpenDSU(): OpenDSU {
     if (!openDSU){
         try{
             openDSU = require('opendsu');
+            loadDefaultKeySSIFactories();
         } catch (e) {
             throw new CriticalError(`Could not load OpenDSU`)
         }
@@ -245,16 +249,4 @@ export function getCrypoApi(): CrypoApi {
         }
 
     return cryptoApi;
-}
-
-export function getAnchoringOptionsByDSUType(type: KeySSIType, ...args: any[]): DSUAnchoringOptions | undefined {
-    switch(type){
-        case KeySSIType.WALLET:
-            const seed: string = args.pop();
-            if (!seed)
-                throw new CriticalError(`Wallet DSUs need a KeySSi to mount`);
-            return {dsuTypeSSI: seed};
-        default:
-            return undefined;
-    }
 }

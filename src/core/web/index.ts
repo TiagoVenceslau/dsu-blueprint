@@ -1,1 +1,2 @@
-export * from './FileService';
+export * from './services';
+export * from './decorators';

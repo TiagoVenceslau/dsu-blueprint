@@ -1,14 +1,10 @@
 import {
-    AnchoringOptsOrDSUCallback, DSU,
-    SimpleDSUCallback
+    DSU
 } from "../opendsu/types";
 import {DSUClassCreationMetadata, DSUCreationMetadata, DSUModel} from "../model";
 import {DSUCallback, OpenDSURepository, ReadCallback} from "./repository";
 import {DSUCache} from "./cache";
 import {ModelCallback} from "@tvenceslau/db-decorators/lib";
-import {KeySSI} from "../opendsu/apis/keyssi";
-
-export type DSUFactoryMethod = (keySSI: KeySSI, options?: AnchoringOptsOrDSUCallback, callback?: SimpleDSUCallback) => void;
 
 export type DSUCreationHandler = <T extends DSUModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, model: T, decorator: DSUCreationMetadata, ...keyGenArgs: (string | ModelCallback<T>)[]) => void;
 
