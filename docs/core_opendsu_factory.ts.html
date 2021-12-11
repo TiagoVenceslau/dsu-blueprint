@@ -7,7 +7,7 @@
   
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Decorator Validation Engine core/opendsu/factory.ts</title>
+  <title>Declarative OpenDSU creation and management API core/opendsu/factory.ts</title>
 
   <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -44,7 +44,7 @@
             
              
                 <a href="index.html">
-                    <h1 class="navbar-item">Decorator Validation Engine</h1>
+                    <h1 class="navbar-item">OpenDSU Blueprint</h1>
                 </a>
             
         </div>
@@ -62,7 +62,7 @@
                     
                         <a
                             class="link user-link "
-                            href="https://github.com/TiagoVenceslau/decorator-validation#readme"
+                            href="https://github.com/TiagoVenceslau/dsu-blueprint#readme"
                         >
                             Github Repository
                         </a>
@@ -92,7 +92,7 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-cli.html">cli</a></li><li><a href="module-dsu-blueprint.html">dsu-blueprint</a></li><li><a href="module-filesystem.html">filesystem</a></li></ul><h3>Namespaces</h3><ul><li><a href="dsu-blueprint.openDSU.html">openDSU</a></li><li><a href="model.decorators.html">decorators</a></li><li><a href="OpenDSU.html">OpenDSU</a></li><li><a href="repository.html">repository</a></li><li><a href="web.html">web</a></li></ul><h3>Classes</h3><ul><li><a href="OpenDSURepository_OpenDSURepository.html">OpenDSURepository</a></li></ul><h3>Interfaces</h3><ul><li><a href="ConstantsApi.html">ConstantsApi</a></li><li><a href="DSU.html">DSU</a></li><li><a href="EnvironmentTypes.html">EnvironmentTypes</a></li><li><a href="fs.html">fs</a></li><li><a href="path.html">path</a></li><li><a href="WalletDsu.html">WalletDsu</a></li><li><a href="WebService.html">WebService</a></li></ul><h3>Global</h3><ul><li><a href="global.html#createObjectToValueChain">createObjectToValueChain</a></li><li><a href="global.html#DsuKeys">DsuKeys</a></li><li><a href="global.html#DSUOperation">DSUOperation</a></li><li><a href="global.html#getValueFromValueChain">getValueFromValueChain</a></li><li><a href="global.html#isDSUCache">isDSUCache</a></li></ul></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-cli.html">cli</a></li><li><a href="module-core.html">core</a></li><li><a href="module-dsu-blueprint.html">dsu-blueprint</a></li><li><a href="module-filesystem.html">filesystem</a></li><li><a href="module-repository.html">repository</a></li><li><a href="module-web.html">web</a></li></ul><h3>Namespaces</h3><ul><li><a href="dsu-blueprint.OpenDSU.html">OpenDSU</a></li><li><a href="model.decorators.html">decorators</a></li><li><a href="module-web-decorators.html">decorators</a></li><li><a href="OpenDSU.html">OpenDSU</a></li><li><a href="repository.html">repository</a></li></ul><h3>Classes</h3><ul><li><a href="module-web.WebServiceImp.html">WebServiceImp</a></li><li><a href="OpenDSU.factory.DSUFactoryRegistry.html">DSUFactoryRegistry</a></li><li><a href="OpenDSU.factory.KeySSIFactoryRegistry.html">KeySSIFactoryRegistry</a></li><li><a href="OpenDSURepository_OpenDSURepository.html">OpenDSURepository</a></li></ul><h3>Interfaces</h3><ul><li><a href="ConstantsApi.html">ConstantsApi</a></li><li><a href="DSU.html">DSU</a></li><li><a href="EnvironmentTypes.html">EnvironmentTypes</a></li><li><a href="fs.html">fs</a></li><li><a href="path.html">path</a></li><li><a href="WalletDsu.html">WalletDsu</a></li><li><a href="WebService.html">WebService</a></li></ul><h3>Global</h3><ul><li><a href="global.html#createObjectToValueChain">createObjectToValueChain</a></li><li><a href="global.html#DsuKeys">DsuKeys</a></li><li><a href="global.html#DSUOperation">DSUOperation</a></li><li><a href="global.html#getValueFromValueChain">getValueFromValueChain</a></li></ul></div>
                 
             </nav>
         </div>
@@ -114,9 +114,7 @@ import {
     criticalCallback,
     CriticalError,
     debug,
-    logAsync,
-    LoggedError, LOGGER_LEVELS,
-    logSync
+    LoggedError,
 } from "@tvenceslau/db-decorators/lib";
 import {OpenDSURepository} from "../repository";
 import {DsuKeys, DSUModel} from "../model";
@@ -131,6 +129,10 @@ import {
 import {ArraySSI, KeySSI, KeySSIType, SeedSSI, WalletSSI} from "./apis";
 import {getKeySSIApi, getOpenDSU, getResolverApi} from "./opendsu";
 import {getPropertyDecorators} from "@tvenceslau/decorator-validation/lib";
+
+/**
+ * @namespace OpenDSU.factory
+ */
 
 export type KeySSIFactory = (this: OpenDSURepository&lt;DSUModel>, model: DSUModel, domain: string, specificKeyArgs: string[] | undefined, keyGenArgs: string[], callback: KeySSIFactoryCallback) => void;
 
@@ -189,7 +191,7 @@ export abstract class FactoryRegistry&lt;T> implements IRegistry&lt;T>{
  * Registry class to hold the various KeySSI factory methods and properly apply validation to the received arguments
  *
  * @class KeySSIFactoryRegistry
- * @namespace OpenDSU
+ * @memberOf OpenDSU.factory
  */
 export class KeySSIFactoryRegistry extends FactoryRegistry&lt;KeySSIFactory>{
     /**
@@ -240,6 +242,11 @@ export class KeySSIFactoryRegistry extends FactoryRegistry&lt;KeySSIFactory>{
 
 let keySSIFactoryRegistry: KeySSIFactoryRegistry;
 
+/**
+ *
+ * @function
+ * @memberOf OpenDSU.factory
+ */
 export function getKeySSIFactoryRegistry(): KeySSIFactoryRegistry {
     if (!keySSIFactoryRegistry)
         keySSIFactoryRegistry = new KeySSIFactoryRegistry();
@@ -249,9 +256,9 @@ export function getKeySSIFactoryRegistry(): KeySSIFactoryRegistry {
 /**
  * Handles the various {@link DSUFactoryMethod}
  *
- * @class
+ * @class DSUFactoryRegistry
  * @extends FactoryRegistry
- * @namespace OpenDSU
+ * @memberOf OpenDSU.factory
  */
 export class DSUFactoryRegistry extends FactoryRegistry&lt;DSUFactoryMethod>{
     private postProcesses: {[indexer: string]: DSUPostProcess} = {};
@@ -334,7 +341,9 @@ export function getDSUFactoryRegistry(): DSUFactoryRegistry {
  * Util method to retrieve the proper {@link KeySSI} factory method according to the {@link KeySSIType}
  * @param {KeySSIType} type
  * @return {Function} KeySSI factory method
- * @namespace repository
+ *
+ * @function
+ * @memberOf OpenDSU.factory
  */
 export function getKeySSIFactoryFromType(type: KeySSIType): KeySSIFactory{
     switch (type){
@@ -420,7 +429,9 @@ export function getKeySSIFactoryFromType(type: KeySSIType): KeySSIFactory{
 /**
  * Util method to retrieve the proper {@link DSU} factory method according to the {@link KeySSI} type
  * @param {KeySSIType} keySSIType
- * @namespace OpenDSU
+ *
+ * @function
+ * @memberOf OpenDSU.factory
  */
 export function getDSUFactoryFromType(keySSIType: KeySSIType): DSUFactoryMethod {
     switch (keySSIType) {
@@ -439,7 +450,9 @@ export function getDSUFactoryFromType(keySSIType: KeySSIType): DSUFactoryMethod 
  * @param {KeySSIType} keySSIType
  *
  * @return {DSUPostProcess | undefined}
- * @namespace OpenDSU
+ *
+ * @function
+ * @memberOf OpenDSU.factory
  */
 export function getDSUPostProcess(keySSIType: KeySSIType): DSUPostProcess | undefined {
     switch (keySSIType) {
@@ -458,12 +471,20 @@ export function getDSUPostProcess(keySSIType: KeySSIType): DSUPostProcess | unde
     }
 }
 
+/**
+ * @constant
+ * @memberOf OpenDSU.factory
+ */
 export const DefaultSupportedKeySSIFactories = {
     ARRAY: KeySSIType.ARRAY,
     SEED: KeySSIType.SEED,
     WALLET: KeySSIType.WALLET
 }
 
+/**
+ * @function
+ * @memberOf OpenDSU.factory
+ */
 export function loadDefaultKeySSIFactories(): void {
     Object.values(DefaultSupportedKeySSIFactories).forEach(type =>
         getKeySSIFactoryRegistry().register(getKeySSIFactoryFromType(type as KeySSIType), type, getDSUFactoryFromType(type), getDSUPostProcess(type)));

@@ -5,7 +5,7 @@
   
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Decorator Validation Engine web</title>
+  <title>Declarative OpenDSU creation and management API core</title>
 
   <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -42,7 +42,7 @@
             
              
                 <a href="index.html">
-                    <h1 class="navbar-item">Decorator Validation Engine</h1>
+                    <h1 class="navbar-item">OpenDSU Blueprint</h1>
                 </a>
             
         </div>
@@ -60,7 +60,7 @@
                     
                         <a
                             class="link user-link "
-                            href="https://github.com/TiagoVenceslau/decorator-validation#readme"
+                            href="https://github.com/TiagoVenceslau/dsu-blueprint#readme"
                         >
                             Github Repository
                         </a>
@@ -90,15 +90,15 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-cli.html">cli</a></li><li><a href="module-dsu-blueprint.html">dsu-blueprint</a></li><li><a href="module-filesystem.html">filesystem</a></li></ul><h3>Namespaces</h3><ul><li><a href="dsu-blueprint.openDSU.html">openDSU</a></li><li><a href="model.decorators.html">decorators</a></li><li><a href="OpenDSU.html">OpenDSU</a></li><li><a href="repository.html">repository</a></li><li><a href="web.html">web</a></li></ul><h3>Classes</h3><ul><li><a href="OpenDSURepository_OpenDSURepository.html">OpenDSURepository</a></li></ul><h3>Interfaces</h3><ul><li><a href="ConstantsApi.html">ConstantsApi</a></li><li><a href="DSU.html">DSU</a></li><li><a href="EnvironmentTypes.html">EnvironmentTypes</a></li><li><a href="fs.html">fs</a></li><li><a href="path.html">path</a></li><li><a href="WalletDsu.html">WalletDsu</a></li><li><a href="WebService.html">WebService</a></li></ul><h3>Global</h3><ul><li><a href="global.html#createObjectToValueChain">createObjectToValueChain</a></li><li><a href="global.html#DsuKeys">DsuKeys</a></li><li><a href="global.html#DSUOperation">DSUOperation</a></li><li><a href="global.html#getValueFromValueChain">getValueFromValueChain</a></li><li><a href="global.html#isDSUCache">isDSUCache</a></li></ul></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-cli.html">cli</a></li><li><a href="module-core.html">core</a></li><li><a href="module-dsu-blueprint.html">dsu-blueprint</a></li><li><a href="module-filesystem.html">filesystem</a></li><li><a href="module-repository.html">repository</a></li><li><a href="module-web.html">web</a></li></ul><h3>Namespaces</h3><ul><li><a href="dsu-blueprint.OpenDSU.html">OpenDSU</a></li><li><a href="model.decorators.html">decorators</a></li><li><a href="module-web-decorators.html">decorators</a></li><li><a href="OpenDSU.html">OpenDSU</a></li><li><a href="repository.html">repository</a></li></ul><h3>Classes</h3><ul><li><a href="module-web.WebServiceImp.html">WebServiceImp</a></li><li><a href="OpenDSU.factory.DSUFactoryRegistry.html">DSUFactoryRegistry</a></li><li><a href="OpenDSU.factory.KeySSIFactoryRegistry.html">KeySSIFactoryRegistry</a></li><li><a href="OpenDSURepository_OpenDSURepository.html">OpenDSURepository</a></li></ul><h3>Interfaces</h3><ul><li><a href="ConstantsApi.html">ConstantsApi</a></li><li><a href="DSU.html">DSU</a></li><li><a href="EnvironmentTypes.html">EnvironmentTypes</a></li><li><a href="fs.html">fs</a></li><li><a href="path.html">path</a></li><li><a href="WalletDsu.html">WalletDsu</a></li><li><a href="WebService.html">WebService</a></li></ul><h3>Global</h3><ul><li><a href="global.html#createObjectToValueChain">createObjectToValueChain</a></li><li><a href="global.html#DsuKeys">DsuKeys</a></li><li><a href="global.html#DSUOperation">DSUOperation</a></li><li><a href="global.html#getValueFromValueChain">getValueFromValueChain</a></li></ul></div>
                 
             </nav>
         </div>
         <div class="core" id="main-content-wrapper">
             <div class="content">
                 <header class="page-title">
-                    <p>Namespace</p>
-                    <h1>web</h1>
+                    <p>Module</p>
+                    <h1>core</h1>
                 </header>
                 
 
@@ -109,7 +109,8 @@
 
 <header>
     
-        <h2>web</h2>
+        
+            
         
     
 </header>
@@ -118,18 +119,23 @@
     <div class="container-overview">
     
         
-            <div class="description"><p>Depending on whether and url or an app name is supplied:</p>
-<ul>
-<li>App Name: Communicates with ApiHub to get seeds from SSApps installed in that ApiHub instance:
-<ul>
-<li>slot 'primary': gets the seed file from the App's 'wallet-patch' folder;</li>
-<li>slot 'secondary' gets the seed file from the App's <code>Constan</code></li>
-</ul>
-</li>
-</ul></div>
+            <div class="description"><p>Web interaction Api to enable interaction with web related services (including the ApiHub)</p></div>
         
 
         
+            
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 <dl class="details">
@@ -165,41 +171,15 @@
 
     
         <p class="tag-source">
-            <a href="core_web_decorators.ts.html" class="button">View Source</a>
+            <a href="core_index.ts.html" class="button">View Source</a>
             <span>
-                <a href="core_web_decorators.ts.html">core/web/decorators.ts</a>, <a href="core_web_decorators.ts.html#line8">line 8</a>
+                <a href="core_index.ts.html">core/index.ts</a>, <a href="core_index.ts.html#line5">line 5</a>
             </span>
         </p>
     
 </dl>
 
 
-        
-    
-    </div>
-    
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
 
 
 
@@ -207,65 +187,17 @@
 
 
 
-<section>
-
-<header>
-    
-        <h2>web</h2>
-        
-    
-</header>
-
-<article>
-    <div class="container-overview">
-    
-        
-            <div class="description"><p>Default implementation for a <a href="WebService.html"><code>WebService</code></a></p></div>
-        
-
-        
 
 
-<dl class="details">
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    
-
-    
-
-    
-
-    
-    
-
-    
-
-    
-
-    
-        <p class="tag-source">
-            <a href="core_web_services.ts.html" class="button">View Source</a>
-            <span>
-                <a href="core_web_services.ts.html">core/web/services.ts</a>, <a href="core_web_services.ts.html#line4">line 4</a>
-            </span>
-        </p>
-    
-</dl>
 
 
         

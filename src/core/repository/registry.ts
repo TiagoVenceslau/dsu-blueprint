@@ -11,7 +11,7 @@ export class DSUOperationRegistry implements IRegistry<DSUOperationHandler>{
     get<DSUOperationHandler>(targetName: string, propKey: string, operation: string, phase: string): DSUOperationHandler | undefined {
         try{
             return this.cache[targetName][propKey][operation][phase];
-        } catch (e){
+        } catch (e: any){
             all(e);
             return undefined;
         }
@@ -35,7 +35,7 @@ let actingDSUOperationsRegistry: IRegistry<DSUOperationHandler>;
 
 /**
  * Returns the current {@link DSUOperationRegistry}
- * @function getDSUOperationsRegistry
+ * 
  * @return IRegistry<DSUOperationHandler>, defaults to {@link DSUOperationRegistry}
  * @memberOf repository
  */
@@ -47,7 +47,7 @@ export function getDSUOperationsRegistry(): IRegistry<DSUOperationHandler> {
 
 /**
  * Returns the current DSUOperationsRegistry
- * @function getDSUOperationsRegistry
+ * 
  * @prop {IRegistry<DSUOperationHandler>} dsuOperationsRegistry the new implementation of Registry
  * @memberOf repository
  */
@@ -61,7 +61,7 @@ export class DSURegistry implements IRegistry<DSU>{
     get<DSU>(name: string): DSU | undefined {
         try{
             return this.cache[name].dsu;
-        } catch (e){
+        } catch (e: any){
             all(e);
             return undefined;
         }
@@ -79,7 +79,7 @@ let actingDSURegistry: IRegistry<DSU>;
 
 /**
  * Returns the current {@link DSURegistry}
- * @function getDSUOperationsRegistry
+ * 
  * @return IRegistry<DSUOModel>, defaults to {@link DSURegistry}
  * @memberOf repository
  */
@@ -91,7 +91,7 @@ export function getDSURegistry(): IRegistry<DSU> {
 
 /**
  * Returns the current DSURegistry
- * @function getDSURegistry
+ * 
  * @prop {IRegistry<DSU>} dsuOperationsRegistry the new implementation of Registry
  * @memberOf repository
  */
@@ -118,8 +118,6 @@ export class RepositoryRegistry implements IRegistry<OpenDSURepo>{
     private instantiateRepo(clazz: {new(): DSUModel}, repo?: OpenDSURepoFactory): OpenDSURepository<DSUModel>{
         const name = clazz.constructor ? clazz.constructor.name : clazz.name;
         try {
-            // if (typeof clazz === 'string')
-            //     clazz = getModelRegistry().get(clazz);
             const instance = repo ? new repo() : new OpenDSURepository<DSUModel>(clazz);
             this.cache[name] = {
                 repo: name,
@@ -127,7 +125,7 @@ export class RepositoryRegistry implements IRegistry<OpenDSURepo>{
             }
             return instance;
         } catch (e){
-            throw new CriticalError(e);
+            throw new CriticalError(e as Error);
         }
     }
 
@@ -146,7 +144,7 @@ let actingRepoRegistry: RepositoryRegistry;
 
 /**
  * Returns the current {@link IRegistry<OpenDSURepo>y}
- * @function getDSUOperationsRegistry
+ * 
  * @return RepositoryRegistry
  * @memberOf repository
  */
@@ -158,7 +156,7 @@ export function getRepoRegistry(): RepositoryRegistry {
 
 /**
  * Returns the current DSURegistry
- * @function getDSURegistry
+ * 
  * @prop {RepositoryRegistry} dsuOperationsRegistry the new implementation of Registry
  * @memberOf repository
  */

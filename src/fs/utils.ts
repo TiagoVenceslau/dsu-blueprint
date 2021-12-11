@@ -72,7 +72,7 @@ export interface fs {
  *
  * @return {fs}
  *
- * @function getFS
+ * 
  * @namespace utils
  * @module filesystem
  */
@@ -106,7 +106,7 @@ let  _path: path | undefined = undefined;
  *
  * @return path
  *
- * @function getPath
+ * 
  * @namespace utils
  * @module filesystem
  */
@@ -122,7 +122,7 @@ export function getPath(): path {
  *
  * @param {string} strEnv the contents of the environment.js file
  *
- * @function parseEnvJS
+ * 
  * @module filesystem
  */
 export function parseEnvJS(strEnv: string): {}{
@@ -136,7 +136,7 @@ export function parseEnvJS(strEnv: string): {}{
  * @param {string} pathToApps
  * @param {ObjectCallback} callback
  *
- * @function getEnvJS
+ * 
  * @module filesystem
  */
 export function getEnvJs(app: string, pathToApps: string, callback: ObjectCallback){

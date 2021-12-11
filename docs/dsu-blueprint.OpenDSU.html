@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -7,7 +5,7 @@
   
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Declarative OpenDSU creation and management API core/model/constants.ts</title>
+  <title>Declarative OpenDSU creation and management API OpenDSU</title>
 
   <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -99,50 +97,101 @@
         <div class="core" id="main-content-wrapper">
             <div class="content">
                 <header class="page-title">
-                    <p>Source</p>
-                    <h1>core/model/constants.ts</h1>
+                    <p>Namespace</p>
+                    <h1>OpenDSU</h1>
                 </header>
                 
 
 
 
-    
-    <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>/**
- * Identifying keys for reflection operations and other constants
- *
- * @enum
- */
-export enum DsuKeys {
-    REFLECT = 'opendsu.blueprint.',
-    DEFAULT_DSU_PATH = 'info.json',
-    CONSTRUCTOR = "constructor",
-    FROM_CACHE = 'fromCache',
-    FROM_WEB = 'fromWeb',
-    DSU = 'dsu',
-    DSU_FILE = 'dsuFile',
-    MOUNT = 'mount'
-}
 
-/**
- * Describe the 3 distinct stages of a DSUOperation on a {@link DSUBlueprint}:
- *  - CREATION: handles the creation of all nested {@link DSU}s (typically from the {@link dsu} decorator)
- *  - CLASS: handles the creation of the actual 'end' {@link DSU} (typically from the {@link DSU} decorator)
- *  - EDITING: handles the editing of the end {@link DSU} and all its available operations:
- *   - {@link dsuFile}
- *   - {@link fromCache}
- *   - {@link mount}
- *
- * @enum
- */
-export enum DSUOperation {
-    CREATION = "creation",
-    CLASS = 'class',
-    EDITING = "editing"
-}</code></pre>
-        </article>
-    </section>
+<section>
+
+<header>
+    
+        <h2>OpenDSU</h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+            <div class="description"><p>Handles the integration with the OpenDSU Framework</p></div>
+        
+
+        
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="core_opendsu_opendsu.ts.html" class="button">View Source</a>
+            <span>
+                <a href="core_opendsu_opendsu.ts.html">core/opendsu/opendsu.ts</a>, <a href="core_opendsu_opendsu.ts.html#line4">line 4</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+        
+    
+    </div>
+    
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
 
 
 

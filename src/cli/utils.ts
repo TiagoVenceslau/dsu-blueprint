@@ -11,7 +11,7 @@ import {KeySSI} from "../core/opendsu/apis/keyssi";
  *
  * @return {{}} updated options
  *
- * @function argParser
+ * 
  * @module cli
  */
 export function argParser(defaultOpts: {[indexer: string]: any}, args: string[]){
@@ -43,7 +43,7 @@ export function argParser(defaultOpts: {[indexer: string]: any}, args: string[])
  * @param {CliOptions} config the cli options
  * @param {DSUCallback<DSUModel>} callback
  *
- * @function buildOrUpdate
+ * 
  * @module cli
  */
 export function buildOrUpdate(config: CliOptions, callback: DSUCallback<DSUModel>): void{

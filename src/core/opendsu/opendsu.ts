@@ -8,7 +8,7 @@ import {loadDefaultKeySSIFactories} from "./factory";
 
 /**
  * Handles the integration with the OpenDSU Framework
- * @namespace openDSU
+ * @namespace OpenDSU
  * @memberOf dsu-blueprint
  */
 

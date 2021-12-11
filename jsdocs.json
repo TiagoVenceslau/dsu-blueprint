@@ -22,13 +22,13 @@
     },
     "templates": {
         "better-docs": {
-            "name": "Decorator Validation Engine",
-            "title": "Decorator Validation Engine",
+            "name": "OpenDSU Blueprint",
+            "title": "Declarative OpenDSU creation and management API",
             "hideGenerator": true,
             "navLinks": [
                 {
                     "label": "Github Repository",
-                    "href": "https://github.com/TiagoVenceslau/decorator-validation#readme"
+                    "href": "https://github.com/TiagoVenceslau/dsu-blueprint#readme"
                 },
                 {
                     "label": "Github Profile",

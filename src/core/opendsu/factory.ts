@@ -3,9 +3,7 @@ import {
     criticalCallback,
     CriticalError,
     debug,
-    logAsync,
-    LoggedError, LOGGER_LEVELS,
-    logSync
+    LoggedError,
 } from "@tvenceslau/db-decorators/lib";
 import {OpenDSURepository} from "../repository";
 import {DsuKeys, DSUModel} from "../model";
@@ -20,6 +18,10 @@ import {
 import {ArraySSI, KeySSI, KeySSIType, SeedSSI, WalletSSI} from "./apis";
 import {getKeySSIApi, getOpenDSU, getResolverApi} from "./opendsu";
 import {getPropertyDecorators} from "@tvenceslau/decorator-validation/lib";
+
+/**
+ * @namespace OpenDSU.factory
+ */
 
 export type KeySSIFactory = (this: OpenDSURepository<DSUModel>, model: DSUModel, domain: string, specificKeyArgs: string[] | undefined, keyGenArgs: string[], callback: KeySSIFactoryCallback) => void;
 
@@ -78,7 +80,7 @@ export abstract class FactoryRegistry<T> implements IRegistry<T>{
  * Registry class to hold the various KeySSI factory methods and properly apply validation to the received arguments
  *
  * @class KeySSIFactoryRegistry
- * @namespace OpenDSU
+ * @memberOf OpenDSU.factory
  */
 export class KeySSIFactoryRegistry extends FactoryRegistry<KeySSIFactory>{
     /**
@@ -129,6 +131,11 @@ export class KeySSIFactoryRegistry extends FactoryRegistry<KeySSIFactory>{
 
 let keySSIFactoryRegistry: KeySSIFactoryRegistry;
 
+/**
+ *
+ * @function
+ * @memberOf OpenDSU.factory
+ */
 export function getKeySSIFactoryRegistry(): KeySSIFactoryRegistry {
     if (!keySSIFactoryRegistry)
         keySSIFactoryRegistry = new KeySSIFactoryRegistry();
@@ -138,9 +145,9 @@ export function getKeySSIFactoryRegistry(): KeySSIFactoryRegistry {
 /**
  * Handles the various {@link DSUFactoryMethod}
  *
- * @class
+ * @class DSUFactoryRegistry
  * @extends FactoryRegistry
- * @namespace OpenDSU
+ * @memberOf OpenDSU.factory
  */
 export class DSUFactoryRegistry extends FactoryRegistry<DSUFactoryMethod>{
     private postProcesses: {[indexer: string]: DSUPostProcess} = {};
@@ -223,7 +230,9 @@ export function getDSUFactoryRegistry(): DSUFactoryRegistry {
  * Util method to retrieve the proper {@link KeySSI} factory method according to the {@link KeySSIType}
  * @param {KeySSIType} type
  * @return {Function} KeySSI factory method
- * @namespace repository
+ *
+ * @function
+ * @memberOf OpenDSU.factory
  */
 export function getKeySSIFactoryFromType(type: KeySSIType): KeySSIFactory{
     switch (type){
@@ -309,7 +318,9 @@ export function getKeySSIFactoryFromType(type: KeySSIType): KeySSIFactory{
 /**
  * Util method to retrieve the proper {@link DSU} factory method according to the {@link KeySSI} type
  * @param {KeySSIType} keySSIType
- * @namespace OpenDSU
+ *
+ * @function
+ * @memberOf OpenDSU.factory
  */
 export function getDSUFactoryFromType(keySSIType: KeySSIType): DSUFactoryMethod {
     switch (keySSIType) {
@@ -328,7 +339,9 @@ export function getDSUFactoryFromType(keySSIType: KeySSIType): DSUFactoryMethod 
  * @param {KeySSIType} keySSIType
  *
  * @return {DSUPostProcess | undefined}
- * @namespace OpenDSU
+ *
+ * @function
+ * @memberOf OpenDSU.factory
  */
 export function getDSUPostProcess(keySSIType: KeySSIType): DSUPostProcess | undefined {
     switch (keySSIType) {
@@ -347,12 +360,20 @@ export function getDSUPostProcess(keySSIType: KeySSIType): DSUPostProcess | unde
     }
 }
 
+/**
+ * @constant
+ * @memberOf OpenDSU.factory
+ */
 export const DefaultSupportedKeySSIFactories = {
     ARRAY: KeySSIType.ARRAY,
     SEED: KeySSIType.SEED,
     WALLET: KeySSIType.WALLET
 }
 
+/**
+ * @function
+ * @memberOf OpenDSU.factory
+ */
 export function loadDefaultKeySSIFactories(): void {
     Object.values(DefaultSupportedKeySSIFactories).forEach(type =>
         getKeySSIFactoryRegistry().register(getKeySSIFactoryFromType(type as KeySSIType), type, getDSUFactoryFromType(type), getDSUPostProcess(type)));

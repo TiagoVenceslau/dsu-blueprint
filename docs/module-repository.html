@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -7,7 +5,7 @@
   
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Declarative OpenDSU creation and management API core/model/constants.ts</title>
+  <title>Declarative OpenDSU creation and management API repository</title>
 
   <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -99,50 +97,525 @@
         <div class="core" id="main-content-wrapper">
             <div class="content">
                 <header class="page-title">
-                    <p>Source</p>
-                    <h1>core/model/constants.ts</h1>
+                    <p>Module</p>
+                    <h1>repository</h1>
                 </header>
                 
 
 
 
-    
-    <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>/**
- * Identifying keys for reflection operations and other constants
- *
- * @enum
- */
-export enum DsuKeys {
-    REFLECT = 'opendsu.blueprint.',
-    DEFAULT_DSU_PATH = 'info.json',
-    CONSTRUCTOR = "constructor",
-    FROM_CACHE = 'fromCache',
-    FROM_WEB = 'fromWeb',
-    DSU = 'dsu',
-    DSU_FILE = 'dsuFile',
-    MOUNT = 'mount'
-}
 
-/**
- * Describe the 3 distinct stages of a DSUOperation on a {@link DSUBlueprint}:
- *  - CREATION: handles the creation of all nested {@link DSU}s (typically from the {@link dsu} decorator)
- *  - CLASS: handles the creation of the actual 'end' {@link DSU} (typically from the {@link DSU} decorator)
- *  - EDITING: handles the editing of the end {@link DSU} and all its available operations:
- *   - {@link dsuFile}
- *   - {@link fromCache}
- *   - {@link mount}
- *
- * @enum
- */
-export enum DSUOperation {
-    CREATION = "creation",
-    CLASS = 'class',
-    EDITING = "editing"
-}</code></pre>
-        </article>
-    </section>
+<section>
+
+<header>
+    
+        
+            
+        
+            
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+            <div class="description"><p>Stores recursively created DSUs in order for later operations to reference them (mounting, etc)</p></div>
+        
+
+        
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="core_repository_cache.ts.html" class="button">View Source</a>
+            <span>
+                <a href="core_repository_cache.ts.html">core/repository/cache.ts</a>, <a href="core_repository_cache.ts.html#line3">line 3</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>obj</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">any</span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="core_repository_cache.ts.html" class="button">View Source</a>
+            <span>
+                <a href="core_repository_cache.ts.html">core/repository/cache.ts</a>, <a href="core_repository_cache.ts.html#line75">line 75</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+    
+    </div>
+    
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+
+
+
+<section>
+
+<header>
+    
+        
+            
+        
+            
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+            <div class="description"><p>Because of the binding, this method should be used instead of 'instanceof DSUCache'</p></div>
+        
+
+        
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="core_repository_cache.ts.html" class="button">View Source</a>
+            <span>
+                <a href="core_repository_cache.ts.html">core/repository/cache.ts</a>, <a href="core_repository_cache.ts.html#line3">line 3</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>obj</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">any</span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="core_repository_cache.ts.html" class="button">View Source</a>
+            <span>
+                <a href="core_repository_cache.ts.html">core/repository/cache.ts</a>, <a href="core_repository_cache.ts.html#line75">line 75</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+    
+    </div>
+    
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
 
 
 

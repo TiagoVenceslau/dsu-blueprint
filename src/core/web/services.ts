@@ -31,13 +31,21 @@ export interface WebService {
 /**
  * Default implementation for a {@link WebService}
  *
- * @class
- * @namespace web
+ * @class WebServiceImp
+ *
+ * @namespace services
+ * @module web
  */
 export class WebServiceImp implements WebService {
     readonly options: WebServiceOptions;
     protected readonly isBrowser: boolean;
 
+    /**
+     *
+     * @param {WebServiceOptions} options
+     *
+     * @constructor
+     */
     constructor(options: WebServiceOptions){
         this.options = options;
         this.isBrowser = get$$().environmentType === 'browser';
@@ -68,10 +76,21 @@ export class WebServiceImp implements WebService {
         }
     }
 
+    /**
+     * Gets the seed in the primary slot
+     *
+     * @param {Callback} callback
+     */
     getWalletSeed(callback: Callback){
         this.getAppSeed(this.options.slots.primary, callback);
     }
 
+    /**
+     * Gets the seed in the secondary slot
+     *
+     * @param {string} appName
+     * @param {Callback} callback
+     */
     getAppSeed(appName: string, callback: Callback){
         const self = this;
         this.getFile(appName, this.options.seedFileName, (err: Err, data: any) => {
@@ -81,6 +100,13 @@ export class WebServiceImp implements WebService {
         });
     }
 
+    /**
+     * Performs a fetch request
+     *
+     * @param {string} url
+     * @param {{} | undefined} options
+     * @param {Callback} callback
+     */
     doGet(url: string, options: {} | undefined, callback: Callback){
 
         getHttpApi().fetch(url, {
@@ -96,6 +122,7 @@ export class WebServiceImp implements WebService {
 
     /**
      * Returns the content of a file as a uintArray
+     *
      * @param {string} appName
      * @param {string} fileName
      * @param {function(err, Uint8Array)} callback
@@ -112,6 +139,7 @@ export class WebServiceImp implements WebService {
     };
 
     /**
+     * Requests a folder content in JSON format from the ApiHib
      *
      * @param innerFolder
      * @param callback
@@ -147,6 +175,17 @@ export class WebServiceImp implements WebService {
 
 let activeWebService: WebService;
 
+/**
+ * Retrieves the current {@link WebService}
+ *
+ * @param {WebServiceOptions} [options]
+ * @return WebService
+ *
+ * 
+ *
+ * @namespace services
+ * @module web
+ */
 export function getWebService(options?: WebServiceOptions): WebService {
     if (!activeWebService)
         if (options)
@@ -156,6 +195,14 @@ export function getWebService(options?: WebServiceOptions): WebService {
     return activeWebService;
 }
 
+/**
+ * Replaces the current {@link WebService} implementation with the provided one
+ *
+ * @param {WebService} webService
+ *
+ * @namespace services
+ * @module web
+ */
 export function setWebService(webService: WebService): void {
     activeWebService = webService;
 }

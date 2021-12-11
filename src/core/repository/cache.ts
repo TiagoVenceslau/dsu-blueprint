@@ -4,10 +4,11 @@ import {createObjectToValueChain, getValueFromValueChain} from "./utils";
 import {KeySSI} from "../opendsu/apis/keyssi";
 
 /**
- * stores recursively created DSUs in order for later operations to reference them (mounting, etc)
+ * Stores recursively created DSUs in order for later operations to reference them (mounting, etc)
  *
  * @class DSUCache
- * @namespace repository
+ *
+ * @module repository
  */
 export class DSUCache<T extends DSUModel>{
     private _cache: {[indexer: string]: {[indexer: string]: {dsu: DSU, keySSI: KeySSI}[]}} = {};
@@ -77,7 +78,10 @@ export class DSUCache<T extends DSUModel>{
 
 /**
  * Because of the binding, this method should be used instead of 'instanceof DSUCache'
+ *
  * @param {any} obj
+ *
+ * @module repository
  */
 export function isDSUCache(obj: any){
     return obj && obj.get && obj.bindToParent && obj.cache;

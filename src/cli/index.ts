@@ -10,5 +10,4 @@
  *
  * @module cli
  */
-
 export * from './cli';

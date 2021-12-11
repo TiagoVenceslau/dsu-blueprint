@@ -7,6 +7,17 @@ import {DSUCache, DSUCallback, DSUEditingHandler, OpenDSURepository, ReadCallbac
 import DBModel from "@tvenceslau/db-decorators/lib/model/DBModel";
 import {DsuFsKeys, FSOptions} from "./constants";
 
+/**
+ * Returns the complete Reflection FS Key
+ *
+ * @param {string} key
+ * @return string
+ *
+ * 
+ *
+ * @namespace decorators
+ * @module filesystem
+ */
 const getFsKey = (key: string) => DsuKeys.REFLECT + key;
 
 /**
@@ -16,9 +27,8 @@ const getFsKey = (key: string) => DsuKeys.REFLECT + key;
  * @param {string} [mountPath] defines the mount path, overriding the property name;
  * @param {string} [mountOptions] sets the {@link DSUIOOptions} fot the mount operation
  *
- * @function dsuFS
+ * 
  *
- * @decorator
  * @namespace decorators
  * @module filesystem
  */
@@ -96,9 +106,8 @@ export const dsuFS = (app: string, derive: boolean = false, mountPath?: string, 
  * @param {string} [dsuPath]  defines the path in the dsu where to store the file overriding the property name;
  * @param {string} [options] sets the {@link DSUIOOptions} fot the write operation
  *
- * @function addFileFS
+ * 
  *
- * @decorator
  * @namespace decorators
  * @module filesystem
  */
@@ -135,9 +144,8 @@ export const addFileFS = (fsPath: string, dsuPath?: string, options?: DSUIOOptio
  * @param {string} [dsuPath]  defines the path in the dsu where to store the file overriding the property name;
  * @param {string} [options] sets the {@link DSUIOOptions} fot the write operation
  *
- * @function addFolderFS
+ * 
  *
- * @decorator
  * @namespace decorators
  * @module filesystem
  */

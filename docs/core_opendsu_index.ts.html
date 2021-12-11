@@ -7,7 +7,7 @@
   
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Declarative OpenDSU creation and management API core/model/constants.ts</title>
+  <title>Declarative OpenDSU creation and management API core/opendsu/index.ts</title>
 
   <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -100,7 +100,7 @@
             <div class="content">
                 <header class="page-title">
                     <p>Source</p>
-                    <h1>core/model/constants.ts</h1>
+                    <h1>core/opendsu/index.ts</h1>
                 </header>
                 
 
@@ -110,37 +110,22 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
- * Identifying keys for reflection operations and other constants
- *
- * @enum
+ * @namespace OpenDSU
  */
-export enum DsuKeys {
-    REFLECT = 'opendsu.blueprint.',
-    DEFAULT_DSU_PATH = 'info.json',
-    CONSTRUCTOR = "constructor",
-    FROM_CACHE = 'fromCache',
-    FROM_WEB = 'fromWeb',
-    DSU = 'dsu',
-    DSU_FILE = 'dsuFile',
-    MOUNT = 'mount'
-}
 
+export * from './opendsu';
 /**
- * Describe the 3 distinct stages of a DSUOperation on a {@link DSUBlueprint}:
- *  - CREATION: handles the creation of all nested {@link DSU}s (typically from the {@link dsu} decorator)
- *  - CLASS: handles the creation of the actual 'end' {@link DSU} (typically from the {@link DSU} decorator)
- *  - EDITING: handles the editing of the end {@link DSU} and all its available operations:
- *   - {@link dsuFile}
- *   - {@link fromCache}
- *   - {@link mount}
- *
- * @enum
+ * @memberOf OpenDSU
  */
-export enum DSUOperation {
-    CREATION = "creation",
-    CLASS = 'class',
-    EDITING = "editing"
-}</code></pre>
+export * from './types';
+/**
+ * @memberOf OpenDSU
+ */
+export * from './apis';
+/**
+ * @memberOf OpenDSU
+ */
+export * from './factory';</code></pre>
         </article>
     </section>
 
