@@ -5,9 +5,9 @@ import {DSUModel} from "./DSUModel";
 import {getDSUOperationsRegistry, getRepoRegistry} from "../repository/registry";
 import {
     DSUCache,
-    DSUCallback,
+    DSUCallback, DSUClassCreationHandler,
     DSUCreationHandler, DSUCreationUpdateHandler,
-    DSUEditingHandler, fromCache,
+    DSUEditingHandler, DSUFactoryMethod, fromCache, getDSUFactory, getKeySSIFactory,
     OpenDSURepository, ReadCallback
 } from "../repository";
 import DBModel from "@tvenceslau/db-decorators/lib/model/DBModel";
@@ -15,13 +15,28 @@ import {
     criticalCallback,
     CriticalError,
     DBOperations,
-    Err,
+    Err, errorCallback, logAsync, LOGGER_LEVELS,
     ModelCallback,
     OperationKeys
 } from "@tvenceslau/db-decorators/lib";
 import {KeySSI, KeySSIType} from "../opendsu/apis/keyssi";
+import {getAnchoringOptionsByDSUType} from "../opendsu";
 
 const getDSUModelKey = (key: string) => DsuKeys.REFLECT + key;
+
+export type DSUClassCreationMetadata = {
+    [indexer: string]: any;
+    dsu: {
+        operation: string,
+        phase: string[],
+        domain: string | undefined,
+        keySSIType: KeySSIType,
+        batchMode: boolean,
+        specificKeyArgs: string[] | undefined,
+        props: string[] | undefined
+    }
+    ,
+}
 
 /**
  * Defines a class as a DSU class for serialization purposes
@@ -38,14 +53,72 @@ const getDSUModelKey = (key: string) => DsuKeys.REFLECT + key;
  */
 export const DSUBlueprint = (domain: string | undefined = undefined, keySSIType: KeySSIType = KeySSIType.SEED, specificKeyArgs: string[] | undefined = undefined, options: DSUAnchoringOptions | undefined = undefined, batchMode: boolean = true, ...props: string[]) => (original: Function) => {
     getRepoRegistry().register(original.name);
-    return model({
+
+    const createHandler: DSUClassCreationHandler = function<T extends DSUModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, model: T, decorator: DSUClassCreationMetadata, ...keyGenArgs:  (string | DSUCallback<T>)[]){
+        const callback: DSUCallback<T> = keyGenArgs.pop() as DSUCallback<T>;
+        if (!callback)
+            throw new CriticalError(`Missing Callback`);
+
+        const {domain, keySSIType, specificKeyArgs, props, batchMode} = decorator.dsu;
+
+        let keySSI: KeySSI, dsuFactory: DSUFactoryMethod;
+
+        try{
+            const factory = getKeySSIFactory(keySSIType);
+
+            const keyArgs: any[] = [domain || this.fallbackDomain];
+
+            if (props) // if there are model properties to be passed to the key gen method
+                keyArgs.push(props);
+
+            if (keyGenArgs) // if there are key gen arguments to be passed to the key gen method
+                if (Array.isArray(keyArgs[keyArgs.length - 1])) // if there are already props, append to array
+                    keyArgs[keyArgs.length -1].push(...keyGenArgs)
+                else // set add the value
+                    keyArgs.push(keyGenArgs);
+
+            if (specificKeyArgs && specificKeyArgs.length)
+                keyArgs.push(...specificKeyArgs);
+
+            keySSI = factory(...keyArgs);
+            dsuFactory = getDSUFactory(keySSI);
+        } catch (e){
+            return criticalCallback(e as Error, callback);
+        }
+
+        const options = getAnchoringOptionsByDSUType(keySSI.getTypeName() as KeySSIType);
+
+        dsuFactory(keySSI, options, (err, dsu) => {
+            if (err || !dsu)
+                return criticalCallback(err || new Error(`No DSU received`), callback);
+
+            dsu.getKeySSIAsObject((err, keySSI) => {
+                if (err)
+                    return errorCallback(err, callback);
+                callback(undefined, model, dsu, keySSI, batchMode);
+            });
+        });
+    }
+
+    const metadata: DSUClassCreationMetadata = {
         dsu: {
             domain: domain,
             keySSIType: keySSIType,
             batchMode: batchMode,
             specificKeyArgs: specificKeyArgs,
-            props: props && props.length ? props : undefined
+            props: props && props.length ? props : undefined,
+            operation: DSUOperation.CLASS,
+            phase: [OperationKeys.CREATE],
         }
+    }
+
+    return model({}, (instance) => {
+        Reflect.defineMetadata(
+            getDSUModelKey(DsuKeys.CONSTRUCTOR),
+            Object.assign(metadata, props || {}),
+            instance.constructor
+        );
+        getDSUOperationsRegistry().register(createHandler, DSUOperation.CLASS, OperationKeys.CREATE, instance, DsuKeys.CONSTRUCTOR);
     })(original);
 }
 
