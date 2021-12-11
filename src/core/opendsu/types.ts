@@ -21,6 +21,7 @@ import {NotificationsApi} from "./apis/notifications";
 import {MessageQueueApi} from "./apis/mq";
 import {M2DsuApi} from "./apis/m2dsu";
 import {StorageApi} from "./apis/storage";
+import {ConstantsApi} from "./apis";
 
 export type ObjectCallback = (err?: Err, object?: any) => void;
 export type ErrCallback = (err?: Err) => void;
@@ -63,7 +64,7 @@ export type AnchoringOptsOrDSUCallback = DSUAnchoringOptions | SimpleDSUCallback
  * Exposes an interface with the OpenDSU Archive APi
  *
  * @interface
- * @namespace opendsu
+ * @namespace OpenDSU
  */
 export interface DSU {
     directAccessEnabled: boolean;
@@ -116,7 +117,7 @@ export interface DSU {
  * Exposes an interface with the OpenDSU WalletDSU APi
  *
  * @interface
- * @namespace opendsu
+ * @namespace OpenDSU
  */
 export interface WalletDsu extends DSU {
     getWritableDSU(): DSU;
@@ -127,10 +128,10 @@ export interface WalletDsu extends DSU {
  * Exposes an interface with the OpenDSU APi
  *
  * @interface
- * @namespace opendsu
+ * @namespace OpenDSU
  */
 export interface OpenDSU {
-    constants: {[indexer: string]: any};
+    constants: ConstantsApi;
 
     loadApi(api: string): OpenDSUApi;
 }
@@ -139,6 +140,6 @@ export interface OpenDSU {
  * Exposes an Union Type will all mapped OpenDSU Apis
  *
  * @type OpenDSUApi
- * @namespace opendsu
+ * @namespace OpenDSU
  */
 export type OpenDSUApi = StorageApi | M2DsuApi | MessageQueueApi | NotificationsApi | OAuthApi | OpenDSUWorkersApi | OpenDSUUtilsApi | AnchoringApi | ErrorApi | ResolverApi | KeyssiApi | SystemApi | HttpApi | SecurityContextApi | W3cDIDApi | DBApi | EnclaveApi | BdnsApi | ConfigApi | CacheApi | ContractsApi | CrypoApi;

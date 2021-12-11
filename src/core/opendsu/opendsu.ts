@@ -3,7 +3,7 @@ import {DSUAnchoringOptions, OpenDSU} from "./types";
 import {ResolverApi} from "./apis/resolver";
 import {KeyssiApi, KeySSIType} from "./apis/keyssi";
 import {HttpApi} from "./apis/http";
-import {SecurityContextApi, SystemApi} from "./apis";
+import {BdnsApi, ConfigApi, ConstantsApi, CrypoApi, DBApi, EnclaveApi, SecurityContextApi, SystemApi} from "./apis";
 
 /**
  * Handles the integration with the OpenDSU Framework
@@ -31,7 +31,6 @@ export function getOpenDSU(): OpenDSU {
 }
 
 let resolver: ResolverApi;
-
 
 /**
  * @return ResolverApi the {@link ResolverApi} object;
@@ -66,8 +65,14 @@ export function getKeySSIApi(): KeyssiApi{
 
     return keyssi;
 }
+
 let $$Cache: any = undefined;
 
+/**
+ * @return any the OpenDSU $$ object;
+ * @throws {CriticalError} when it fails to load
+ * @namespace OpenDSU
+ */
 export function get$$(){
     if (!$$Cache)
         try {
@@ -82,6 +87,11 @@ export function get$$(){
 
 let httpApi: HttpApi;
 
+/**
+ * @return HttpApi
+ * @throws {CriticalError} when it fails to load
+ * @namespace OpenDSU
+ */
 export function getHttpApi(): HttpApi{
     if (!httpApi)
         try {
@@ -95,6 +105,11 @@ export function getHttpApi(): HttpApi{
 
 let scApi: SecurityContextApi;
 
+/**
+ * @return SecurityContextApi
+ * @throws {CriticalError} when it fails to load
+ * @namespace OpenDSU
+ */
 export function getSCApi(): SecurityContextApi{
     if (!scApi)
         try {
@@ -108,6 +123,11 @@ export function getSCApi(): SecurityContextApi{
 
 let systemApi: SystemApi;
 
+/**
+ * @return SystemApi
+ * @throws {CriticalError} when it fails to load
+ * @namespace OpenDSU
+ */
 export function getSystemApi(): SystemApi {
     if (!systemApi)
         try {
@@ -117,6 +137,114 @@ export function getSystemApi(): SystemApi {
         }
 
     return systemApi;
+}
+
+let constantsApi: ConstantsApi;
+
+/**
+ * @return ConstantsApi
+ * @throws {CriticalError} when it fails to load
+ * @namespace OpenDSU
+ */
+export function getConstantsApi(): ConstantsApi {
+    if (!constantsApi)
+        try {
+            constantsApi =  getOpenDSU().constants;
+        } catch (e: any){
+            throw new CriticalError(`Could not load DSU Constants Space: ${e.message | e}`);
+        }
+
+    return constantsApi;
+}
+
+let BDNSApi: BdnsApi;
+
+/**
+ * @return BdnsApi
+ * @throws {CriticalError} when it fails to load
+ * @namespace OpenDSU
+ */
+export function getBdnsApi(): BdnsApi {
+    if (!BDNSApi)
+        try {
+            BDNSApi =  getOpenDSU().loadApi('bdns') as BdnsApi;
+        } catch (e: any){
+            throw new CriticalError(`Could not load DSU Bdns Space: ${e.message | e}`);
+        }
+
+    return BDNSApi;
+}
+
+let configApi: ConfigApi;
+
+/**
+ * @return ConfigApi
+ * @throws {CriticalError} when it fails to load
+ * @namespace OpenDSU
+ */
+export function getConfigApi(): ConfigApi {
+    if (!configApi)
+        try {
+            configApi =  getOpenDSU().loadApi('config') as ConfigApi;
+        } catch (e: any){
+            throw new CriticalError(`Could not load DSU Config Space: ${e.message | e}`);
+        }
+
+    return configApi;
+}
+
+let dbApi: DBApi;
+
+/**
+ * @return DBApi
+ * @throws {CriticalError} when it fails to load
+ * @namespace OpenDSU
+ */
+export function getDBApi(): DBApi {
+    if (!dbApi)
+        try {
+            dbApi =  getOpenDSU().loadApi('db') as DBApi;
+        } catch (e: any){
+            throw new CriticalError(`Could not load DSU DB Space: ${e.message | e}`);
+        }
+
+    return dbApi;
+}
+
+let enclaveApi: EnclaveApi;
+
+/**
+ * @return EnclaveApi
+ * @throws {CriticalError} when it fails to load
+ * @namespace OpenDSU
+ */
+export function getEnclaveApi(): EnclaveApi {
+    if (!enclaveApi)
+        try {
+            enclaveApi =  getOpenDSU().loadApi('enclave') as EnclaveApi;
+        } catch (e: any){
+            throw new CriticalError(`Could not load DSU Enclave Space: ${e.message | e}`);
+        }
+
+    return enclaveApi;
+}
+
+let cryptoApi: CrypoApi;
+
+/**
+ * @return CryptoApi
+ * @throws {CriticalError} when it fails to load
+ * @namespace OpenDSU
+ */
+export function getCrypoApi(): CrypoApi {
+    if (!cryptoApi)
+        try {
+            cryptoApi =  getOpenDSU().loadApi('crypto') as CrypoApi;
+        } catch (e: any){
+            throw new CriticalError(`Could not load DSU Config Space: ${e.message | e}`);
+        }
+
+    return cryptoApi;
 }
 
 export function getAnchoringOptionsByDSUType(type: KeySSIType, ...args: any[]): DSUAnchoringOptions | undefined {

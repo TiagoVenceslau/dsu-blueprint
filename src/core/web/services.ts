@@ -1,13 +1,8 @@
-/**
- * Forked from PrivateSky
- * Provides an environment independent file service to the {@link AppBuilderService}
- * @memberOf dt
- * @function FileService
- */
 import {Callback, CriticalError, Err} from "@tvenceslau/db-decorators/lib";
 import {get$$, getHttpApi} from "../opendsu";
+import {isEqual} from "@tvenceslau/decorator-validation/lib";
 
-export type FileServiceOptions = {
+export type WebServiceOptions = {
     hosts: string,
     seedFileName: string,
     walletPath: string,
@@ -17,11 +12,33 @@ export type FileServiceOptions = {
     }
 }
 
-export class FileService {
-    protected options: FileServiceOptions;
+/**
+ * Reference interface for a {@link WebService}
+ *
+ * @interface
+ * @namespace web
+ */
+export interface WebService {
+    options: WebServiceOptions;
+
+    getWalletSeed(callback: Callback): void;
+    getAppSeed(appName: string | Callback, callback?: Callback): void;
+    doGet(url: string, options: {} | undefined, callback: Callback): void;
+    getFile(appName: string, fileName: string, callback: Callback): void;
+    getFolderContentAsJSON(innerFolder: string, callback: Callback): void;
+}
+
+/**
+ * Default implementation for a {@link WebService}
+ *
+ * @class
+ * @namespace web
+ */
+export class WebServiceImp implements WebService {
+    readonly options: WebServiceOptions;
     protected readonly isBrowser: boolean;
 
-    constructor(options: FileServiceOptions){
+    constructor(options: WebServiceOptions){
         this.options = options;
         this.isBrowser = get$$().environmentType === 'browser';
     }
@@ -94,7 +111,6 @@ export class FileService {
         this.doGet(url,undefined, callback);
     };
 
-
     /**
      *
      * @param innerFolder
@@ -129,4 +145,17 @@ export class FileService {
     }
 }
 
-module.exports = FileService;
+let activeWebService: WebService;
+
+export function getWebService(options?: WebServiceOptions): WebService {
+    if (!activeWebService)
+        if (options)
+            activeWebService = new WebServiceImp(options);
+        else
+            throw new CriticalError('No Options Supplied');
+    return activeWebService;
+}
+
+export function setWebService(webService: WebService): void {
+    activeWebService = webService;
+}

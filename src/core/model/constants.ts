@@ -8,6 +8,7 @@ export enum DsuKeys {
     DEFAULT_DSU_PATH = 'info.json',
     CONSTRUCTOR = "constructor",
     FROM_CACHE = 'fromCache',
+    FROM_WEB = 'fromWeb',
     DSU = 'dsu',
     DSU_FILE = 'dsuFile',
     MOUNT = 'mount'

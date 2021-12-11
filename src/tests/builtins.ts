@@ -3,6 +3,7 @@ import {email} from "@tvenceslau/decorator-validation/lib";
 import {DbDsuBlueprint, dsu, DSUBlueprint, dsuFile, DSUModel, fromCache} from "../core";
 import {addFileFS, addFolderFS, dsuFS} from "../fs";
 import {KeySSIType} from "../core/opendsu/apis/keyssi";
+import {fromWeb} from "../core/web/decorators";
 
 @DSUBlueprint(undefined, KeySSIType.SEED)
 export class IdDsuBlueprint extends DSUModel{
@@ -76,6 +77,31 @@ export class SSAppDsuBlueprint extends DSUModel{
     constructor(blueprint?: SSAppDsuBlueprint | {}) {
         super();
         constructFromObject<SSAppDsuBlueprint>(this, blueprint);
+        this.id = new IdDsuBlueprint(this.id);
+        this.participant = new ParticipantDsuBlueprint(this.participant);
+        this.db = new DbDsuBlueprint(this.participant);
+    }
+}
+
+@DSUBlueprint(undefined, KeySSIType.WALLET, undefined, undefined, true, "id.id", "id.name", "id.address", "id.email")
+export class SSAppWebDsuBlueprint extends DSUModel{
+
+    // @ts-ignore
+    @dsu<IdDsuBlueprint>(IdDsuBlueprint)
+    id?: IdDsuBlueprint = undefined;
+
+    @dsu<ParticipantDsuBlueprint>(ParticipantDsuBlueprint, false, undefined, undefined, ["id.id", "id.name", "id.address", "id.email"])
+    participant?: ParticipantDsuBlueprint = undefined;
+
+    @dsu<DbDsuBlueprint>(DbDsuBlueprint)
+    db?: DbDsuBlueprint = undefined;
+
+    @fromWeb("dsu-explorer", "primary")
+    code?: any = undefined;
+
+    constructor(blueprint?: SSAppWebDsuBlueprint | {}) {
+        super();
+        constructFromObject<SSAppWebDsuBlueprint>(this, blueprint);
         this.id = new IdDsuBlueprint(this.id);
         this.participant = new ParticipantDsuBlueprint(this.participant);
         this.db = new DbDsuBlueprint(this.participant);

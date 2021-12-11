@@ -22,7 +22,7 @@ import {
 import {KeySSI, KeySSISpecificArgs, KeySSIType} from "../opendsu/apis/keyssi";
 import {getAnchoringOptionsByDSUType} from "../opendsu";
 
-const getDSUModelKey = (key: string) => DsuKeys.REFLECT + key;
+export const getDSUModelKey = (key: string) => DsuKeys.REFLECT + key;
 
 export type DSUClassCreationMetadata = {
     [indexer: string]: any;
@@ -327,14 +327,14 @@ export function dsuFile(dsuPath: string = DsuKeys.DEFAULT_DSU_PATH) {
                 try {
                     data = JSON.parse(data);
                 } catch (e) {
-                    return criticalCallback(e, callback);
+                    return criticalCallback(e as Error, callback);
                 }
 
                 callback(undefined, Object.assign(obj, data), dsu);
             });
         }
 
-        const deleteHandler: DSUEditingHandler = function<T extends DBModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, obj: T | {}, dsu: DSU, decorator: DSUEditMetadata, callback: DSUCallback<T>): void {
+        const deleteHandler: DSUEditingHandler = function<T extends DBModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, obj: T | {}, dsu: DSU, decorator: DSUEditMetadata, callback: DSUCallback<T> | ReadCallback): void {
             const {props} = decorator;
             const {dsuPath} = props;
             dsu.delete(dsuPath, (err) => {
@@ -383,7 +383,7 @@ export function mount(keySSI: string, mountPath?: string, options?: DSUIOOptions
             propertyKey
         );
 
-        const createHandler: DSUEditingHandler = function<T extends DBModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, obj: T | {}, dsu: DSU, decorator: DSUEditMetadata, callback: DSUCallback<T>): void {
+        const createHandler: DSUEditingHandler = function<T extends DBModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, obj: T | {}, dsu: DSU, decorator: DSUEditMetadata, callback: DSUCallback<T> | ReadCallback): void {
             const {keySSI, dsuPath, options} = decorator;
             dsu.mount(dsuPath, keySSI, options, err => {
                 if (err)
