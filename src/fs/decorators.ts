@@ -1,5 +1,5 @@
 import {DSUEditMetadata, DsuKeys, DSUOperation} from "../core/model";
-import {DSU, DSUIOOptions, getKeySsiSpace} from "../core/opendsu";
+import {DSU, DSUIOOptions, getKeySSIApi} from "../core/opendsu";
 import {getFS, getPath} from "./utils";
 import {Callback, criticalCallback, DBOperations, Err, OperationKeys} from "@tvenceslau/db-decorators/lib";
 import {getDSUOperationsRegistry} from "../core/repository/registry";
@@ -45,7 +45,7 @@ export const dsuFS = (app: string, derive: boolean = false, mountPath?: string, 
                 if (err || !keySSI)
                     return criticalCallback(err || new Error(`Missing data`), callback);
                 try {
-                    keySSI = getKeySsiSpace().parse(keySSI.toString());
+                    keySSI = getKeySSIApi().parse(keySSI.toString());
                     if (derive)
                         keySSI = keySSI.derive();
 

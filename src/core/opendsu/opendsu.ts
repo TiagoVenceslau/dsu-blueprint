@@ -3,6 +3,7 @@ import {DSUAnchoringOptions, OpenDSU} from "./types";
 import {ResolverApi} from "./apis/resolver";
 import {KeyssiApi, KeySSIType} from "./apis/keyssi";
 import {HttpApi} from "./apis/http";
+import {SecurityContextApi, SystemApi} from "./apis";
 
 /**
  * Handles the integration with the OpenDSU Framework
@@ -37,7 +38,7 @@ let resolver: ResolverApi;
  * @throws {CriticalError} when it fails to load
  * @namespace OpenDSU
  */
-export function getResolver(): ResolverApi{
+export function getResolverApi(): ResolverApi{
     if (!resolver)
         try {
             resolver = getOpenDSU().loadApi('resolver') as ResolverApi;
@@ -55,7 +56,7 @@ let keyssi: KeyssiApi;
  * @throws {CriticalError} when it fails to load
  * @namespace OpenDSU
  */
-export function getKeySsiSpace(): KeyssiApi{
+export function getKeySSIApi(): KeyssiApi{
     if (!keyssi)
         try {
             keyssi = getOpenDSU().loadApi('keyssi') as KeyssiApi;
@@ -79,17 +80,43 @@ export function get$$(){
     return $$Cache;
 }
 
-let httpDSU: any = undefined;
+let httpApi: HttpApi;
 
-export function getHttp(){
-    if (!httpDSU)
+export function getHttpApi(): HttpApi{
+    if (!httpApi)
         try {
-            httpDSU =  getOpenDSU().loadApi('http') as HttpApi;
+            httpApi =  getOpenDSU().loadApi('http') as HttpApi;
         } catch (e: any){
             throw new CriticalError(`Could not load DSU Http Space: ${e.message | e}`);
         }
 
-    return httpDSU;
+    return httpApi;
+}
+
+let scApi: SecurityContextApi;
+
+export function getSCApi(): SecurityContextApi{
+    if (!scApi)
+        try {
+            scApi =  getOpenDSU().loadApi('sc') as SecurityContextApi;
+        } catch (e: any){
+            throw new CriticalError(`Could not load DSU Security Context Space: ${e.message | e}`);
+        }
+
+    return scApi;
+}
+
+let systemApi: SystemApi;
+
+export function getSystemApi(): SystemApi {
+    if (!systemApi)
+        try {
+            systemApi =  getOpenDSU().loadApi('system') as SystemApi;
+        } catch (e: any){
+            throw new CriticalError(`Could not load DSU System Space: ${e.message | e}`);
+        }
+
+    return systemApi;
 }
 
 export function getAnchoringOptionsByDSUType(type: KeySSIType, ...args: any[]): DSUAnchoringOptions | undefined {

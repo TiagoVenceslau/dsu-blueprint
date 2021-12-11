@@ -5,7 +5,7 @@
  * @function FileService
  */
 import {Callback, CriticalError, Err} from "@tvenceslau/db-decorators/lib";
-import {get$$, getHttp} from "../opendsu";
+import {get$$, getHttpApi} from "../opendsu";
 
 export type FileServiceOptions = {
     hosts: string,
@@ -66,7 +66,7 @@ export class FileService {
 
     doGet(url: string, options: {} | undefined, callback: Callback){
 
-        getHttp().fetch(url, {
+        getHttpApi().fetch(url, {
             method: 'GET'
         }).then((response: any) => {
             return response.arrayBuffer().then((data: ArrayBuffer) => {

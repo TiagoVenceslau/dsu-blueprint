@@ -15,7 +15,7 @@ import {
     criticalCallback,
     CriticalError,
     DBOperations,
-    Err, errorCallback, logAsync, LOGGER_LEVELS,
+    Err,
     ModelCallback,
     OperationKeys
 } from "@tvenceslau/db-decorators/lib";
@@ -124,7 +124,7 @@ export const DSUBlueprint = (domain: string | undefined = undefined, keySSIType:
             instance.constructor
         );
         getDSUOperationsRegistry().register(createHandler, DSUOperation.CLASS, OperationKeys.CREATE, instance, DsuKeys.CONSTRUCTOR);
-        getDSUOperationsRegistry().register(createHandler, DSUOperation.CLASS, OperationKeys.UPDATE, instance, DsuKeys.CONSTRUCTOR);
+        getDSUOperationsRegistry().register(updateHandler, DSUOperation.CLASS, OperationKeys.UPDATE, instance, DsuKeys.CONSTRUCTOR);
     })(original);
 }
 

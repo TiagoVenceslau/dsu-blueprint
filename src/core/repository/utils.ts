@@ -9,8 +9,8 @@ import {
 import {DsuKeys, DSUModel, DSUOperation, WalletDSU} from "../model";
 import {
     DSU,
-    getKeySsiSpace,
-    getResolver, WalletDsu,
+    getKeySSIApi,
+    getResolverApi, WalletDsu,
 } from "../opendsu";
 import {
     all,
@@ -40,9 +40,9 @@ export function getDSUFactory(keySSI: KeySSI): DSUFactoryMethod{
     switch (keySSI.getTypeName()) {
         case KeySSIType.ARRAY:
         case KeySSIType.WALLET:
-            return getResolver().createDSUForExistingSSI;
+            return getResolverApi().createDSUForExistingSSI;
         case KeySSIType.SEED:
-            return getResolver().createDSU;
+            return getResolverApi().createDSU;
         default:
             throw new LoggedError(`Unsupported DSU Factory ${keySSI.getTypeName()}`);
     }
@@ -57,11 +57,11 @@ export function getDSUFactory(keySSI: KeySSI): DSUFactoryMethod{
 export function getKeySSIFactory(type: KeySSIType): (...args: any[]) => KeySSI{
     switch (type){
         case KeySSIType.ARRAY:
-            return getKeySsiSpace().createArraySSI;
+            return getKeySSIApi().createArraySSI;
         case KeySSIType.WALLET:
-            return getKeySsiSpace().createTemplateWalletSSI;
+            return getKeySSIApi().createTemplateWalletSSI;
         case KeySSIType.SEED:
-            return getKeySsiSpace().createTemplateSeedSSI;
+            return getKeySSIApi().createTemplateSeedSSI;
         default:
             throw new LoggedError(`Unsupported KeySSI Type ${type}`);
     }
@@ -99,7 +99,7 @@ export function batchCallback(err: Err, dsu: DSU, ...args: any[]){
 export function safeParseKeySSI(keySSI: string, callback: Callback){
     let key: KeySSI;
     try{
-        key = getKeySsiSpace().parse(keySSI);
+        key = getKeySSIApi().parse(keySSI);
     } catch (e) {
         return callback(e);
     }

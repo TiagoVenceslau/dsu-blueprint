@@ -58,8 +58,13 @@ export type AnchoringOptsOrCallback<T> = DSUAnchoringOptions | GenericCallback<T
 export type AnchoringOptsOrErrCallback = DSUAnchoringOptions | ErrCallback;
 export type AnchoringOptsOrDSUCallback = DSUAnchoringOptions | SimpleDSUCallback;
 
-// DSUs
 
+/**
+ * Exposes an interface with the OpenDSU Archive APi
+ *
+ * @interface
+ * @namespace opendsu
+ */
 export interface DSU {
     directAccessEnabled: boolean;
 
@@ -107,15 +112,33 @@ export interface DSU {
     extractFile(fsPath: string, dsuPath: string, options?: IoOptionsOrErrCallback, callback?: ErrCallback): void;
     extractFolder(fsPath: string, dsuPath: string, options?: IoOptionsOrErrCallback, callback?: ErrCallback): void;
 }
-
+/**
+ * Exposes an interface with the OpenDSU WalletDSU APi
+ *
+ * @interface
+ * @namespace opendsu
+ */
 export interface WalletDsu extends DSU {
     getWritableDSU(): DSU;
 }
 
-// OpenDSU Apis
 
+/**
+ * Exposes an interface with the OpenDSU APi
+ *
+ * @interface
+ * @namespace opendsu
+ */
 export interface OpenDSU {
+    constants: {[indexer: string]: any};
+
     loadApi(api: string): OpenDSUApi;
 }
 
+/**
+ * Exposes an Union Type will all mapped OpenDSU Apis
+ *
+ * @type OpenDSUApi
+ * @namespace opendsu
+ */
 export type OpenDSUApi = StorageApi | M2DsuApi | MessageQueueApi | NotificationsApi | OAuthApi | OpenDSUWorkersApi | OpenDSUUtilsApi | AnchoringApi | ErrorApi | ResolverApi | KeyssiApi | SystemApi | HttpApi | SecurityContextApi | W3cDIDApi | DBApi | EnclaveApi | BdnsApi | ConfigApi | CacheApi | ContractsApi | CrypoApi;

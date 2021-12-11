@@ -10,7 +10,7 @@ import {DSU} from "../opendsu/types";
 import {createFromDecorators, readFromDecorators, safeParseKeySSI, updateFromDecorators} from "./utils";
 import DBModel from "@tvenceslau/db-decorators/lib/model/DBModel";
 import {repository} from "@tvenceslau/db-decorators/lib/repository/decorators";
-import {getResolver} from "../opendsu";
+import {getResolverApi} from "../opendsu";
 import ModelErrorDefinition from "@tvenceslau/decorator-validation/lib/Model/ModelErrorDefinition";
 import {getModelRegistry} from "@tvenceslau/decorator-validation/lib";
 import {DSUCache, isDSUCache} from "./cache";
@@ -134,7 +134,7 @@ export class OpenDSURepository<T extends DSUModel> extends AsyncRepositoryImp<T>
 
         debug(`Reading {0} DSU with SSI {1}`, this.clazz.name, key.getIdentifier());
 
-        getResolver().loadDSU(key, (err, dsu) => {
+        getResolverApi().loadDSU(key, (err, dsu) => {
             if (err || !dsu)
                 return criticalCallback(err || new Error(`Missing DSU`), callback);
             readFromDecorators.call(self, dsu, (err: Err, model?: T, dsu?: DSU) => {
