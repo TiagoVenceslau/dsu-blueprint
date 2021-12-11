@@ -1,7 +1,14 @@
 import {IRegistry} from "@tvenceslau/decorator-validation/lib/utils/registry";
-import {criticalCallback, CriticalError, debug, LoggedError, logSync, warn} from "@tvenceslau/db-decorators/lib";
+import {
+    criticalCallback,
+    CriticalError,
+    debug,
+    logAsync,
+    LoggedError, LOGGER_LEVELS,
+    logSync
+} from "@tvenceslau/db-decorators/lib";
 import {OpenDSURepository} from "../repository";
-import {DSUModel, WalletDSU} from "../model";
+import {DsuKeys, DSUModel} from "../model";
 import {
     AnchoringOptsOrDSUCallback,
     DSU,
@@ -11,7 +18,8 @@ import {
     WalletDsu
 } from "./types";
 import {ArraySSI, KeySSI, KeySSIType, SeedSSI, WalletSSI} from "./apis";
-import {getKeySSIApi, getResolverApi} from "./opendsu";
+import {getKeySSIApi, getOpenDSU, getResolverApi} from "./opendsu";
+import {getPropertyDecorators} from "@tvenceslau/decorator-validation/lib";
 
 export type KeySSIFactory = (this: OpenDSURepository<DSUModel>, model: DSUModel, domain: string, specificKeyArgs: string[] | undefined, keyGenArgs: string[], callback: KeySSIFactoryCallback) => void;
 
@@ -179,6 +187,16 @@ export class DSUFactoryRegistry extends FactoryRegistry<DSUFactoryMethod>{
     }
 
     /**
+     *
+     */
+    build(keySSI: KeySSI, options: DSUAnchoringOptions, callback: SimpleDSUCallback): void {
+        const keySSIType = keySSI.getTypeName();
+        const factory: DSUFactoryMethod | undefined = this.get(keySSIType) as DSUFactoryMethod;
+        if (!factory)
+            return criticalCallback(new Error(`Could not find a DSU Factory for ${keySSIType}`), callback);
+        factory(keySSI, options, callback);
+    }
+    /**
      * @inheritDoc
      *
      * When postProcess is defined, will also store the {@link DSUPostProcess}
@@ -214,19 +232,6 @@ export function getDSUFactoryRegistry(): DSUFactoryRegistry {
  * @return {Function} KeySSI factory method
  * @namespace repository
  */
-export function getKeySSIFactory(type: KeySSIType): (...args: any[]) => KeySSI{
-    switch (type){
-        case KeySSIType.ARRAY:
-            return getKeySSIApi().createArraySSI;
-        case KeySSIType.WALLET:
-            return getKeySSIApi().createTemplateWalletSSI;
-        case KeySSIType.SEED:
-            return getKeySSIApi().createTemplateSeedSSI;
-        default:
-            throw new LoggedError(`Unsupported KeySSI Type ${type}`);
-    }
-}
-
 export function getKeySSIFactoryFromType(type: KeySSIType): KeySSIFactory{
     switch (type){
         case KeySSIType.ARRAY:
@@ -253,11 +258,18 @@ export function getKeySSIFactoryFromType(type: KeySSIType): KeySSIFactory{
             return function(this: OpenDSURepository<DSUModel>, model: DSUModel, domain: string, specificKeyArgs: string[] | undefined, keyGenArgs: string[] | undefined, callback: KeySSIFactoryCallback){
                 if (!domain || !Array.isArray(keyGenArgs) || !keyGenArgs.length)
                     return criticalCallback(new Error('Missing parameters'), callback);
-                let keySSI: WalletSSI;
+
+                const codePath = getOpenDSU().constants.CODE_FOLDER;
+
+                const decorators = getPropertyDecorators(DsuKeys.REFLECT, model,
+                    codePath.startsWith('/') ? codePath.substring(1) : codePath,
+                    true);
+
 
                 const args: any[] = [domain, keyGenArgs, ...(specificKeyArgs || [])];
 
                 let seed: string = "";
+                let keySSI: WalletSSI;
 
                 try{
                     // @ts-ignore
@@ -298,23 +310,6 @@ export function getKeySSIFactoryFromType(type: KeySSIType): KeySSIFactory{
             }
         default:
             throw new LoggedError(`Unsupported KeySSI Type ${type}`);
-    }
-}
-
-/**
- * Util method to retrieve the proper {@link DSU} factory method according to the {@link KeySSI} type
- * @param {KeySSI} keySSI
- * @namespace OpenDSU
- */
-export function getDSUFactory(keySSI: KeySSI): DSUFactoryMethod {
-    switch (keySSI.getTypeName()) {
-        case KeySSIType.ARRAY:
-        case KeySSIType.WALLET:
-            return getResolverApi().createDSUForExistingSSI;
-        case KeySSIType.SEED:
-            return getResolverApi().createDSU;
-        default:
-            throw new LoggedError(`Unsupported DSU Factory ${keySSI.getTypeName()}`);
     }
 }
 

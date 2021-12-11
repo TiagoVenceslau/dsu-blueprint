@@ -61,7 +61,7 @@ export type DSUClassCreationMetadata = {
  *
  * @prop {string | undefined} [domain] the DSU domain. default to undefined. when undefined, its the repository that controls the domain;
  * @prop {KeySSIType} [keySSIType] the KeySSI type used to anchor the DSU
- * @prop {KeySSISpecificArgs | undefined} [specificKeyArgs]  OpenDSU related arguments, specific to each KeySSI implementation. {@link getKeySSIFactory}
+ * @prop {KeySSISpecificArgs | undefined} [specificKeyArgs]  OpenDSU related arguments, specific to each KeySSI implementation.
  * @prop {DSUAnchoringOptions | undefined} [options] defaults to undefined.
  * @prop {boolean} [batchMode] defaults to true. decides if batchMode is meant to be used for this DSU
  * @prop {string[]} [props] any object properties that must be passed to the KeySSI generation function (eg: for Array SSIs)
@@ -107,11 +107,7 @@ export const DSUBlueprint = (domain: string | undefined = undefined, keySSIType:
                 return criticalCallback(err || new Error(`Missing KeySSI factory response`), callback);
             const {keySSI, options} = response;
 
-            const dsuFactory: DSUFactoryMethod | undefined = getDSUFactoryRegistry().get(keySSIType) as DSUFactoryMethod;
-            if (!dsuFactory)
-                return criticalCallback(new Error(`Missing DSU Factory for KeySSIType ${keySSIType}`), callback)
-
-            dsuFactory(keySSI, options, (err, dsu) => {
+            getDSUFactoryRegistry().build(keySSI, options || {}, (err, dsu) => {
                 if (err || !dsu)
                     return criticalCallback(err || new Error(`No DSU received`), callback);
 
