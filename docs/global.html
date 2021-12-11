@@ -90,7 +90,7 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-dsu-blueprint.html">dsu-blueprint</a></li></ul><h3>Namespaces</h3><ul><li><a href="cli.html">cli</a></li><li><a href="dsu-blueprint.cli.html">cli</a></li><li><a href="dsu-blueprint.fs.html">fs</a></li><li><a href="dsu-blueprint.openDSU.html">openDSU</a></li><li><a href="fs.decorators.html">decorators</a></li><li><a href="model.decorators.html">decorators</a></li><li><a href="OpenDSU.html">OpenDSU</a></li><li><a href="repository.html">repository</a></li></ul><h3>Classes</h3><ul><li><a href="OpenDSURepository_OpenDSURepository.html">OpenDSURepository</a></li></ul><h3>Global</h3><ul><li><a href="global.html#createObjectToValueChain">createObjectToValueChain</a></li><li><a href="global.html#getValueFromModelChain">getValueFromModelChain</a></li><li><a href="global.html#isDSUCache">isDSUCache</a></li></ul></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-dsu-blueprint.html">dsu-blueprint</a></li></ul><h3>Namespaces</h3><ul><li><a href="cli.html">cli</a></li><li><a href="dsu-blueprint.cli.html">cli</a></li><li><a href="dsu-blueprint.fs.html">fs</a></li><li><a href="dsu-blueprint.openDSU.html">openDSU</a></li><li><a href="fs.decorators.html">decorators</a></li><li><a href="model.decorators.html">decorators</a></li><li><a href="OpenDSU.html">OpenDSU</a></li><li><a href="repository.html">repository</a></li><li><a href="web.html">web</a></li></ul><h3>Classes</h3><ul><li><a href="OpenDSURepository_OpenDSURepository.html">OpenDSURepository</a></li></ul><h3>Interfaces</h3><ul><li><a href="ConstantsApi.html">ConstantsApi</a></li><li><a href="DSU.html">DSU</a></li><li><a href="EnvironmentTypes.html">EnvironmentTypes</a></li><li><a href="WalletDsu.html">WalletDsu</a></li><li><a href="WebService.html">WebService</a></li></ul><h3>Global</h3><ul><li><a href="global.html#createObjectToValueChain">createObjectToValueChain</a></li><li><a href="global.html#DsuKeys">DsuKeys</a></li><li><a href="global.html#DSUOperation">DSUOperation</a></li><li><a href="global.html#getValueFromValueChain">getValueFromValueChain</a></li><li><a href="global.html#isDSUCache">isDSUCache</a></li></ul></div>
                 
             </nav>
         </div>
@@ -174,6 +174,171 @@
     
 
     
+        <div class='vertical-section'>
+            <h1>Members</h1>
+            <div class="members">
+            
+                <div class="member">
+
+<h4 class="name" id="DsuKeys">
+    <a class="href-link" href="#DsuKeys">#</a>
+    
+    <span class="code-name">
+        DsuKeys
+    </span>
+    
+</h4>
+
+
+<p class="summary"><p>Identifying keys for reflection operations and other constants</p>.</p>
+
+
+
+<div class="description">
+    <p>Identifying keys for reflection operations and other constants</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="core_model_constants.ts.html" class="button">View Source</a>
+            <span>
+                <a href="core_model_constants.ts.html">core/model/constants.ts</a>, <a href="core_model_constants.ts.html#line7">line 7</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+<h4 class="name" id="DSUOperation">
+    <a class="href-link" href="#DSUOperation">#</a>
+    
+    <span class="code-name">
+        DSUOperation
+    </span>
+    
+</h4>
+
+
+<p class="summary"><p>Describe the 3 distinct stages of a DSUOperation on a <code>DSUBlueprint</code>:</p>
+<ul>
+<li>CREATION: handles the creation of all nested <a href="DSU.html"><code>DSU</code></a>s (typically from the <code>dsu</code> decorator)</li>
+<li>CLASS: handles the creation of the actual 'end' <a href="DSU.html"><code>DSU</code></a> (typically from the <a href="DSU.html"><code>DSU</code></a> decorator)</li>
+<li>EDITING: handles the editing of the end <a href="DSU.html"><code>DSU</code></a> and all its available operations:</li>
+<li><code>dsuFile</code></li>
+<li><code>fromCache</code></li>
+<li><code>mount</code></li>
+</ul>.</p>
+
+
+
+<div class="description">
+    <p>Describe the 3 distinct stages of a DSUOperation on a <code>DSUBlueprint</code>:</p>
+<ul>
+<li>CREATION: handles the creation of all nested <a href="DSU.html"><code>DSU</code></a>s (typically from the <code>dsu</code> decorator)</li>
+<li>CLASS: handles the creation of the actual 'end' <a href="DSU.html"><code>DSU</code></a> (typically from the <a href="DSU.html"><code>DSU</code></a> decorator)</li>
+<li>EDITING: handles the editing of the end <a href="DSU.html"><code>DSU</code></a> and all its available operations:</li>
+<li><code>dsuFile</code></li>
+<li><code>fromCache</code></li>
+<li><code>mount</code></li>
+</ul>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="core_model_constants.ts.html" class="button">View Source</a>
+            <span>
+                <a href="core_model_constants.ts.html">core/model/constants.ts</a>, <a href="core_model_constants.ts.html#line29">line 29</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+            </div>
+        </div>
+    
 
     
         <div class='vertical-section'>
@@ -196,11 +361,11 @@
     
 
     
-    <p class="summary">Inverse of <a href="global.html#getValueFromModelChain"><code>getValueFromModelChain</code></a>.</p>
+    <p class="summary">Inverse of <a href="global.html#getValueFromValueChain"><code>getValueFromValueChain</code></a>.</p>
     
     
     <div class="description">
-        <p>Inverse of <a href="global.html#getValueFromModelChain"><code>getValueFromModelChain</code></a>.
+        <p>Inverse of <a href="global.html#getValueFromValueChain"><code>getValueFromValueChain</code></a>.
 given a {@param chain} like 'a.b.c' and an {@param obj} like {} and a value 'value'
 will output:</p>
 <pre>
@@ -348,7 +513,7 @@ will output:</p>
         <p class="tag-source">
             <a href="core_repository_utils.ts.html" class="button">View Source</a>
             <span>
-                <a href="core_repository_utils.ts.html">core/repository/utils.ts</a>, <a href="core_repository_utils.ts.html#line304">line 304</a>
+                <a href="core_repository_utils.ts.html">core/repository/utils.ts</a>, <a href="core_repository_utils.ts.html#line262">line 262</a>
             </span>
         </p>
     
@@ -380,12 +545,12 @@ will output:</p>
 
 
     
-    <h4 class="name" id="getValueFromModelChain">
-        <a class="href-link" href="#getValueFromModelChain">#</a>
+    <h4 class="name" id="getValueFromValueChain">
+        <a class="href-link" href="#getValueFromValueChain">#</a>
         
         <span class="code-name">
             
-                getValueFromModelChain<span class="signature">(model, chains)</span><span class="type-signature"></span>
+                getValueFromValueChain<span class="signature">(model, chains)</span><span class="type-signature"></span>
             
         </span>
     </h4>
@@ -543,7 +708,7 @@ will output:</p>
         <p class="tag-source">
             <a href="core_repository_utils.ts.html" class="button">View Source</a>
             <span>
-                <a href="core_repository_utils.ts.html">core/repository/utils.ts</a>, <a href="core_repository_utils.ts.html#line271">line 271</a>
+                <a href="core_repository_utils.ts.html">core/repository/utils.ts</a>, <a href="core_repository_utils.ts.html#line229">line 229</a>
             </span>
         </p>
     
@@ -1151,7 +1316,7 @@ defaults to '../../../../../../privatesky/psknode/bundles/openDSU.js' (when it's
     <td class="type">
     
         
-<span class="param-type">DSU</span>
+<span class="param-type"><a href="DSU.html">DSU</a></span>
 
 
     
@@ -1229,7 +1394,7 @@ defaults to '../../../../../../privatesky/psknode/bundles/openDSU.js' (when it's
         <p class="tag-source">
             <a href="core_repository_utils.ts.html" class="button">View Source</a>
             <span>
-                <a href="core_repository_utils.ts.html">core/repository/utils.ts</a>, <a href="core_repository_utils.ts.html#line492">line 492</a>
+                <a href="core_repository_utils.ts.html">core/repository/utils.ts</a>, <a href="core_repository_utils.ts.html#line457">line 457</a>
             </span>
         </p>
     

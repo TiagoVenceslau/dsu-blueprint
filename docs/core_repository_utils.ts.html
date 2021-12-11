@@ -92,7 +92,7 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-dsu-blueprint.html">dsu-blueprint</a></li></ul><h3>Namespaces</h3><ul><li><a href="cli.html">cli</a></li><li><a href="dsu-blueprint.cli.html">cli</a></li><li><a href="dsu-blueprint.fs.html">fs</a></li><li><a href="dsu-blueprint.openDSU.html">openDSU</a></li><li><a href="fs.decorators.html">decorators</a></li><li><a href="model.decorators.html">decorators</a></li><li><a href="OpenDSU.html">OpenDSU</a></li><li><a href="repository.html">repository</a></li></ul><h3>Classes</h3><ul><li><a href="OpenDSURepository_OpenDSURepository.html">OpenDSURepository</a></li></ul><h3>Global</h3><ul><li><a href="global.html#createObjectToValueChain">createObjectToValueChain</a></li><li><a href="global.html#getValueFromModelChain">getValueFromModelChain</a></li><li><a href="global.html#isDSUCache">isDSUCache</a></li></ul></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-dsu-blueprint.html">dsu-blueprint</a></li></ul><h3>Namespaces</h3><ul><li><a href="cli.html">cli</a></li><li><a href="dsu-blueprint.cli.html">cli</a></li><li><a href="dsu-blueprint.fs.html">fs</a></li><li><a href="dsu-blueprint.openDSU.html">openDSU</a></li><li><a href="fs.decorators.html">decorators</a></li><li><a href="model.decorators.html">decorators</a></li><li><a href="OpenDSU.html">OpenDSU</a></li><li><a href="repository.html">repository</a></li><li><a href="web.html">web</a></li></ul><h3>Classes</h3><ul><li><a href="OpenDSURepository_OpenDSURepository.html">OpenDSURepository</a></li></ul><h3>Interfaces</h3><ul><li><a href="ConstantsApi.html">ConstantsApi</a></li><li><a href="DSU.html">DSU</a></li><li><a href="EnvironmentTypes.html">EnvironmentTypes</a></li><li><a href="WalletDsu.html">WalletDsu</a></li><li><a href="WebService.html">WebService</a></li></ul><h3>Global</h3><ul><li><a href="global.html#createObjectToValueChain">createObjectToValueChain</a></li><li><a href="global.html#DsuKeys">DsuKeys</a></li><li><a href="global.html#DSUOperation">DSUOperation</a></li><li><a href="global.html#getValueFromValueChain">getValueFromValueChain</a></li><li><a href="global.html#isDSUCache">isDSUCache</a></li></ul></div>
                 
             </nav>
         </div>
@@ -120,63 +120,26 @@
 import {DsuKeys, DSUModel, DSUOperation} from "../model";
 import {
     DSU,
-    getAnchoringOptionsByDSUType,
-    getKeySsiSpace,
-    getResolver,
+    getKeySSIApi,
+    WalletDsu,
 } from "../opendsu";
 import {
+    all,
     Callback, criticalCallback, CriticalError, Err,
-    errorCallback,
     getAllPropertyDecorators,
     getClassDecorators,
     LoggedError, OperationKeys
 } from "@tvenceslau/db-decorators/lib";
 import {
+    DSUClassCreationHandler,
     DSUCreationHandler,
     DSUCreationUpdateHandler,
     DSUEditingHandler,
-    DSUFactoryMethod
 } from "./types";
 import {getDSUOperationsRegistry} from "./registry";
 import {ModelKeys} from "@tvenceslau/decorator-validation/lib";
 import {DSUCache} from "./cache";
 import {KeySSI, KeySSIType} from "../opendsu/apis/keyssi";
-
-/**
- * Util method to retrieve the proper {@link DSU} factory method according to the {@link KeySSI} type
- * @param {KeySSI} keySSI
- * @namespace repository
- */
-export function getDSUFactory(keySSI: KeySSI): DSUFactoryMethod{
-    switch (keySSI.getTypeName()) {
-        case KeySSIType.ARRAY:
-        case KeySSIType.WALLET:
-            return getResolver().createDSUForExistingSSI;
-        case KeySSIType.SEED:
-            return getResolver().createDSU;
-        default:
-            throw new LoggedError(`Unsupported DSU Factory ${keySSI.getTypeName()}`);
-    }
-}
-
-/**
- * Util method to retrieve the proper {@link KeySSI} factory method according to the {@link KeySSIType}
- * @param {KeySSIType} type
- * @return {Function} KeySSI factory method
- * @namespace repository
- */
-export function getKeySSIFactory(type: KeySSIType): (...args: any[]) => KeySSI{
-    switch (type){
-        case KeySSIType.ARRAY:
-            return getKeySsiSpace().createArraySSI;
-        case KeySSIType.WALLET:
-            return getKeySsiSpace().createTemplateWalletSSI;
-        case KeySSIType.SEED:
-            return getKeySsiSpace().createTemplateSeedSSI;
-        default:
-            throw new LoggedError(`Unsupported KeySSI Type ${type}`);
-    }
-}
 
 /**
  * Util method that handles the {@link DSU}'s batch operation close
@@ -210,9 +173,9 @@ export function batchCallback(err: Err, dsu: DSU, ...args: any[]){
 export function safeParseKeySSI(keySSI: string, callback: Callback){
     let key: KeySSI;
     try{
-        key = getKeySsiSpace().parse(keySSI);
+        key = getKeySSIApi().parse(keySSI);
     } catch (e) {
-        return callback(e);
+        return callback(e as Error);
     }
     callback(undefined, key);
 }
@@ -222,37 +185,46 @@ export function safeParseKeySSI(keySSI: string, callback: Callback){
  *
  * @typedef T extends DSUModel
  * @param {T} model {@link DSUBlueprint} decorated {@link DSUModel}
- * @param {string} fallbackDomain The domain to be used when its not defined in the DSU Blueprint
  * @param {DSUCache&lt;T> | undefined} [dsuCache] undefined for new transactions, inherited otherwise
  * @param {any[] | DSUCallback[]} keyGenArgs key generation args when required (for Array SSIs for instance). The last arg will be considered to be the {@link DSUCallback&lt;T>};
  *
  * @function
  * @namespace repository
  */
-export function createFromDecorators&lt;T extends DSUModel>(this: OpenDSURepository&lt;T>, model: T, fallbackDomain: string, dsuCache: DSUCache&lt;T> | undefined, ...keyGenArgs: (any | DSUCallback&lt;T>)[]){
+export function createFromDecorators&lt;T extends DSUModel>(this: OpenDSURepository&lt;T>, model: T, dsuCache: DSUCache&lt;T> | undefined, ...keyGenArgs: (any | DSUCallback&lt;T>)[]){
     const callback: DSUCallback&lt;T> = keyGenArgs.pop();
     if (!callback)
         throw new CriticalError(`Missing callback`);
 
     const splitDecorators: {creation?: DSUCreationDecorator[], editing?: DSUEditDecorator[]} | undefined = splitDSUDecorators&lt;T>(model);
 
-    if (!splitDecorators)
-        return handleDSUClassDecorators.call(this, model, fallbackDomain, ...keyGenArgs, (err?: Err, newModel?: T, dsu?: DSU, keySSI?: KeySSI) => {
-            if (err || !newModel || !dsu || !keySSI)
-                return callback(err || new CriticalError(`Invalid results`));
+    dsuCache = dsuCache || new DSUCache&lt;T>();
+
+    const cb = function(err: Err, newModel?: T, dsu?: DSU){
+        if (err || !newModel || !dsu)
+            return callback(err || new CriticalError(`Invalid results`));
+        dsu.getKeySSIAsObject((err: Err, keySSI?: KeySSI) => {
+            if (err || !keySSI)
+                return criticalCallback(err || new Error("Missing KeySSI"), callback);
             callback(undefined, newModel, dsu, keySSI);
+        });
+    }
+
+    if (!splitDecorators)
+        return handleDSUClassDecorators.call(this, dsuCache, model, OperationKeys.CREATE, ...keyGenArgs, (err?: Err, newModel?: T, dsu?: DSU, keySSI?: KeySSI) => {
+            if (err || !newModel || !dsu)
+                return cb(err || new CriticalError(`Invalid results`));
+            batchCallback(undefined, dsu, newModel, dsu, cb);
         });
 
     const {creation, editing} = splitDecorators;
-
-    dsuCache = dsuCache || new DSUCache&lt;T>();
 
     handleCreationPropertyDecorators.call(this, dsuCache, model, creation || [],  (err: Err) => {
         if (err)
             return callback(err);
 
-        handleDSUClassDecorators.call(this, model, fallbackDomain, ...keyGenArgs, (err: Err, updatedModel?: T, dsu?: DSU, keySSI?: KeySSI, isBatchMode: boolean = false) => {
-            if (err || !updatedModel || !dsu || !keySSI)
+        handleDSUClassDecorators.call(this, dsuCache as DSUCache&lt;T>, model, OperationKeys.CREATE, ...keyGenArgs, (err: Err, updatedModel?: T, dsu?: DSU, isBatchMode: boolean = false) => {
+            if (err || !updatedModel || !dsu)
                 return callback(err || new CriticalError("Invalid Results"));
 
             if (isBatchMode)
@@ -260,8 +232,8 @@ export function createFromDecorators&lt;T extends DSUModel>(this: OpenDSUReposit
 
             handleEditingPropertyDecorators.call(this, dsuCache as DSUCache&lt;DSUModel>, updatedModel, dsu, editing || [], OperationKeys.CREATE, (err: Err, otherModel: T) => {
                 if (err || !otherModel)
-                    return batchCallback(err || new Error("Invalid Results"), dsu, callback);
-                batchCallback(undefined, dsu, otherModel, dsu, keySSI, callback);
+                    return batchCallback(err || new Error("Invalid Results"), dsu, cb);
+                batchCallback(undefined, dsu, otherModel, dsu, cb);
             });
         });
     });
@@ -270,61 +242,40 @@ export function createFromDecorators&lt;T extends DSUModel>(this: OpenDSUReposit
 /**
  * Will create a {@link DSU} based on the definitions of the {@link DSUBlueprint}
  *
+ * @param {DSUCache} dsuCache
  * @param {T} model {@link DSUBlueprint} decorated {@link DSUModel}
- * @param {string} fallbackDomain The repository's fallback anchoring domain when not defined by the {@link DSUBlueprint}
+ * @param {OperationKeys} [operation] accepts {@link OperationKeys.CREATE} or {@link OperationKeys.UPDATE}. defaults to the first
  * @param {string[]} [args] parameters to be passed to the KeyGeneration Function, after the ones originated from the {@link DSUModel}'s properties, as defined in the {@link DSUBlueprint}
  *       The last arg will be considered to be the {@link DSUCallback&lt;T>};
  *
  * @function
  * @namespace repository
  */
-export function handleDSUClassDecorators&lt;T extends DSUModel>(this: OpenDSURepository&lt;T>, model: T, fallbackDomain: string, ...args: (any | DSUCallback&lt;T>)[]){
+export function handleDSUClassDecorators&lt;T extends DSUModel>(this: OpenDSURepository&lt;T>, dsuCache: DSUCache&lt;T>, model: T, operation: string = OperationKeys.CREATE, ...args: (any | DSUCallback&lt;T>)[]){
     const callback: DSUCallback&lt;T> = args.pop();
     if (!callback)
         throw new LoggedError(`Missing callback`);
 
-    const classDecorators: {key: string, props: any}[] = getClassDecorators(ModelKeys.REFLECT, model);
+    const decorator: {key: string, props: any} | undefined = getClassDecorators(DsuKeys.REFLECT, model).find(d => d.key === DsuKeys.CONSTRUCTOR);
 
-    if (!classDecorators.length)
-        return criticalCallback(new Error(`No DSU decorator Found on Model`), callback);
+    if (!decorator)
+        return criticalCallback(new Error(`No DSUBlueprint decorator Found on Model`), callback);
 
-    let {domain, keySSIType, specificKeyArgs, props, batchMode} = classDecorators[0].props.dsu;
+    const handler: DSUClassCreationHandler = getDSUOperationsRegistry().get(model.constructor.name, DsuKeys.CONSTRUCTOR, DSUOperation.CLASS, OperationKeys.CREATE) as DSUClassCreationHandler;
+    if (!handler)
+        return criticalCallback(`No handler found for ${decorator.props.dsu} - ${decorator.key} - ${decorator.props.dsu.operation}`, callback);
 
-    let keySSI: KeySSI, dsuFactory: DSUFactoryMethod;
+    const {batchMode, props} = decorator.props.dsu;
 
-    try{
-        const factory = getKeySSIFactory(keySSIType);
+    if (props)
+        decorator.props.dsu.props = decorator.props.dsu.props ? getValueFromValueChain(model, ...decorator.props.dsu.props) : [];
 
-        const keyArgs: any[] = [domain || fallbackDomain];
-        if (!props){
-            if (args &amp;&amp; args.length)
-                keyArgs.push(args);
-        } else {
-            if (args)
-                props.push(...args);
-            keyArgs.push(props);
-        }
-
-        if (specificKeyArgs &amp;&amp; specificKeyArgs.length)
-            keyArgs.push(...specificKeyArgs);
-
-        keySSI = factory(...keyArgs);
-        dsuFactory = getDSUFactory(keySSI);
-    } catch (e){
-        return errorCallback(e as Error, callback);
-    }
-
-    const options = getAnchoringOptionsByDSUType(keySSI.getTypeName() as KeySSIType);
-
-    dsuFactory(keySSI, options, (err, dsu) => {
-        if (err || !dsu)
-            return criticalCallback(err || new Error(`No DSU received`), callback);
-
-        dsu.getKeySSIAsObject((err, keySSI) => {
-            if (err)
-                return errorCallback(err, callback);
-            callback(undefined, model, dsu, keySSI, batchMode);
-        });
+    all(`[{0}] - calling DSU Property Creation Handler for model {1}`, this.constructor.name, model);
+    handler.call(this, dsuCache, model, decorator.props, ...args, (err: Err, newModel?: DSUModel, dsu?: DSU) => {
+        if (err || !newModel || !dsu)
+            return criticalCallback(err || new Error("Missing Results"), callback);
+        all(`[{0}] - calling DSU Class Creation Handler for model {1} finished`, this.constructor.name, model.constructor.name);
+        callback(undefined, newModel as T, dsu, batchMode);
     });
 }
 
@@ -413,16 +364,17 @@ export function handleCreationPropertyDecorators&lt;T extends DSUModel>(this: Op
 
         const {modelArgs, args} = decorator.props;
 
-        const keyGenArgs: string[] = modelArgs ? getValueFromModelChain(model, ...modelArgs) : [];
+        const keyGenArgs: string[] = modelArgs ? getValueFromValueChain(model, ...modelArgs) : [];
         if (args)
             keyGenArgs.push(...args);
 
+        all(`[{0}] - calling DSU Property Creation Handler for model {1}'s {2} property`, self.constructor.name, model, decorator.prop);
         handler.call(self, dsuCache.bindToParent(model, decorator.prop), model[decorator.prop], decorator.props, ...keyGenArgs, (err: Err, newModel?: DSUModel, dsu?: DSU, keySSI?: KeySSI) => {
             if (err || !newModel || !dsu || !keySSI)
                 return criticalCallback(err || new Error(`Missing Results`), callback);
 
             dsuCache.cache(model, decorator.prop, dsu, keySSI)
-
+            all(`[{0}] - DSU Property Creation Handler for model {1}'s {2} property finished`, self.constructor.name, model.constructor.name, decorator.prop);
             decoratorIterator(decoratorsCopy, callback);
         });
     }
@@ -452,7 +404,7 @@ export function handleCreationPropertyDecorators&lt;T extends DSUModel>(this: Op
  * @param {string[]} chains
  * @throws CriticalError if the value is not found in the object
  */
-export function getValueFromModelChain(model: {[indexer: string]: any}, ...chains: string[]): any[]{
+export function getValueFromValueChain(model: {[indexer: string]: any}, ...chains: string[]): any[]{
     return chains.map(c => {
         const split = c.split('.');
 
@@ -471,7 +423,7 @@ export function getValueFromModelChain(model: {[indexer: string]: any}, ...chain
 }
 
 /**
- * Inverse of {@link getValueFromModelChain}.
+ * Inverse of {@link getValueFromValueChain}.
  * given a {@param chain} like 'a.b.c' and an {@param obj} like {} and a value 'value'
  * will output:
  * &lt;pre>
@@ -562,10 +514,11 @@ export function handleEditingPropertyDecorators&lt;T extends DSUModel>(this: Ope
         if (!handler)
             return criticalCallback(new Error(`No handler found for ${newModel.constructor.name} - ${decorator.prop} - ${decorator.props.operation}`), callback);
 
+        all(`[{0}] - calling DSU Property Editing Handler for model {1}'s {2} property;`, self.constructor.name, model, decorator.prop);
         handler.call(self, dsuCache, newModel, dsu, decorator, (err: Err, newModel?: DSUModel) => {
             if (err || !newModel)
                 return criticalCallback(err || new Error(`Missing Results`), callback);
-
+            all(`[{0}] - DSU Property Creation Handler for model {1}'s {2} property finished`, self.constructor.name, model.constructor.name, decorator.prop);
             decoratorIterator(decoratorsCopy, newModel as T, callback);
         });
     }
@@ -655,7 +608,7 @@ export function readFromDecorators&lt;T extends DSUModel>(this: OpenDSURepositor
             // @ts-ignore
             newModel = new self.clazz(newModel) as T;
         } catch (e) {
-            return criticalCallback(e, callback);
+            return criticalCallback(e as Error, callback);
         }
         callback(undefined, newModel as T, dsu);
     });
@@ -684,22 +637,26 @@ export function updateFromDecorators&lt;T extends DSUModel>(this: OpenDSUReposit
             })
         })
 
-        const classDecorators: {key: string, props: any}[] = getClassDecorators(ModelKeys.REFLECT, model);
-
-        if (!classDecorators.length)
-            return criticalCallback(new Error(`No DSU decorator Found on Model`), callback);
-
-        let {domain, keySSIType, specificKeyArgs, props, batchMode} = classDecorators[0].props.dsu;
-
-        if (batchMode)
-            dsu.beginBatch();
-
-        handleEditingPropertyDecorators.call(self, dsuCache, model, dsu, splitDecorators.editing || [], OperationKeys.UPDATE, (err: Err, otherModel: T) => {
-            if (err || !otherModel)
-                return batchCallback(err || new Error("Invalid Results"), dsu, callback);
-            batchCallback(undefined, dsu, otherModel, dsu, callback);
+        handleDSUClassDecorators.call(self, dsuCache, model, OperationKeys.UPDATE, (err: Err, newModel?: T, dsu?: DSU) => {
+            if (err || ! newModel || !dsu)
+                return callback(err || new Error(`Missing results`));
+            handleEditingPropertyDecorators.call(self, dsuCache, model, dsu, splitDecorators.editing || [], OperationKeys.UPDATE, (err: Err, otherModel: T) => {
+                if (err || !otherModel)
+                    return batchCallback(err || new Error("Invalid Results"), dsu, callback);
+                batchCallback(undefined, dsu, otherModel, dsu, callback);
+            });
         });
     });
+}
+
+export function handleDSUTypes(keySSIType: KeySSIType, dsu: DSU): DSU {
+    switch (keySSIType) {
+        case KeySSIType.WALLET:
+            const wallet = dsu as WalletDsu;
+            return wallet.getWritableDSU() as DSU;
+        default:
+            return dsu as DSU;
+    }
 }</code></pre>
         </article>
     </section>

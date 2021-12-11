@@ -1,0 +1,277 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Decorator Validation Engine core/opendsu/types.ts</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+             
+                <a href="index.html">
+                    <h1 class="navbar-item">Decorator Validation Engine</h1>
+                </a>
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    API Documentation
+                </a>
+                
+                 
+                    
+                        <a
+                            class="link user-link "
+                            href="https://github.com/TiagoVenceslau/decorator-validation#readme"
+                        >
+                            Github Repository
+                        </a>
+                    
+                        <a
+                            class="link user-link "
+                            href="https://github.com/TiagoVenceslau"
+                        >
+                            Github Profile
+                        </a>
+                    
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+                <div class="search-wrapper">
+                    <input id="search" type="text" placeholder="Search docs..." class="input">
+                </div>
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-dsu-blueprint.html">dsu-blueprint</a></li></ul><h3>Namespaces</h3><ul><li><a href="cli.html">cli</a></li><li><a href="dsu-blueprint.cli.html">cli</a></li><li><a href="dsu-blueprint.fs.html">fs</a></li><li><a href="dsu-blueprint.openDSU.html">openDSU</a></li><li><a href="fs.decorators.html">decorators</a></li><li><a href="model.decorators.html">decorators</a></li><li><a href="OpenDSU.html">OpenDSU</a></li><li><a href="repository.html">repository</a></li><li><a href="web.html">web</a></li></ul><h3>Classes</h3><ul><li><a href="OpenDSURepository_OpenDSURepository.html">OpenDSURepository</a></li></ul><h3>Interfaces</h3><ul><li><a href="ConstantsApi.html">ConstantsApi</a></li><li><a href="DSU.html">DSU</a></li><li><a href="EnvironmentTypes.html">EnvironmentTypes</a></li><li><a href="WalletDsu.html">WalletDsu</a></li><li><a href="WebService.html">WebService</a></li></ul><h3>Global</h3><ul><li><a href="global.html#createObjectToValueChain">createObjectToValueChain</a></li><li><a href="global.html#DsuKeys">DsuKeys</a></li><li><a href="global.html#DSUOperation">DSUOperation</a></li><li><a href="global.html#getValueFromValueChain">getValueFromValueChain</a></li><li><a href="global.html#isDSUCache">isDSUCache</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Source</p>
+                    <h1>core/opendsu/types.ts</h1>
+                </header>
+                
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import {Err} from "@tvenceslau/db-decorators/lib";
+import { HttpApi } from "./apis/http";
+import {KeyssiApi, KeySSICallback} from "./apis/keyssi";
+import { ResolverApi } from "./apis/resolver";
+import { SystemApi } from "./apis/system";
+import {SecurityContextApi} from "./apis/sc";
+import {W3cDIDApi} from "./apis/w3cdid";
+import {DBApi} from "./apis/db";
+import {EnclaveApi} from "./apis/enclave";
+import {AnchoringApi} from "./apis/anchoring";
+import {BdnsApi} from "./apis/bdns";
+import {ConfigApi} from "./apis/config";
+import {CacheApi} from "./apis/cache";
+import {ContractsApi} from "./apis/contracts";
+import {CrypoApi} from "./apis/crypto";
+import {ErrorApi} from "./apis/error";
+import {OpenDSUWorkersApi} from "./apis/workers";
+import {OpenDSUUtilsApi} from "./apis/utils";
+import {OAuthApi} from "./apis/oauth";
+import {NotificationsApi} from "./apis/notifications";
+import {MessageQueueApi} from "./apis/mq";
+import {M2DsuApi} from "./apis/m2dsu";
+import {StorageApi} from "./apis/storage";
+import {ConstantsApi} from "./apis";
+
+export type ObjectCallback = (err?: Err, object?: any) => void;
+export type ErrCallback = (err?: Err) => void;
+
+export type GenericCallback&lt;T> = (err?: Err, result?: T, ...args: any[]) => void;
+
+export type SimpleDSUCallback = GenericCallback&lt;DSU>;
+
+export type DSUIOOptions = {
+    embedded?: boolean,
+    encrypt?: boolean,
+    ignoreMounts?: boolean,
+    recursive?: boolean
+}
+
+export type DSUAnchoringOptions = {
+    dsuTypeSSI?: string
+}
+
+export const DefaultIOOptions: DSUIOOptions = {
+    embedded: false,
+    encrypt: true,
+    ignoreMounts: true,
+    recursive: true
+}
+
+export interface DSUHandler{}
+export interface DSUFactory{}
+
+export type IoOptionsOrCallback&lt;T> = DSUIOOptions | GenericCallback&lt;T>;
+export type IoOptionsOrErrCallback = DSUIOOptions | ErrCallback;
+export type IoOptionsOrDSUCallback = DSUIOOptions | SimpleDSUCallback;
+
+export type AnchoringOptsOrCallback&lt;T> = DSUAnchoringOptions | GenericCallback&lt;T>;
+export type AnchoringOptsOrErrCallback = DSUAnchoringOptions | ErrCallback;
+export type AnchoringOptsOrDSUCallback = DSUAnchoringOptions | SimpleDSUCallback;
+
+
+/**
+ * Exposes an interface with the OpenDSU Archive APi
+ *
+ * @interface
+ * @namespace OpenDSU
+ */
+export interface DSU {
+    directAccessEnabled: boolean;
+
+    enableDirectAccess(callback: ErrCallback): void;
+
+    // From Docs
+    getCreationSSI(plain?: boolean): string
+    getKeySSIAsObject(keySSIType?: string | KeySSICallback, callback?: KeySSICallback): void
+    getKeySSIAsString(keySSIType?: string | GenericCallback&lt;string>, callback?: GenericCallback&lt;string>): void
+
+    // Mounting
+    // getManifest(): void
+    getSSIForMount(mountPoint: string, callback: GenericCallback&lt;string>): void;
+    listMountedDSUs(mountPoint: string, callback: GenericCallback&lt;{path: string, identifier: string}[]>): void;
+    mount(mountingPoint: string, archiveSSI: string, options?: IoOptionsOrErrCallback, callback?: ErrCallback): void;
+    unmount(mountPoint: string, callback: ErrCallback): void;
+
+    // IO
+    getArchiveForPath(dsuPath: string, callback: ErrCallback): void;
+    listFiles(dsuPath: string, options?: IoOptionsOrCallback&lt;string[]>, callback?: GenericCallback&lt;string[]>): void;
+    listFolders(dsuPath: string, options?: IoOptionsOrCallback&lt;string[]>, callback?: GenericCallback&lt;string[]>): void;
+    readDir(dsuPath: string, options?: IoOptionsOrCallback&lt;{}>, callback?: GenericCallback&lt;{}>): void;
+    cloneFolder(srcPath: string, destPath: string, options?: IoOptionsOrErrCallback, callback?: ErrCallback): void;
+    createFolder(dsuPath: string, options?: IoOptionsOrErrCallback, callback?: ErrCallback): void;
+    delete(dsuPath: string, options?: IoOptionsOrErrCallback, callback?: ErrCallback): void;
+    rename(srcPath: string, destPath: string, options?: IoOptionsOrErrCallback, callback?: ErrCallback): void;
+
+    appendToFile(dsuPath: string, data: any, options?: IoOptionsOrErrCallback, callback?: ErrCallback): void;
+    createReadStream(dsUpath: string, options?: IoOptionsOrCallback&lt;any>, callback?: GenericCallback&lt;any>): void;
+    dsuLog(message: string, callback: ErrCallback): void;
+    readFile(path: string, options?: IoOptionsOrCallback&lt;any>, callback?: GenericCallback&lt;any>): void;
+    writeFile(path: string, data: string, options?: IoOptionsOrErrCallback, callback?: ErrCallback): void;
+
+    // Batch
+    batch(batchFn: () => any, callback: ErrCallback): void;
+    batchInProgress(): boolean;
+    beginBatch(): void;
+    cancelBatch(callback: ErrCallback): void;
+    commitBatch(onConflict?: () => any | ErrCallback, callback?: ErrCallback): void;
+
+    // FS
+    addFile(fsPath: string, dsuPath: string, options?: IoOptionsOrErrCallback, callback?: ErrCallback): void;
+    addFiles(fsPath: string[], dsuPath: string, options?: IoOptionsOrErrCallback, callback?: ErrCallback): void;
+    addFolder(fsPath: string, dsuPath: string, options?: IoOptionsOrErrCallback, callback?: ErrCallback): void;
+    extractFile(fsPath: string, dsuPath: string, options?: IoOptionsOrErrCallback, callback?: ErrCallback): void;
+    extractFolder(fsPath: string, dsuPath: string, options?: IoOptionsOrErrCallback, callback?: ErrCallback): void;
+}
+/**
+ * Exposes an interface with the OpenDSU WalletDSU APi
+ *
+ * @interface
+ * @namespace OpenDSU
+ */
+export interface WalletDsu extends DSU {
+    getWritableDSU(): DSU;
+}
+
+
+/**
+ * Exposes an interface with the OpenDSU APi
+ *
+ * @interface
+ * @namespace OpenDSU
+ */
+export interface OpenDSU {
+    constants: ConstantsApi;
+
+    loadApi(api: string): OpenDSUApi;
+}
+
+/**
+ * Exposes an Union Type will all mapped OpenDSU Apis
+ *
+ * @type OpenDSUApi
+ * @namespace OpenDSU
+ */
+export type OpenDSUApi = StorageApi | M2DsuApi | MessageQueueApi | NotificationsApi | OAuthApi | OpenDSUWorkersApi | OpenDSUUtilsApi | AnchoringApi | ErrorApi | ResolverApi | KeyssiApi | SystemApi | HttpApi | SecurityContextApi | W3cDIDApi | DBApi | EnclaveApi | BdnsApi | ConfigApi | CacheApi | ContractsApi | CrypoApi;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+            </div>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+<script src="scripts/search.js"> </script>
+
+</body>
+</html>

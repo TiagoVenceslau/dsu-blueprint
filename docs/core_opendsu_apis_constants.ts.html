@@ -1,0 +1,390 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Decorator Validation Engine core/opendsu/apis/constants.ts</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+             
+                <a href="index.html">
+                    <h1 class="navbar-item">Decorator Validation Engine</h1>
+                </a>
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    API Documentation
+                </a>
+                
+                 
+                    
+                        <a
+                            class="link user-link "
+                            href="https://github.com/TiagoVenceslau/decorator-validation#readme"
+                        >
+                            Github Repository
+                        </a>
+                    
+                        <a
+                            class="link user-link "
+                            href="https://github.com/TiagoVenceslau"
+                        >
+                            Github Profile
+                        </a>
+                    
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+                <div class="search-wrapper">
+                    <input id="search" type="text" placeholder="Search docs..." class="input">
+                </div>
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-dsu-blueprint.html">dsu-blueprint</a></li></ul><h3>Namespaces</h3><ul><li><a href="cli.html">cli</a></li><li><a href="dsu-blueprint.cli.html">cli</a></li><li><a href="dsu-blueprint.fs.html">fs</a></li><li><a href="dsu-blueprint.openDSU.html">openDSU</a></li><li><a href="fs.decorators.html">decorators</a></li><li><a href="model.decorators.html">decorators</a></li><li><a href="OpenDSU.html">OpenDSU</a></li><li><a href="repository.html">repository</a></li><li><a href="web.html">web</a></li></ul><h3>Classes</h3><ul><li><a href="OpenDSURepository_OpenDSURepository.html">OpenDSURepository</a></li></ul><h3>Interfaces</h3><ul><li><a href="ConstantsApi.html">ConstantsApi</a></li><li><a href="DSU.html">DSU</a></li><li><a href="EnvironmentTypes.html">EnvironmentTypes</a></li><li><a href="WalletDsu.html">WalletDsu</a></li><li><a href="WebService.html">WebService</a></li></ul><h3>Global</h3><ul><li><a href="global.html#createObjectToValueChain">createObjectToValueChain</a></li><li><a href="global.html#DsuKeys">DsuKeys</a></li><li><a href="global.html#DSUOperation">DSUOperation</a></li><li><a href="global.html#getValueFromValueChain">getValueFromValueChain</a></li><li><a href="global.html#isDSUCache">isDSUCache</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Source</p>
+                    <h1>core/opendsu/apis/constants.ts</h1>
+                </header>
+                
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Environment Types
+ *
+ * @namespace opendsu
+ * @interface
+ */
+export interface EnvironmentTypes {
+    /**
+     * Environment Type Browser. defaults to 'browser'
+     */
+    BROWSER_ENVIRONMENT_TYPE: string,
+    /**
+     * Environment Type Mobile. defaults to 'mobile-browser'
+     */
+    MOBILE_BROWSER_ENVIRONMENT_TYPE: string,
+    /**
+     * Environment Type Web Worker. defaults to 'web-worker'
+     */
+    WEB_WORKER_ENVIRONMENT_TYPE: string,
+    /**
+     * Environment Type Service Worker. defaults to 'service-worker'
+     */
+    SERVICE_WORKER_ENVIRONMENT_TYPE: string,
+    /**
+     * Environment Type Isolated. defaults to 'isolate'
+     */
+    ISOLATE_ENVIRONMENT_TYPE: string,
+    /**
+     * Environment Type Thread. defaults to 'thread'
+     */
+    THREAD_ENVIRONMENT_TYPE: string,
+    /**
+     * Environment Type NodeJs. defaults to 'nodejs'
+     */
+    NODEJS_ENVIRONMENT_TYPE: string,
+}
+
+/**
+ * Interface representing the OpenDSU Constants
+ *
+ * @namespace opendsu
+ * @interface
+ */
+export interface ConstantsApi {
+    /**
+     * Environment Types. defaults to {@link ENVIRONMENT_TYPES}
+     */
+    ENVIRONMENT_TYPES: EnvironmentTypes,
+    /**
+     * the default code folder in ssapps. defaults to '/code'
+     */
+    CODE_FOLDER: string,
+    /**
+     * the default constitution folder in ssapps. defaults to '/code/constitution'
+     */
+    CONSTITUTION_FOLDER: string,
+    /**
+     * the default blockchain. defaults to '/blockchain'
+     */
+    BLOCKCHAIN_FOLDER: string,
+    /**
+     * the default app folder in ssapps. defaults to '/app'
+     */
+    APP_FOLDER: string,
+    /**
+     * the default path to the identity file. defaults to './domain_identity'
+     */
+    DOMAIN_IDENTITY_FILE: string,
+    /**
+     * the default assets folder in ssapps. defaults to '/assets'
+     */
+    ASSETS_FOLDER: string,
+    /**
+     * the default transactions folder in Apihub. defaults to '/transactions'
+     */
+    TRANSACTIONS_FOLDER: string,
+    /**
+     * the default apps folder in Wallet ssapps. defaults to '/apps'
+     */
+    APPS_FOLDER: string,
+    /**
+     * the default data folder. defaults to '/data'
+     */
+    DATA_FOLDER: string,
+    /**
+     * the default manifest file path in ssapps. defaults to '/manifest'
+     */
+    MANIFEST_FILE: string,
+    /**
+     * the BDNS ROOT HOST system config variable. defaults to 'BDNS_ROOT_HOSTS'
+     */
+    BDNS_ROOT_HOSTS: string,
+    /**
+     * the default environment file path in ssapps. defaults to '/environment.json'
+     */
+    ENVIRONMENT_PATH: string,
+    /**
+     * The security context KeySSI name. defaults to 'scKeySSI'
+     */
+    SECURITY_CONTEXT_KEY_SSI: string,
+    /**
+     * the default vault domains. defaults to 'vaultDomain'
+     */
+    VAULT_DOMAIN: string,
+    /**
+     * defaults to 'domain'
+     */
+    DOMAIN: string,
+    /**
+     * defaults to 'didDomain'
+     */
+    DID_DOMAIN: string,
+    /**
+     * main enclave types
+     */
+    MAIN_ENCLAVE: {
+        /**
+         * Keyword for main Enclave Type. defaults to 'enclaveType'
+         */
+        TYPE: string,
+        /**
+         * DID main enclave type name. defaults to 'enclaveDID'
+         */
+        DID: string,
+        /**
+         * KeySSI main enclave type name. defaults to 'enclaveKeySSI'
+         */
+        KEY_SSI: string
+    },
+    /**
+     * shared enclave types
+     */
+    SHARED_ENCLAVE: {
+        /**
+         * Keyword for Enclave Type. defaults to 'sharedEnclaveType'
+         */
+        TYPE: string,
+        /**
+         * Shared DID enclave type name. defaults to 'sharedEnclaveDID'
+         */
+        DID: string,
+        /**
+         * Shared KeySSI enclave type name. defaults to 'sharedEnclaveDID'
+         */
+        KEY_SSI: string,
+    },
+    /**
+     * enclave types
+     */
+    ENCLAVE_TYPES: {
+        /**
+         * Wallet enclave type name. defaults to 'WalletDBEnclave'
+         */
+        WALLET_DB_ENCLAVE: string,
+        /**
+         * Memory enclave type name. defaults to 'MemoryEnclave'
+         */
+        MEMORY_ENCLAVE: string,
+        /**
+         * Apihub enclave type name. defaults to 'ApihubEnclave'
+         */
+        APIHUB_ENCLAVE: string,
+        /**
+         * High Security enclave type name. defaults to 'HighSecurityEnclave'
+         */
+        HIGH_SECURITY_ENCLAVE: string
+    },
+    /**
+     * cache types
+     */
+    CACHE: {
+        /**
+         * Filesystem cache type. defaults to 'fs'
+         */
+        FS: string,
+        /**
+         * Memory cache type. defaults to 'memory'
+         */
+        MEMORY: string,
+        /**
+         * Indexed DB cache type. defaults to 'cache.indexedDB'
+         */
+        INDEXED_DB: string,
+        /**
+         * Vault cache type. defaults to 'cache.vaultType'
+         */
+        VAULT_TYPE: string,
+        /**
+         * Base Folder for fs caching. defaults to 'internal-volume/cache'
+         */
+        BASE_FOLDER: string,
+        /**
+         * Base folder config. defaults to 'fsCache.baseFolder'
+         */
+        BASE_FOLDER_CONFIG_PROPERTY: string,
+        /**
+         * Encrypted bricks cache type. defaults to 'encrypted-bricks-cache'
+         */
+        ENCRYPTED_BRICKS_CACHE: string,
+        /**
+         * Anchoring cache type. defaults to 'anchoring-cache'
+         */
+        ANCHORING_CACHE: string,
+        /**
+         * no cache type. defaults to 'no-cache'
+         */
+        NO_CACHE: string
+    },
+    /**
+     * Domain keywords
+     */
+    DOMAINS: {
+        /**
+         * Name for Vault domain. defaults to 'vault'
+         */
+        VAULT: string
+    },
+    VAULT:{
+        /**
+         * Name for bricks. defaults to 'bricks'
+         */
+        BRICKS_STORE: string,
+        /**
+         * Name for anchors. defaults to 'anchors'
+         */
+        ANCHORS_STORE: string
+    },
+    /**
+     * Name for Vault domain. defaults to 'brickDomain'
+     */
+    BRICKS_DOMAIN_KEY: string,
+    /**
+     * Loader Environments
+     */
+    LOADER_ENVIRONMENT_JSON:{
+        /**
+         * Agent keyword. defaults to 'agent'
+         */
+        AGENT: "agent",
+        /**
+         * server agent. defaults to 'server'
+         */
+        SERVER: "server",
+        /**
+         * vault agent. defaults to 'vault'
+         */
+        VAULT: "vault",
+        /**
+         * mobile agent. defaults to 'mobile'
+         */
+        MOBILE: "mobile",
+    },
+    /**
+     * Boot config file name. defaults to 'boot-cfg.json'
+     */
+    BOOT_CONFIG_FILE: 'boot-cfg.json',
+    KEY_SSIS: () => any,
+    CRYPTO_FUNCTION_TYPES: () => any
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+            </div>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+<script src="scripts/search.js"> </script>
+
+</body>
+</html>

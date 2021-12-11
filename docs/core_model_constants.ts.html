@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,7 +7,7 @@
   
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Decorator Validation Engine fs</title>
+  <title>Decorator Validation Engine core/model/constants.ts</title>
 
   <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -97,99 +99,50 @@
         <div class="core" id="main-content-wrapper">
             <div class="content">
                 <header class="page-title">
-                    <p>Namespace</p>
-                    <h1>fs</h1>
+                    <p>Source</p>
+                    <h1>core/model/constants.ts</h1>
                 </header>
                 
 
 
 
-
-<section>
-
-<header>
     
-        <h2>fs</h2>
-        
-    
-</header>
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Identifying keys for reflection operations and other constants
+ *
+ * @enum
+ */
+export enum DsuKeys {
+    REFLECT = 'opendsu.blueprint.',
+    DEFAULT_DSU_PATH = 'info.json',
+    CONSTRUCTOR = "constructor",
+    FROM_CACHE = 'fromCache',
+    FROM_WEB = 'fromWeb',
+    DSU = 'dsu',
+    DSU_FILE = 'dsuFile',
+    MOUNT = 'mount'
+}
 
-<article>
-    <div class="container-overview">
-    
-        
-
-        
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    
-
-    
-
-    
-
-    
-        <p class="tag-source">
-            <a href="fs_index.ts.html" class="button">View Source</a>
-            <span>
-                <a href="fs_index.ts.html">fs/index.ts</a>, <a href="fs_index.ts.html#line2">line 2</a>
-            </span>
-        </p>
-    
-</dl>
-
-
-        
-    
-    </div>
-    
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
+/**
+ * Describe the 3 distinct stages of a DSUOperation on a {@link DSUBlueprint}:
+ *  - CREATION: handles the creation of all nested {@link DSU}s (typically from the {@link dsu} decorator)
+ *  - CLASS: handles the creation of the actual 'end' {@link DSU} (typically from the {@link DSU} decorator)
+ *  - EDITING: handles the editing of the end {@link DSU} and all its available operations:
+ *   - {@link dsuFile}
+ *   - {@link fromCache}
+ *   - {@link mount}
+ *
+ * @enum
+ */
+export enum DSUOperation {
+    CREATION = "creation",
+    CLASS = 'class',
+    EDITING = "editing"
+}</code></pre>
+        </article>
+    </section>
 
 
 

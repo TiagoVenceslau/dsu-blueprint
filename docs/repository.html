@@ -90,7 +90,7 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-dsu-blueprint.html">dsu-blueprint</a></li></ul><h3>Namespaces</h3><ul><li><a href="cli.html">cli</a></li><li><a href="dsu-blueprint.cli.html">cli</a></li><li><a href="dsu-blueprint.fs.html">fs</a></li><li><a href="dsu-blueprint.openDSU.html">openDSU</a></li><li><a href="fs.decorators.html">decorators</a></li><li><a href="model.decorators.html">decorators</a></li><li><a href="OpenDSU.html">OpenDSU</a></li><li><a href="repository.html">repository</a></li></ul><h3>Classes</h3><ul><li><a href="OpenDSURepository_OpenDSURepository.html">OpenDSURepository</a></li></ul><h3>Global</h3><ul><li><a href="global.html#createObjectToValueChain">createObjectToValueChain</a></li><li><a href="global.html#getValueFromModelChain">getValueFromModelChain</a></li><li><a href="global.html#isDSUCache">isDSUCache</a></li></ul></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-dsu-blueprint.html">dsu-blueprint</a></li></ul><h3>Namespaces</h3><ul><li><a href="cli.html">cli</a></li><li><a href="dsu-blueprint.cli.html">cli</a></li><li><a href="dsu-blueprint.fs.html">fs</a></li><li><a href="dsu-blueprint.openDSU.html">openDSU</a></li><li><a href="fs.decorators.html">decorators</a></li><li><a href="model.decorators.html">decorators</a></li><li><a href="OpenDSU.html">OpenDSU</a></li><li><a href="repository.html">repository</a></li><li><a href="web.html">web</a></li></ul><h3>Classes</h3><ul><li><a href="OpenDSURepository_OpenDSURepository.html">OpenDSURepository</a></li></ul><h3>Interfaces</h3><ul><li><a href="ConstantsApi.html">ConstantsApi</a></li><li><a href="DSU.html">DSU</a></li><li><a href="EnvironmentTypes.html">EnvironmentTypes</a></li><li><a href="WalletDsu.html">WalletDsu</a></li><li><a href="WebService.html">WebService</a></li></ul><h3>Global</h3><ul><li><a href="global.html#createObjectToValueChain">createObjectToValueChain</a></li><li><a href="global.html#DsuKeys">DsuKeys</a></li><li><a href="global.html#DSUOperation">DSUOperation</a></li><li><a href="global.html#getValueFromValueChain">getValueFromValueChain</a></li><li><a href="global.html#isDSUCache">isDSUCache</a></li></ul></div>
                 
             </nav>
         </div>
@@ -101,6 +101,932 @@
                     <h1>repository</h1>
                 </header>
                 
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>repository</h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+            <div class="description"><p>Util method to retrieve the proper <code>KeySSI</code> factory method according to the <code>KeySSIType</code></p></div>
+        
+
+        
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="core_opendsu_factory.ts.html" class="button">View Source</a>
+            <span>
+                <a href="core_opendsu_factory.ts.html">core/opendsu/factory.ts</a>, <a href="core_opendsu_factory.ts.html#line183">line 183</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+        
+    
+    </div>
+    
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <div class='vertical-section'>
+            <h1>Methods</h1>
+            <div class="members">
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".getDSUOperationsRegistry">
+        <a class="href-link" href="#.getDSUOperationsRegistry">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                getDSUOperationsRegistry<span class="signature">()</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>Returns the current <code>DSUOperationRegistry</code></p>.</p>
+    
+    
+    <div class="description">
+        <p>Returns the current <code>DSUOperationRegistry</code></p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="core_repository_registry.ts.html" class="button">View Source</a>
+            <span>
+                <a href="core_repository_registry.ts.html">core/repository/registry.ts</a>, <a href="core_repository_registry.ts.html#line31">line 31</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><p>IRegistry<DSUOperationHandler>, defaults to <code>DSUOperationRegistry</code></p></div>
+    
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".getDSUOperationsRegistry">
+        <a class="href-link" href="#.getDSUOperationsRegistry">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                getDSUOperationsRegistry<span class="signature">()</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>Returns the current DSUOperationsRegistry</p>.</p>
+    
+    
+    <div class="description">
+        <p>Returns the current DSUOperationsRegistry</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+<div class="table-container">
+    <table class="props table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>dsuOperationsRegistry</code></td>
+    
+
+    <td class="type">
+    
+        
+<span class="param-type">IRegistry.&lt;DSUOperationHandler></span>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>the new implementation of Registry</p></td>
+</tr>
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="core_repository_registry.ts.html" class="button">View Source</a>
+            <span>
+                <a href="core_repository_registry.ts.html">core/repository/registry.ts</a>, <a href="core_repository_registry.ts.html#line42">line 42</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".getDSUOperationsRegistry">
+        <a class="href-link" href="#.getDSUOperationsRegistry">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                getDSUOperationsRegistry<span class="signature">()</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>Returns the current <code>DSURegistry</code></p>.</p>
+    
+    
+    <div class="description">
+        <p>Returns the current <code>DSURegistry</code></p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="core_repository_registry.ts.html" class="button">View Source</a>
+            <span>
+                <a href="core_repository_registry.ts.html">core/repository/registry.ts</a>, <a href="core_repository_registry.ts.html#line72">line 72</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><p>IRegistry<DSUOModel>, defaults to <code>DSURegistry</code></p></div>
+    
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".getDSUOperationsRegistry">
+        <a class="href-link" href="#.getDSUOperationsRegistry">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                getDSUOperationsRegistry<span class="signature">()</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary">Returns the current <code>IRegistry<OpenDSURepo>y</code></p>.</p>
+    
+    
+    <div class="description">
+        <p>Returns the current <code>IRegistry<OpenDSURepo>y</code></p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="core_repository_registry.ts.html" class="button">View Source</a>
+            <span>
+                <a href="core_repository_registry.ts.html">core/repository/registry.ts</a>, <a href="core_repository_registry.ts.html#line132">line 132</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><p>RepositoryRegistry</p></div>
+    
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".getDSURegistry">
+        <a class="href-link" href="#.getDSURegistry">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                getDSURegistry<span class="signature">()</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>Returns the current DSURegistry</p>.</p>
+    
+    
+    <div class="description">
+        <p>Returns the current DSURegistry</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+<div class="table-container">
+    <table class="props table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>dsuOperationsRegistry</code></td>
+    
+
+    <td class="type">
+    
+        
+<span class="param-type">IRegistry.&lt;<a href="DSU.html">DSU</a>></span>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>the new implementation of Registry</p></td>
+</tr>
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="core_repository_registry.ts.html" class="button">View Source</a>
+            <span>
+                <a href="core_repository_registry.ts.html">core/repository/registry.ts</a>, <a href="core_repository_registry.ts.html#line83">line 83</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".getDSURegistry">
+        <a class="href-link" href="#.getDSURegistry">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                getDSURegistry<span class="signature">()</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>Returns the current DSURegistry</p>.</p>
+    
+    
+    <div class="description">
+        <p>Returns the current DSURegistry</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+<div class="table-container">
+    <table class="props table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>dsuOperationsRegistry</code></td>
+    
+
+    <td class="type">
+    
+        
+<span class="param-type">RepositoryRegistry</span>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>the new implementation of Registry</p></td>
+</tr>
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="core_repository_registry.ts.html" class="button">View Source</a>
+            <span>
+                <a href="core_repository_registry.ts.html">core/repository/registry.ts</a>, <a href="core_repository_registry.ts.html#line143">line 143</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+            </div>
+        </div>
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
 
 
 
@@ -776,7 +1702,7 @@
     <td class="type">
     
         
-<span class="param-type">IRegistry.&lt;DSU></span>
+<span class="param-type">IRegistry.&lt;<a href="DSU.html">DSU</a>></span>
 
 
     
@@ -1046,8 +1972,12 @@
         
             <div class="description"><p>Provide the Base implementation to a global single OpenDSU Repository implementation
 capable of, via the decorated properties of <code>DSUModel</code>s, handle all of the OpenDSU API related to CRUD operations
-in a single, scalable, maintainable and declarative fashion
-*</p></div>
+in a single, scalable, maintainable and declarative fashion, supporting:</p>
+<ul>
+<li>Automatic CRUD operations, just by updating its corresponding <code>DSUModel</code> instance and running it through the appropriate <a href="OpenDSURepository.html"><code>OpenDSURepository</code></a>;</li>
+<li>Automatic validations &amp;&amp; easily extendable for added validations;</li>
+<li>Controlled accesses: Ability easily to add business logic at key points of any CRUD operations</li>
+</ul></div>
         
 
         
@@ -1716,7 +2646,7 @@ in a single, scalable, maintainable and declarative fashion
     <td class="type">
     
         
-<span class="param-type">IRegistry.&lt;DSU></span>
+<span class="param-type">IRegistry.&lt;<a href="DSU.html">DSU</a>></span>
 
 
     
@@ -1984,7 +2914,7 @@ in a single, scalable, maintainable and declarative fashion
     <div class="container-overview">
     
         
-            <div class="description"><p>Util method to retrieve the proper <code>DSU</code> factory method according to the <code>KeySSI</code> type</p></div>
+            <div class="description"><p>Util method that handles the <a href="DSU.html"><code>DSU</code></a>'s batch operation close</p></div>
         
 
         
@@ -2642,1859 +3572,7 @@ in a single, scalable, maintainable and declarative fashion
     <td class="type">
     
         
-<span class="param-type">IRegistry.&lt;DSU></span>
-
-
-    
-    </td>
-
-    
-
-    
-
-    <td class="description last"><p>the new implementation of Registry</p></td>
-</tr>
-
-        
-        </tbody>
-    </table>
-</div>
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    
-
-    
-
-    
-
-    
-        <p class="tag-source">
-            <a href="core_repository_registry.ts.html" class="button">View Source</a>
-            <span>
-                <a href="core_repository_registry.ts.html">core/repository/registry.ts</a>, <a href="core_repository_registry.ts.html#line83">line 83</a>
-            </span>
-        </p>
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-</div>
-            
-                <div class="member">
-
-
-    
-    <h4 class="name" id=".getDSURegistry">
-        <a class="href-link" href="#.getDSURegistry">#</a>
-        
-            
-                <span class='tag'>static</span>
-            
-        
-        <span class="code-name">
-            
-                getDSURegistry<span class="signature">()</span><span class="type-signature"></span>
-            
-        </span>
-    </h4>
-    
-
-    
-    <p class="summary"><p>Returns the current DSURegistry</p>.</p>
-    
-    
-    <div class="description">
-        <p>Returns the current DSURegistry</p>
-    </div>
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <h5 class="subsection-title">Properties:</h5>
-
-    
-<div class="table-container">
-    <table class="props table">
-        <thead>
-        <tr>
-            
-            <th>Name</th>
-            
-
-            <th>Type</th>
-
-            
-
-            
-
-            <th class="last">Description</th>
-        </tr>
-        </thead>
-
-        <tbody>
-        
-            
-<tr class="deep-level-0">
-    
-        <td class="name"><code>dsuOperationsRegistry</code></td>
-    
-
-    <td class="type">
-    
-        
-<span class="param-type">RepositoryRegistry</span>
-
-
-    
-    </td>
-
-    
-
-    
-
-    <td class="description last"><p>the new implementation of Registry</p></td>
-</tr>
-
-        
-        </tbody>
-    </table>
-</div>
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    
-
-    
-
-    
-
-    
-        <p class="tag-source">
-            <a href="core_repository_registry.ts.html" class="button">View Source</a>
-            <span>
-                <a href="core_repository_registry.ts.html">core/repository/registry.ts</a>, <a href="core_repository_registry.ts.html#line143">line 143</a>
-            </span>
-        </p>
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-</div>
-            
-            </div>
-        </div>
-    
-
-    
-
-    
-</article>
-
-</section>
-
-
-
-
-
-
-
-<section>
-
-<header>
-    
-        <h2>repository</h2>
-        
-    
-</header>
-
-<article>
-    <div class="container-overview">
-    
-        
-            <div class="description"><p>Util method to retrieve the proper <code>KeySSI</code> factory method according to the <code>KeySSIType</code></p></div>
-        
-
-        
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    
-
-    
-
-    
-
-    
-        <p class="tag-source">
-            <a href="core_repository_utils.ts.html" class="button">View Source</a>
-            <span>
-                <a href="core_repository_utils.ts.html">core/repository/utils.ts</a>, <a href="core_repository_utils.ts.html#line25">line 25</a>
-            </span>
-        </p>
-    
-</dl>
-
-
-        
-    
-    </div>
-    
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-        <div class='vertical-section'>
-            <h1>Methods</h1>
-            <div class="members">
-            
-                <div class="member">
-
-
-    
-    <h4 class="name" id=".getDSUOperationsRegistry">
-        <a class="href-link" href="#.getDSUOperationsRegistry">#</a>
-        
-            
-                <span class='tag'>static</span>
-            
-        
-        <span class="code-name">
-            
-                getDSUOperationsRegistry<span class="signature">()</span><span class="type-signature"></span>
-            
-        </span>
-    </h4>
-    
-
-    
-    <p class="summary"><p>Returns the current <code>DSUOperationRegistry</code></p>.</p>
-    
-    
-    <div class="description">
-        <p>Returns the current <code>DSUOperationRegistry</code></p>
-    </div>
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    
-
-    
-
-    
-
-    
-        <p class="tag-source">
-            <a href="core_repository_registry.ts.html" class="button">View Source</a>
-            <span>
-                <a href="core_repository_registry.ts.html">core/repository/registry.ts</a>, <a href="core_repository_registry.ts.html#line31">line 31</a>
-            </span>
-        </p>
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <div class='columns method-parameter'>
-        <div class="column is-2"><label>Returns:</label></div>
-        <div class="column is-10">
-            
-                    
-
-<div class="columns">
-    
-    <div class='param-desc column is-7'><p>IRegistry<DSUOperationHandler>, defaults to <code>DSUOperationRegistry</code></p></div>
-    
-    
-</div>
-
-                
-        </div>
-    </div>
-
-
-
-
-</div>
-            
-                <div class="member">
-
-
-    
-    <h4 class="name" id=".getDSUOperationsRegistry">
-        <a class="href-link" href="#.getDSUOperationsRegistry">#</a>
-        
-            
-                <span class='tag'>static</span>
-            
-        
-        <span class="code-name">
-            
-                getDSUOperationsRegistry<span class="signature">()</span><span class="type-signature"></span>
-            
-        </span>
-    </h4>
-    
-
-    
-    <p class="summary"><p>Returns the current DSUOperationsRegistry</p>.</p>
-    
-    
-    <div class="description">
-        <p>Returns the current DSUOperationsRegistry</p>
-    </div>
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <h5 class="subsection-title">Properties:</h5>
-
-    
-<div class="table-container">
-    <table class="props table">
-        <thead>
-        <tr>
-            
-            <th>Name</th>
-            
-
-            <th>Type</th>
-
-            
-
-            
-
-            <th class="last">Description</th>
-        </tr>
-        </thead>
-
-        <tbody>
-        
-            
-<tr class="deep-level-0">
-    
-        <td class="name"><code>dsuOperationsRegistry</code></td>
-    
-
-    <td class="type">
-    
-        
-<span class="param-type">IRegistry.&lt;DSUOperationHandler></span>
-
-
-    
-    </td>
-
-    
-
-    
-
-    <td class="description last"><p>the new implementation of Registry</p></td>
-</tr>
-
-        
-        </tbody>
-    </table>
-</div>
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    
-
-    
-
-    
-
-    
-        <p class="tag-source">
-            <a href="core_repository_registry.ts.html" class="button">View Source</a>
-            <span>
-                <a href="core_repository_registry.ts.html">core/repository/registry.ts</a>, <a href="core_repository_registry.ts.html#line42">line 42</a>
-            </span>
-        </p>
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-</div>
-            
-                <div class="member">
-
-
-    
-    <h4 class="name" id=".getDSUOperationsRegistry">
-        <a class="href-link" href="#.getDSUOperationsRegistry">#</a>
-        
-            
-                <span class='tag'>static</span>
-            
-        
-        <span class="code-name">
-            
-                getDSUOperationsRegistry<span class="signature">()</span><span class="type-signature"></span>
-            
-        </span>
-    </h4>
-    
-
-    
-    <p class="summary"><p>Returns the current <code>DSURegistry</code></p>.</p>
-    
-    
-    <div class="description">
-        <p>Returns the current <code>DSURegistry</code></p>
-    </div>
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    
-
-    
-
-    
-
-    
-        <p class="tag-source">
-            <a href="core_repository_registry.ts.html" class="button">View Source</a>
-            <span>
-                <a href="core_repository_registry.ts.html">core/repository/registry.ts</a>, <a href="core_repository_registry.ts.html#line72">line 72</a>
-            </span>
-        </p>
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <div class='columns method-parameter'>
-        <div class="column is-2"><label>Returns:</label></div>
-        <div class="column is-10">
-            
-                    
-
-<div class="columns">
-    
-    <div class='param-desc column is-7'><p>IRegistry<DSUOModel>, defaults to <code>DSURegistry</code></p></div>
-    
-    
-</div>
-
-                
-        </div>
-    </div>
-
-
-
-
-</div>
-            
-                <div class="member">
-
-
-    
-    <h4 class="name" id=".getDSUOperationsRegistry">
-        <a class="href-link" href="#.getDSUOperationsRegistry">#</a>
-        
-            
-                <span class='tag'>static</span>
-            
-        
-        <span class="code-name">
-            
-                getDSUOperationsRegistry<span class="signature">()</span><span class="type-signature"></span>
-            
-        </span>
-    </h4>
-    
-
-    
-    <p class="summary">Returns the current <code>IRegistry<OpenDSURepo>y</code></p>.</p>
-    
-    
-    <div class="description">
-        <p>Returns the current <code>IRegistry<OpenDSURepo>y</code></p>
-    </div>
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    
-
-    
-
-    
-
-    
-        <p class="tag-source">
-            <a href="core_repository_registry.ts.html" class="button">View Source</a>
-            <span>
-                <a href="core_repository_registry.ts.html">core/repository/registry.ts</a>, <a href="core_repository_registry.ts.html#line132">line 132</a>
-            </span>
-        </p>
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <div class='columns method-parameter'>
-        <div class="column is-2"><label>Returns:</label></div>
-        <div class="column is-10">
-            
-                    
-
-<div class="columns">
-    
-    <div class='param-desc column is-7'><p>RepositoryRegistry</p></div>
-    
-    
-</div>
-
-                
-        </div>
-    </div>
-
-
-
-
-</div>
-            
-                <div class="member">
-
-
-    
-    <h4 class="name" id=".getDSURegistry">
-        <a class="href-link" href="#.getDSURegistry">#</a>
-        
-            
-                <span class='tag'>static</span>
-            
-        
-        <span class="code-name">
-            
-                getDSURegistry<span class="signature">()</span><span class="type-signature"></span>
-            
-        </span>
-    </h4>
-    
-
-    
-    <p class="summary"><p>Returns the current DSURegistry</p>.</p>
-    
-    
-    <div class="description">
-        <p>Returns the current DSURegistry</p>
-    </div>
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <h5 class="subsection-title">Properties:</h5>
-
-    
-<div class="table-container">
-    <table class="props table">
-        <thead>
-        <tr>
-            
-            <th>Name</th>
-            
-
-            <th>Type</th>
-
-            
-
-            
-
-            <th class="last">Description</th>
-        </tr>
-        </thead>
-
-        <tbody>
-        
-            
-<tr class="deep-level-0">
-    
-        <td class="name"><code>dsuOperationsRegistry</code></td>
-    
-
-    <td class="type">
-    
-        
-<span class="param-type">IRegistry.&lt;DSU></span>
-
-
-    
-    </td>
-
-    
-
-    
-
-    <td class="description last"><p>the new implementation of Registry</p></td>
-</tr>
-
-        
-        </tbody>
-    </table>
-</div>
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    
-
-    
-
-    
-
-    
-        <p class="tag-source">
-            <a href="core_repository_registry.ts.html" class="button">View Source</a>
-            <span>
-                <a href="core_repository_registry.ts.html">core/repository/registry.ts</a>, <a href="core_repository_registry.ts.html#line83">line 83</a>
-            </span>
-        </p>
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-</div>
-            
-                <div class="member">
-
-
-    
-    <h4 class="name" id=".getDSURegistry">
-        <a class="href-link" href="#.getDSURegistry">#</a>
-        
-            
-                <span class='tag'>static</span>
-            
-        
-        <span class="code-name">
-            
-                getDSURegistry<span class="signature">()</span><span class="type-signature"></span>
-            
-        </span>
-    </h4>
-    
-
-    
-    <p class="summary"><p>Returns the current DSURegistry</p>.</p>
-    
-    
-    <div class="description">
-        <p>Returns the current DSURegistry</p>
-    </div>
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <h5 class="subsection-title">Properties:</h5>
-
-    
-<div class="table-container">
-    <table class="props table">
-        <thead>
-        <tr>
-            
-            <th>Name</th>
-            
-
-            <th>Type</th>
-
-            
-
-            
-
-            <th class="last">Description</th>
-        </tr>
-        </thead>
-
-        <tbody>
-        
-            
-<tr class="deep-level-0">
-    
-        <td class="name"><code>dsuOperationsRegistry</code></td>
-    
-
-    <td class="type">
-    
-        
-<span class="param-type">RepositoryRegistry</span>
-
-
-    
-    </td>
-
-    
-
-    
-
-    <td class="description last"><p>the new implementation of Registry</p></td>
-</tr>
-
-        
-        </tbody>
-    </table>
-</div>
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    
-
-    
-
-    
-
-    
-        <p class="tag-source">
-            <a href="core_repository_registry.ts.html" class="button">View Source</a>
-            <span>
-                <a href="core_repository_registry.ts.html">core/repository/registry.ts</a>, <a href="core_repository_registry.ts.html#line143">line 143</a>
-            </span>
-        </p>
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-</div>
-            
-            </div>
-        </div>
-    
-
-    
-
-    
-</article>
-
-</section>
-
-
-
-
-
-
-
-<section>
-
-<header>
-    
-        <h2>repository</h2>
-        
-    
-</header>
-
-<article>
-    <div class="container-overview">
-    
-        
-            <div class="description"><p>Util method that handles the <code>DSU</code>'s batch operation close</p></div>
-        
-
-        
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    
-
-    
-
-    
-
-    
-        <p class="tag-source">
-            <a href="core_repository_utils.ts.html" class="button">View Source</a>
-            <span>
-                <a href="core_repository_utils.ts.html">core/repository/utils.ts</a>, <a href="core_repository_utils.ts.html#line43">line 43</a>
-            </span>
-        </p>
-    
-</dl>
-
-
-        
-    
-    </div>
-    
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-        <div class='vertical-section'>
-            <h1>Methods</h1>
-            <div class="members">
-            
-                <div class="member">
-
-
-    
-    <h4 class="name" id=".getDSUOperationsRegistry">
-        <a class="href-link" href="#.getDSUOperationsRegistry">#</a>
-        
-            
-                <span class='tag'>static</span>
-            
-        
-        <span class="code-name">
-            
-                getDSUOperationsRegistry<span class="signature">()</span><span class="type-signature"></span>
-            
-        </span>
-    </h4>
-    
-
-    
-    <p class="summary"><p>Returns the current <code>DSUOperationRegistry</code></p>.</p>
-    
-    
-    <div class="description">
-        <p>Returns the current <code>DSUOperationRegistry</code></p>
-    </div>
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    
-
-    
-
-    
-
-    
-        <p class="tag-source">
-            <a href="core_repository_registry.ts.html" class="button">View Source</a>
-            <span>
-                <a href="core_repository_registry.ts.html">core/repository/registry.ts</a>, <a href="core_repository_registry.ts.html#line31">line 31</a>
-            </span>
-        </p>
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <div class='columns method-parameter'>
-        <div class="column is-2"><label>Returns:</label></div>
-        <div class="column is-10">
-            
-                    
-
-<div class="columns">
-    
-    <div class='param-desc column is-7'><p>IRegistry<DSUOperationHandler>, defaults to <code>DSUOperationRegistry</code></p></div>
-    
-    
-</div>
-
-                
-        </div>
-    </div>
-
-
-
-
-</div>
-            
-                <div class="member">
-
-
-    
-    <h4 class="name" id=".getDSUOperationsRegistry">
-        <a class="href-link" href="#.getDSUOperationsRegistry">#</a>
-        
-            
-                <span class='tag'>static</span>
-            
-        
-        <span class="code-name">
-            
-                getDSUOperationsRegistry<span class="signature">()</span><span class="type-signature"></span>
-            
-        </span>
-    </h4>
-    
-
-    
-    <p class="summary"><p>Returns the current DSUOperationsRegistry</p>.</p>
-    
-    
-    <div class="description">
-        <p>Returns the current DSUOperationsRegistry</p>
-    </div>
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <h5 class="subsection-title">Properties:</h5>
-
-    
-<div class="table-container">
-    <table class="props table">
-        <thead>
-        <tr>
-            
-            <th>Name</th>
-            
-
-            <th>Type</th>
-
-            
-
-            
-
-            <th class="last">Description</th>
-        </tr>
-        </thead>
-
-        <tbody>
-        
-            
-<tr class="deep-level-0">
-    
-        <td class="name"><code>dsuOperationsRegistry</code></td>
-    
-
-    <td class="type">
-    
-        
-<span class="param-type">IRegistry.&lt;DSUOperationHandler></span>
-
-
-    
-    </td>
-
-    
-
-    
-
-    <td class="description last"><p>the new implementation of Registry</p></td>
-</tr>
-
-        
-        </tbody>
-    </table>
-</div>
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    
-
-    
-
-    
-
-    
-        <p class="tag-source">
-            <a href="core_repository_registry.ts.html" class="button">View Source</a>
-            <span>
-                <a href="core_repository_registry.ts.html">core/repository/registry.ts</a>, <a href="core_repository_registry.ts.html#line42">line 42</a>
-            </span>
-        </p>
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-</div>
-            
-                <div class="member">
-
-
-    
-    <h4 class="name" id=".getDSUOperationsRegistry">
-        <a class="href-link" href="#.getDSUOperationsRegistry">#</a>
-        
-            
-                <span class='tag'>static</span>
-            
-        
-        <span class="code-name">
-            
-                getDSUOperationsRegistry<span class="signature">()</span><span class="type-signature"></span>
-            
-        </span>
-    </h4>
-    
-
-    
-    <p class="summary"><p>Returns the current <code>DSURegistry</code></p>.</p>
-    
-    
-    <div class="description">
-        <p>Returns the current <code>DSURegistry</code></p>
-    </div>
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    
-
-    
-
-    
-
-    
-        <p class="tag-source">
-            <a href="core_repository_registry.ts.html" class="button">View Source</a>
-            <span>
-                <a href="core_repository_registry.ts.html">core/repository/registry.ts</a>, <a href="core_repository_registry.ts.html#line72">line 72</a>
-            </span>
-        </p>
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <div class='columns method-parameter'>
-        <div class="column is-2"><label>Returns:</label></div>
-        <div class="column is-10">
-            
-                    
-
-<div class="columns">
-    
-    <div class='param-desc column is-7'><p>IRegistry<DSUOModel>, defaults to <code>DSURegistry</code></p></div>
-    
-    
-</div>
-
-                
-        </div>
-    </div>
-
-
-
-
-</div>
-            
-                <div class="member">
-
-
-    
-    <h4 class="name" id=".getDSUOperationsRegistry">
-        <a class="href-link" href="#.getDSUOperationsRegistry">#</a>
-        
-            
-                <span class='tag'>static</span>
-            
-        
-        <span class="code-name">
-            
-                getDSUOperationsRegistry<span class="signature">()</span><span class="type-signature"></span>
-            
-        </span>
-    </h4>
-    
-
-    
-    <p class="summary">Returns the current <code>IRegistry<OpenDSURepo>y</code></p>.</p>
-    
-    
-    <div class="description">
-        <p>Returns the current <code>IRegistry<OpenDSURepo>y</code></p>
-    </div>
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    
-
-    
-
-    
-
-    
-        <p class="tag-source">
-            <a href="core_repository_registry.ts.html" class="button">View Source</a>
-            <span>
-                <a href="core_repository_registry.ts.html">core/repository/registry.ts</a>, <a href="core_repository_registry.ts.html#line132">line 132</a>
-            </span>
-        </p>
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <div class='columns method-parameter'>
-        <div class="column is-2"><label>Returns:</label></div>
-        <div class="column is-10">
-            
-                    
-
-<div class="columns">
-    
-    <div class='param-desc column is-7'><p>RepositoryRegistry</p></div>
-    
-    
-</div>
-
-                
-        </div>
-    </div>
-
-
-
-
-</div>
-            
-                <div class="member">
-
-
-    
-    <h4 class="name" id=".getDSURegistry">
-        <a class="href-link" href="#.getDSURegistry">#</a>
-        
-            
-                <span class='tag'>static</span>
-            
-        
-        <span class="code-name">
-            
-                getDSURegistry<span class="signature">()</span><span class="type-signature"></span>
-            
-        </span>
-    </h4>
-    
-
-    
-    <p class="summary"><p>Returns the current DSURegistry</p>.</p>
-    
-    
-    <div class="description">
-        <p>Returns the current DSURegistry</p>
-    </div>
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <h5 class="subsection-title">Properties:</h5>
-
-    
-<div class="table-container">
-    <table class="props table">
-        <thead>
-        <tr>
-            
-            <th>Name</th>
-            
-
-            <th>Type</th>
-
-            
-
-            
-
-            <th class="last">Description</th>
-        </tr>
-        </thead>
-
-        <tbody>
-        
-            
-<tr class="deep-level-0">
-    
-        <td class="name"><code>dsuOperationsRegistry</code></td>
-    
-
-    <td class="type">
-    
-        
-<span class="param-type">IRegistry.&lt;DSU></span>
+<span class="param-type">IRegistry.&lt;<a href="DSU.html">DSU</a>></span>
 
 
     
@@ -4803,7 +3881,7 @@ in a single, scalable, maintainable and declarative fashion
         <p class="tag-source">
             <a href="core_repository_utils.ts.html" class="button">View Source</a>
             <span>
-                <a href="core_repository_utils.ts.html">core/repository/utils.ts</a>, <a href="core_repository_utils.ts.html#line80">line 80</a>
+                <a href="core_repository_utils.ts.html">core/repository/utils.ts</a>, <a href="core_repository_utils.ts.html#line46">line 46</a>
             </span>
         </p>
     
@@ -5420,7 +4498,7 @@ in a single, scalable, maintainable and declarative fashion
     <td class="type">
     
         
-<span class="param-type">IRegistry.&lt;DSU></span>
+<span class="param-type">IRegistry.&lt;<a href="DSU.html">DSU</a>></span>
 
 
     
@@ -5688,7 +4766,7 @@ in a single, scalable, maintainable and declarative fashion
     <div class="container-overview">
     
         
-            <div class="description"><p>Will create a <code>DSU</code> based on the definitions of the <code>DSUBlueprint</code></p></div>
+            <div class="description"><p>Will create a <a href="DSU.html"><code>DSU</code></a> based on the definitions of the <code>DSUBlueprint</code></p></div>
         
 
         
@@ -5729,7 +4807,7 @@ in a single, scalable, maintainable and declarative fashion
         <p class="tag-source">
             <a href="core_repository_utils.ts.html" class="button">View Source</a>
             <span>
-                <a href="core_repository_utils.ts.html">core/repository/utils.ts</a>, <a href="core_repository_utils.ts.html#line121">line 121</a>
+                <a href="core_repository_utils.ts.html">core/repository/utils.ts</a>, <a href="core_repository_utils.ts.html#line95">line 95</a>
             </span>
         </p>
     
@@ -6346,7 +5424,7 @@ in a single, scalable, maintainable and declarative fashion
     <td class="type">
     
         
-<span class="param-type">IRegistry.&lt;DSU></span>
+<span class="param-type">IRegistry.&lt;<a href="DSU.html">DSU</a>></span>
 
 
     
@@ -6614,7 +5692,7 @@ in a single, scalable, maintainable and declarative fashion
     <div class="container-overview">
     
         
-            <div class="description"><p>Splits the Attribute decorators between their matching <code>DSUOperation</code></p></div>
+            <div class="description"><p>Splits the Attribute decorators between their matching <a href="global.html#DSUOperation"><code>DSUOperation</code></a></p></div>
         
 
         
@@ -6655,7 +5733,7 @@ in a single, scalable, maintainable and declarative fashion
         <p class="tag-source">
             <a href="core_repository_utils.ts.html" class="button">View Source</a>
             <span>
-                <a href="core_repository_utils.ts.html">core/repository/utils.ts</a>, <a href="core_repository_utils.ts.html#line172">line 172</a>
+                <a href="core_repository_utils.ts.html">core/repository/utils.ts</a>, <a href="core_repository_utils.ts.html#line128">line 128</a>
             </span>
         </p>
     
@@ -7272,7 +6350,7 @@ in a single, scalable, maintainable and declarative fashion
     <td class="type">
     
         
-<span class="param-type">IRegistry.&lt;DSU></span>
+<span class="param-type">IRegistry.&lt;<a href="DSU.html">DSU</a>></span>
 
 
     
@@ -7540,7 +6618,7 @@ in a single, scalable, maintainable and declarative fashion
     <div class="container-overview">
     
         
-            <div class="description"><p>Handles the <code>DSU</code> creation operations, as tagged by the attribute decorators</p></div>
+            <div class="description"><p>Handles the <a href="DSU.html"><code>DSU</code></a> creation operations, as tagged by the attribute decorators</p></div>
         
 
         
@@ -7581,7 +6659,7 @@ in a single, scalable, maintainable and declarative fashion
         <p class="tag-source">
             <a href="core_repository_utils.ts.html" class="button">View Source</a>
             <span>
-                <a href="core_repository_utils.ts.html">core/repository/utils.ts</a>, <a href="core_repository_utils.ts.html#line210">line 210</a>
+                <a href="core_repository_utils.ts.html">core/repository/utils.ts</a>, <a href="core_repository_utils.ts.html#line166">line 166</a>
             </span>
         </p>
     
@@ -8198,7 +7276,7 @@ in a single, scalable, maintainable and declarative fashion
     <td class="type">
     
         
-<span class="param-type">IRegistry.&lt;DSU></span>
+<span class="param-type">IRegistry.&lt;<a href="DSU.html">DSU</a>></span>
 
 
     
@@ -8466,7 +7544,7 @@ in a single, scalable, maintainable and declarative fashion
     <div class="container-overview">
     
         
-            <div class="description"><p>Handles the <code>DSU</code> edition operations, as tagged by the attribute decorators</p></div>
+            <div class="description"><p>Handles the <a href="DSU.html"><code>DSU</code></a> edition operations, as tagged by the attribute decorators</p></div>
         
 
         
@@ -8507,7 +7585,7 @@ in a single, scalable, maintainable and declarative fashion
         <p class="tag-source">
             <a href="core_repository_utils.ts.html" class="button">View Source</a>
             <span>
-                <a href="core_repository_utils.ts.html">core/repository/utils.ts</a>, <a href="core_repository_utils.ts.html#line317">line 317</a>
+                <a href="core_repository_utils.ts.html">core/repository/utils.ts</a>, <a href="core_repository_utils.ts.html#line275">line 275</a>
             </span>
         </p>
     
@@ -9124,7 +8202,7 @@ in a single, scalable, maintainable and declarative fashion
     <td class="type">
     
         
-<span class="param-type">IRegistry.&lt;DSU></span>
+<span class="param-type">IRegistry.&lt;<a href="DSU.html">DSU</a>></span>
 
 
     

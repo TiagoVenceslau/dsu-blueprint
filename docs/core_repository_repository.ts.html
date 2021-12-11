@@ -92,7 +92,7 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-dsu-blueprint.html">dsu-blueprint</a></li></ul><h3>Namespaces</h3><ul><li><a href="cli.html">cli</a></li><li><a href="dsu-blueprint.cli.html">cli</a></li><li><a href="dsu-blueprint.fs.html">fs</a></li><li><a href="dsu-blueprint.openDSU.html">openDSU</a></li><li><a href="fs.decorators.html">decorators</a></li><li><a href="model.decorators.html">decorators</a></li><li><a href="OpenDSU.html">OpenDSU</a></li><li><a href="repository.html">repository</a></li></ul><h3>Classes</h3><ul><li><a href="OpenDSURepository_OpenDSURepository.html">OpenDSURepository</a></li></ul><h3>Global</h3><ul><li><a href="global.html#createObjectToValueChain">createObjectToValueChain</a></li><li><a href="global.html#getValueFromModelChain">getValueFromModelChain</a></li><li><a href="global.html#isDSUCache">isDSUCache</a></li></ul></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-dsu-blueprint.html">dsu-blueprint</a></li></ul><h3>Namespaces</h3><ul><li><a href="cli.html">cli</a></li><li><a href="dsu-blueprint.cli.html">cli</a></li><li><a href="dsu-blueprint.fs.html">fs</a></li><li><a href="dsu-blueprint.openDSU.html">openDSU</a></li><li><a href="fs.decorators.html">decorators</a></li><li><a href="model.decorators.html">decorators</a></li><li><a href="OpenDSU.html">OpenDSU</a></li><li><a href="repository.html">repository</a></li><li><a href="web.html">web</a></li></ul><h3>Classes</h3><ul><li><a href="OpenDSURepository_OpenDSURepository.html">OpenDSURepository</a></li></ul><h3>Interfaces</h3><ul><li><a href="ConstantsApi.html">ConstantsApi</a></li><li><a href="DSU.html">DSU</a></li><li><a href="EnvironmentTypes.html">EnvironmentTypes</a></li><li><a href="WalletDsu.html">WalletDsu</a></li><li><a href="WebService.html">WebService</a></li></ul><h3>Global</h3><ul><li><a href="global.html#createObjectToValueChain">createObjectToValueChain</a></li><li><a href="global.html#DsuKeys">DsuKeys</a></li><li><a href="global.html#DSUOperation">DSUOperation</a></li><li><a href="global.html#getValueFromValueChain">getValueFromValueChain</a></li><li><a href="global.html#isDSUCache">isDSUCache</a></li></ul></div>
                 
             </nav>
         </div>
@@ -121,7 +121,7 @@ import {DSU} from "../opendsu/types";
 import {createFromDecorators, readFromDecorators, safeParseKeySSI, updateFromDecorators} from "./utils";
 import DBModel from "@tvenceslau/db-decorators/lib/model/DBModel";
 import {repository} from "@tvenceslau/db-decorators/lib/repository/decorators";
-import {getResolver} from "../opendsu";
+import {getResolverApi} from "../opendsu";
 import ModelErrorDefinition from "@tvenceslau/decorator-validation/lib/Model/ModelErrorDefinition";
 import {getModelRegistry} from "@tvenceslau/decorator-validation/lib";
 import {DSUCache, isDSUCache} from "./cache";
@@ -129,7 +129,7 @@ import {KeySSI} from "../opendsu/apis/keyssi";
 
 export type DSUKey = string | KeySSI;
 
-export type DSUCallback&lt;T extends DBModel> = (err?: Err, model?: T, dsu?: DSU, keySSI?: KeySSI, ...args: any[]) => void;
+export type DSUCallback&lt;T extends DBModel> = (err?: Err, model?: T, dsu?: DSU, ...args: any[]) => void;
 
 export type ReadCallback = (err?: Err, model?: {[indexer: string]: any}, dsu?: DSU, keySSI?: KeySSI, ...args: any[]) => void;
 
@@ -152,8 +152,11 @@ export type DSUEditDecorator = {
 /**
  * Provide the Base implementation to a global single OpenDSU Repository implementation
  * capable of, via the decorated properties of {@link DSUModel}s, handle all of the OpenDSU API related to CRUD operations
- * in a single, scalable, maintainable and declarative fashion
- **
+ * in a single, scalable, maintainable and declarative fashion, supporting:
+ *  - Automatic CRUD operations, just by updating its corresponding {@link DSUModel} instance and running it through the appropriate {@link OpenDSURepository};
+ *  - Automatic validations &amp;&amp; easily extendable for added validations;
+ *  - Controlled accesses: Ability easily to add business logic at key points of any CRUD operations
+ *
  * @typedef T extends DSUModel
  * @class OpenDSURepository&lt;T>
  * @extends AsyncRepositoryImp&lt;T>
@@ -169,7 +172,7 @@ export class OpenDSURepository&lt;T extends DSUModel> extends AsyncRepositoryImp
      * @param {string} domain the anchoring domain
      * @param {string} [pathAdaptor] only required for Filesystem operations and is meant to handle the relative path differences when necessary. Must point to the folder where './privatesky' is available
      */
-    constructor(clazz: {new (): T}, domain: string = "default", pathAdaptor: string = './'){
+    constructor(clazz: {new(...args: any[]): T}, domain: string = "default", pathAdaptor: string = './'){
         super(clazz);
         this.fallbackDomain = domain;
         this.pathAdaptor = pathAdaptor;
@@ -201,7 +204,7 @@ export class OpenDSURepository&lt;T extends DSUModel> extends AsyncRepositoryImp
         debug(`Creating {0} DSU from model {1}`, this.clazz.name, model.toString())
 
         const instance = getModelRegistry().build(model);
-        createFromDecorators.call(this, instance, this.fallbackDomain, dsuCache, ...args, (err: Err, newModel: T | undefined, dsu: DSU | undefined, keySSI: KeySSI | undefined) => {
+        createFromDecorators.call(this, instance, dsuCache, ...args, (err: Err, newModel: T | undefined, dsu: DSU | undefined, keySSI: KeySSI | undefined) => {
             if (err || !newModel || !dsu || !keySSI)
                 return callback(err || new LoggedError(`Missing Arguments...`));
             debug(`{0} DSU created. Resulting Model: {1}, KeySSI: {2}`, this.clazz.name, newModel.toString(), keySSI.getIdentifier());
@@ -227,7 +230,7 @@ export class OpenDSURepository&lt;T extends DSUModel> extends AsyncRepositoryImp
         if (typeof key === 'string')
             return safeParseKeySSI(key, err => err
                 ? errorCallback(err, callback)
-                : self.delete(key, ...args, callback));
+                : self.delete.call(self, key, ...args, callback));
     }
 
     read(key?: DSUKey, ...args: any[]): void {
@@ -241,11 +244,11 @@ export class OpenDSURepository&lt;T extends DSUModel> extends AsyncRepositoryImp
         if (typeof key === 'string')
             return safeParseKeySSI(key, err => err
                 ? errorCallback(err, callback)
-                : self.read(key,  ...args, callback));
+                : self.read.call(self, key,  ...args, callback));
 
         debug(`Reading {0} DSU with SSI {1}`, this.clazz.name, key.getIdentifier());
 
-        getResolver().loadDSU(key, (err, dsu) => {
+        getResolverApi().loadDSU(key, (err, dsu) => {
             if (err || !dsu)
                 return criticalCallback(err || new Error(`Missing DSU`), callback);
             readFromDecorators.call(self, dsu, (err: Err, model?: T, dsu?: DSU) => {
@@ -273,7 +276,7 @@ export class OpenDSURepository&lt;T extends DSUModel> extends AsyncRepositoryImp
         if (typeof key === 'string')
             return safeParseKeySSI(key, err => err
                 ? errorCallback(err, callback)
-                : self.update(key, model, dsuCache, ...args, callback));
+                : self.update.call(self, key, model, dsuCache, ...args, callback));
 
         self.read(key, ...args, (err: Err, oldModel: T, dsu: DSU, keySSI: KeySSI) => {
             if (err)

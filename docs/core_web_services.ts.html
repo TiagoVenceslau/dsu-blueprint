@@ -7,7 +7,7 @@
   
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Decorator Validation Engine core/web/FileService.ts</title>
+  <title>Decorator Validation Engine core/web/services.ts</title>
 
   <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -92,7 +92,7 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-dsu-blueprint.html">dsu-blueprint</a></li></ul><h3>Namespaces</h3><ul><li><a href="cli.html">cli</a></li><li><a href="dsu-blueprint.cli.html">cli</a></li><li><a href="dsu-blueprint.fs.html">fs</a></li><li><a href="dsu-blueprint.openDSU.html">openDSU</a></li><li><a href="fs.decorators.html">decorators</a></li><li><a href="model.decorators.html">decorators</a></li><li><a href="OpenDSU.html">OpenDSU</a></li><li><a href="repository.html">repository</a></li></ul><h3>Classes</h3><ul><li><a href="OpenDSURepository_OpenDSURepository.html">OpenDSURepository</a></li></ul><h3>Global</h3><ul><li><a href="global.html#createObjectToValueChain">createObjectToValueChain</a></li><li><a href="global.html#getValueFromModelChain">getValueFromModelChain</a></li><li><a href="global.html#isDSUCache">isDSUCache</a></li></ul></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-dsu-blueprint.html">dsu-blueprint</a></li></ul><h3>Namespaces</h3><ul><li><a href="cli.html">cli</a></li><li><a href="dsu-blueprint.cli.html">cli</a></li><li><a href="dsu-blueprint.fs.html">fs</a></li><li><a href="dsu-blueprint.openDSU.html">openDSU</a></li><li><a href="fs.decorators.html">decorators</a></li><li><a href="model.decorators.html">decorators</a></li><li><a href="OpenDSU.html">OpenDSU</a></li><li><a href="repository.html">repository</a></li><li><a href="web.html">web</a></li></ul><h3>Classes</h3><ul><li><a href="OpenDSURepository_OpenDSURepository.html">OpenDSURepository</a></li></ul><h3>Interfaces</h3><ul><li><a href="ConstantsApi.html">ConstantsApi</a></li><li><a href="DSU.html">DSU</a></li><li><a href="EnvironmentTypes.html">EnvironmentTypes</a></li><li><a href="WalletDsu.html">WalletDsu</a></li><li><a href="WebService.html">WebService</a></li></ul><h3>Global</h3><ul><li><a href="global.html#createObjectToValueChain">createObjectToValueChain</a></li><li><a href="global.html#DsuKeys">DsuKeys</a></li><li><a href="global.html#DSUOperation">DSUOperation</a></li><li><a href="global.html#getValueFromValueChain">getValueFromValueChain</a></li><li><a href="global.html#isDSUCache">isDSUCache</a></li></ul></div>
                 
             </nav>
         </div>
@@ -100,7 +100,7 @@
             <div class="content">
                 <header class="page-title">
                     <p>Source</p>
-                    <h1>core/web/FileService.ts</h1>
+                    <h1>core/web/services.ts</h1>
                 </header>
                 
 
@@ -109,16 +109,11 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>/**
- * Forked from PrivateSky
- * Provides an environment independent file service to the {@link AppBuilderService}
- * @memberOf dt
- * @function FileService
- */
-import {Callback, CriticalError, Err} from "@tvenceslau/db-decorators/lib";
-import {get$$, getHttp} from "../opendsu";
+            <pre class="prettyprint source linenums"><code>import {Callback, CriticalError, Err} from "@tvenceslau/db-decorators/lib";
+import {get$$, getHttpApi} from "../opendsu";
+import {isEqual} from "@tvenceslau/decorator-validation/lib";
 
-export type FileServiceOptions = {
+export type WebServiceOptions = {
     hosts: string,
     seedFileName: string,
     walletPath: string,
@@ -128,11 +123,33 @@ export type FileServiceOptions = {
     }
 }
 
-export class FileService {
-    protected options: FileServiceOptions;
+/**
+ * Reference interface for a {@link WebService}
+ *
+ * @interface
+ * @namespace web
+ */
+export interface WebService {
+    options: WebServiceOptions;
+
+    getWalletSeed(callback: Callback): void;
+    getAppSeed(appName: string | Callback, callback?: Callback): void;
+    doGet(url: string, options: {} | undefined, callback: Callback): void;
+    getFile(appName: string, fileName: string, callback: Callback): void;
+    getFolderContentAsJSON(innerFolder: string, callback: Callback): void;
+}
+
+/**
+ * Default implementation for a {@link WebService}
+ *
+ * @class
+ * @namespace web
+ */
+export class WebServiceImp implements WebService {
+    readonly options: WebServiceOptions;
     protected readonly isBrowser: boolean;
 
-    constructor(options: FileServiceOptions){
+    constructor(options: WebServiceOptions){
         this.options = options;
         this.isBrowser = get$$().environmentType === 'browser';
     }
@@ -177,7 +194,7 @@ export class FileService {
 
     doGet(url: string, options: {} | undefined, callback: Callback){
 
-        getHttp().fetch(url, {
+        getHttpApi().fetch(url, {
             method: 'GET'
         }).then((response: any) => {
             return response.arrayBuffer().then((data: ArrayBuffer) => {
@@ -204,7 +221,6 @@ export class FileService {
         let url = base + joiner + suffix;
         this.doGet(url,undefined, callback);
     };
-
 
     /**
      *
@@ -240,7 +256,20 @@ export class FileService {
     }
 }
 
-module.exports = FileService;</code></pre>
+let activeWebService: WebService;
+
+export function getWebService(options?: WebServiceOptions): WebService {
+    if (!activeWebService)
+        if (options)
+            activeWebService = new WebServiceImp(options);
+        else
+            throw new CriticalError('No Options Supplied');
+    return activeWebService;
+}
+
+export function setWebService(webService: WebService): void {
+    activeWebService = webService;
+}</code></pre>
         </article>
     </section>
 

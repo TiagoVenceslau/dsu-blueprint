@@ -90,7 +90,7 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-dsu-blueprint.html">dsu-blueprint</a></li></ul><h3>Namespaces</h3><ul><li><a href="cli.html">cli</a></li><li><a href="dsu-blueprint.cli.html">cli</a></li><li><a href="dsu-blueprint.fs.html">fs</a></li><li><a href="dsu-blueprint.openDSU.html">openDSU</a></li><li><a href="fs.decorators.html">decorators</a></li><li><a href="model.decorators.html">decorators</a></li><li><a href="OpenDSU.html">OpenDSU</a></li><li><a href="repository.html">repository</a></li></ul><h3>Classes</h3><ul><li><a href="OpenDSURepository_OpenDSURepository.html">OpenDSURepository</a></li></ul><h3>Global</h3><ul><li><a href="global.html#createObjectToValueChain">createObjectToValueChain</a></li><li><a href="global.html#getValueFromModelChain">getValueFromModelChain</a></li><li><a href="global.html#isDSUCache">isDSUCache</a></li></ul></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-dsu-blueprint.html">dsu-blueprint</a></li></ul><h3>Namespaces</h3><ul><li><a href="cli.html">cli</a></li><li><a href="dsu-blueprint.cli.html">cli</a></li><li><a href="dsu-blueprint.fs.html">fs</a></li><li><a href="dsu-blueprint.openDSU.html">openDSU</a></li><li><a href="fs.decorators.html">decorators</a></li><li><a href="model.decorators.html">decorators</a></li><li><a href="OpenDSU.html">OpenDSU</a></li><li><a href="repository.html">repository</a></li><li><a href="web.html">web</a></li></ul><h3>Classes</h3><ul><li><a href="OpenDSURepository_OpenDSURepository.html">OpenDSURepository</a></li></ul><h3>Interfaces</h3><ul><li><a href="ConstantsApi.html">ConstantsApi</a></li><li><a href="DSU.html">DSU</a></li><li><a href="EnvironmentTypes.html">EnvironmentTypes</a></li><li><a href="WalletDsu.html">WalletDsu</a></li><li><a href="WebService.html">WebService</a></li></ul><h3>Global</h3><ul><li><a href="global.html#createObjectToValueChain">createObjectToValueChain</a></li><li><a href="global.html#DsuKeys">DsuKeys</a></li><li><a href="global.html#DSUOperation">DSUOperation</a></li><li><a href="global.html#getValueFromValueChain">getValueFromValueChain</a></li><li><a href="global.html#isDSUCache">isDSUCache</a></li></ul></div>
                 
             </nav>
         </div>
@@ -118,7 +118,16 @@
     <div class="container-overview">
     
         
-            <div class="description"><p>Defines a class as a DSU class for serialization purposes</p></div>
+            <div class="description"><p>Defines a class as a DSU Blueprint, enabling:</p>
+<ul>
+<li>Automatic CRUD operations, just by updating its corresponding <code>DSUModel</code> instance and running it through the appropriate <a href="OpenDSURepository.html"><code>OpenDSURepository</code></a>;</li>
+<li>Automatic validations &amp;&amp; easily extendable for added validations;</li>
+<li>Automatic serialization -&gt; transmission -&gt; deserialization;</li>
+<li>Controlled accesses: Ability easily to add business logic at key points of any CRUD operations</li>
+</ul>
+<p>TODO:
+Because everything is declarative, the hash of the <code>DSUModel</code> class file string literal + the hash of the dsu-blueprint bundle file
+can be used stored as DSU metadata and serve as proof of authenticity in theory. I guess if we store this lib.</p></div>
         
 
         
@@ -223,7 +232,7 @@
     <td class="type">
     
         
-<span class="param-type">Array.&lt;string></span>
+<span class="param-type">KeySSISpecificArgs</span>
 |
 
 <span class="param-type">undefined</span>
@@ -244,7 +253,7 @@
 
     
 
-    <td class="description last"><p>OpenDSU related arguments, specific to each KeySSI implementation. <code>getKeySSIFactory</code></p></td>
+    <td class="description last"><p>OpenDSU related arguments, specific to each KeySSI implementation.</p></td>
 </tr>
 
         
@@ -278,7 +287,7 @@
 
     
 
-    <td class="description last"><p>defaults to undefined. decides if batchMode is meant to be used for this DSU</p></td>
+    <td class="description last"><p>defaults to undefined.</p></td>
 </tr>
 
         
@@ -340,7 +349,40 @@
 
     
 
-    <td class="description last"><p>any object properties that must be passed to the KeySSI generation function (eg: for Array SSIs)</p></td>
+    <td class="description last"><p>any object properties that must be passed to the KeySSI generation function (eg: for Array SSIs)</p>
+<p>Supported <code>KeySSIType</code>s:</p>
+<ul>
+<li><code>KeySSIType.SEED</code>: Expects:
+<ul>
+<li>keySsiType: <code>KeySSIType.SEED</code>;</li>
+<li>specificKeyArgs: <code>SeedSSISpecificArgs</code> | undefined;</li>
+<li>props: none</li>
+</ul>
+</li>
+<li><code>KeySSIType.ARRAY</code>: Expects:
+<ul>
+<li>keySsiType: <code>KeySSIType.ARRAY</code>;</li>
+<li>specificKeyArgs: <code>ArraySSISpecificArgs</code> | undefined;</li>
+<li>props: {string[] | undefined} array of property names in the value chain notation <a href="global.html#getValueFromValueChain"><code>getValueFromValueChain</code></a> <a href="global.html#createObjectToValueChain"><code>createObjectToValueChain</code></a> that will be resolved from the <code>DSUModel</code>'s content and used to pass as <code>KeySSI</code> generation Arguments. <strong>Must resolve to strings</strong></li>
+<li>extra Key generation args {string[] | undefined} that are passed to the <a href="OpenDSURepository.html"><code>OpenDSURepository</code></a>'s methods will be appended to the ones from the props and also used to generate the <code>KeySSI</code></li>
+</ul>
+</li>
+<li><code>KeySSIType.WALLET</code>: Expects:
+<ul>
+<li>keySsiType: <code>KeySSIType.WALLET</code>;</li>
+<li>specificKeyArgs: <code>WalletSSISpecificArgs</code> | undefined;</li>
+<li>props: {string[] | undefined}: array of property names in the value chain notation <a href="global.html#getValueFromValueChain"><code>getValueFromValueChain</code></a> <a href="global.html#createObjectToValueChain"><code>createObjectToValueChain</code></a> that will be resolved from the <code>DSUModel</code>'s content and used to pass as <code>KeySSI</code> generation Arguments. <strong>Must resolve to strings</strong></li>
+<li>extra Key generation args {string[] | undefined} that are passed to the <a href="OpenDSURepository.html"><code>OpenDSURepository</code></a>'s methods will be appended to the ones from the props and also used to generate the <code>KeySSI</code></li>
+<li>One Supported decorator under the <a href="ConstantsApi.html#CODE_FOLDER"><code>ConstantsApi#CODE_FOLDER</code></a> property key (defaults to 'code'). Supported decorators are:
+<ul>
+<li><code>fromWeb</code>;</li>
+<li><code>fromCache</code>;</li>
+<li><code>mount</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul></td>
 </tr>
 
         
@@ -385,7 +427,7 @@
         <p class="tag-source">
             <a href="core_model_decorators.ts.html" class="button">View Source</a>
             <span>
-                <a href="core_model_decorators.ts.html">core/model/decorators.ts</a>, <a href="core_model_decorators.ts.html#line9">line 9</a>
+                <a href="core_model_decorators.ts.html">core/model/decorators.ts</a>, <a href="core_model_decorators.ts.html#line10">line 10</a>
             </span>
         </p>
     
@@ -477,7 +519,7 @@
         <p class="tag-source">
             <a href="core_model_decorators.ts.html" class="button">View Source</a>
             <span>
-                <a href="core_model_decorators.ts.html">core/model/decorators.ts</a>, <a href="core_model_decorators.ts.html#line34">line 34</a>
+                <a href="core_model_decorators.ts.html">core/model/decorators.ts</a>, <a href="core_model_decorators.ts.html#line101">line 101</a>
             </span>
         </p>
     
@@ -569,7 +611,7 @@
         <p class="tag-source">
             <a href="core_model_decorators.ts.html" class="button">View Source</a>
             <span>
-                <a href="core_model_decorators.ts.html">core/model/decorators.ts</a>, <a href="core_model_decorators.ts.html#line135">line 135</a>
+                <a href="core_model_decorators.ts.html">core/model/decorators.ts</a>, <a href="core_model_decorators.ts.html#line202">line 202</a>
             </span>
         </p>
     
@@ -661,7 +703,7 @@
         <p class="tag-source">
             <a href="core_model_decorators.ts.html" class="button">View Source</a>
             <span>
-                <a href="core_model_decorators.ts.html">core/model/decorators.ts</a>, <a href="core_model_decorators.ts.html#line192">line 192</a>
+                <a href="core_model_decorators.ts.html">core/model/decorators.ts</a>, <a href="core_model_decorators.ts.html#line259">line 259</a>
             </span>
         </p>
     
