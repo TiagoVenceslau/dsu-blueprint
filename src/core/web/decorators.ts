@@ -8,7 +8,7 @@ import {
     getDSUModelKey,
     mount
 } from "../model";
-import {ConstantsApi, DSU, DSUIOOptions} from "../opendsu";
+import {ConstantsApi, DSU, DSUIOOptions, getKeySSIApi, KeySSI} from "../opendsu";
 import {
     Callback,
     criticalCallback,
@@ -21,7 +21,7 @@ import {
     DSUCache,
     DSUCallback,
     DSUCreationHandler,
-    DSUEditingHandler, DSUPreparationHandler,
+    DSUEditingHandler, DSUPreparationHandler, handleKeyDerivation,
     OpenDSURepository,
     ReadCallback
 } from "../repository";
@@ -51,9 +51,7 @@ export type DSUPreparationMetadata = {
  *  - App Name: Communicates with ApiHub to get seeds from SSApps installed in that ApiHub instance:
  *      - slot 'primary': gets the seed file from the App's 'wallet-patch' folder;
  *      - slot 'secondary' gets the seed file from the App's {@link ConstantsApi#APP_FOLDER}
- *
- * @todo Implement a new 'Preparation phase' where we can run this, before creating the actual dsu. @fromCache could also benefit from this by also piggybaking on the @mount
- *
+ **
  * Retrieves the Seed during the {@link DSUOperation.CREATION} operation and {@link DBOperations.CREATE} phases
  * and stores in the in object under the matching property key
  *
@@ -61,19 +59,23 @@ export type DSUPreparationMetadata = {
  *
  * @param {string} appOrUrl the app name to look for in ApiHub or the URL to an endpoint to call
  * @param {"primary" | "secondary" | undefined} slot the slot where the seed can be found. 'primary' refers to the 'wallet slot' and secondary to the 'apps slot'. defaults to 'primary' and is mandatory when an App Name is provided. is discarded if a URL is detected in the appName
- * @param {boolean| number} [derive] defines how many (if any) times the KeySSI will be Derived before use
+ * @param {boolean} [triggerMount] Decides if the DSU retrieved will be mounted or not. defaults to true. all following params require this to be true to be used
+ * @param {boolean| number} [derive] defines how many (if any) times the KeySSI will be Derived before use (only used when {@param triggerMount} is true)
  * @param {string} [mountPath] defines the mount path. defaults to the property key
  * @param {DSUIOOptions} [mountOptions] options to be passed to OpenDSU for the mounting operation
  * @param {any[]} [args] Not used in current implementation. Meant for extending decorators
  *
+ * @function fromWeb
+ *
  * @category Decorators
  * @memberOf core.web
  */
-export function fromWeb(appOrUrl: string, slot: "primary" | "secondary" | undefined, derive: boolean | number = false, mountPath?: string, mountOptions?: DSUIOOptions, ...args: any[]) {
+export function fromWeb(appOrUrl: string, slot: "primary" | "secondary" | undefined, triggerMount: boolean = true, derive: boolean | number = false, mountPath?: string, mountOptions?: DSUIOOptions, ...args: any[]) {
     return (target: any, propertyKey: string) => {
         mountPath =  mountPath ? mountPath : propertyKey;
+        if (triggerMount)
+            mount(mountPath, false, mountOptions, ...args);
 
-        mount(mountPath, mountOptions)(target, propertyKey);
         const name = target.constructor.name;
         const metadata: DSUPreparationMetadata = {
             operation: DSUOperation.PREPARATION,
@@ -96,7 +98,7 @@ export function fromWeb(appOrUrl: string, slot: "primary" | "secondary" | undefi
         );
 
         const createHandler: DSUPreparationHandler = function<T extends DSUModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, model: T, decorator: DSUPreparationMetadata, callback: ModelCallback<T>): void {
-            const {prop, appName, slot} = decorator;
+            const {prop, appName, slot, derive} = decorator;
 
             const webService = getWebService({
                 walletPath: appName
@@ -117,12 +119,49 @@ export function fromWeb(appOrUrl: string, slot: "primary" | "secondary" | undefi
                 if (err || !ssi)
                     return criticalCallback(err || new Error(`Not KeySSI for ${appName} in slot ${slot} found`), callback);
                 ssi = typeof ssi !== 'string' ? ssi.toString() : ssi;
+
+                try {
+                    ssi = getKeySSIApi().parse(ssi) as KeySSI;
+                } catch (e) {
+                    return criticalCallback(e, callback);
+                }
+
+                try {
+                    ssi = handleKeyDerivation(ssi, derive);
+                } catch (e) {
+                    return criticalCallback(e, callback);
+                }
                 // @ts-ignore
-                model[prop] = ssi;
+                model[prop] = ssi.getIdentifier();
                 callback(undefined, model as T);
             });
         }
 
         getDSUOperationsRegistry().register(createHandler, DSUOperation.PREPARATION, OperationKeys.CREATE, target, propertyKey);
+    }
+}
+
+/**
+ * Retrieves the Wallet Seed from ApiHub and stores in the {@link ConstantsApi#CODE_FOLDER} property
+ *
+ * Wrapper decorator around {@link fromWeb(app, "primary", false)}
+ *
+ * @param {string} app the app name to look for in ApiHub
+ * @param {boolean} [derive] If the KeySSI should be derived (how many times). defaults to true
+ *
+ * @function wallet
+ *
+ * @category Decorators
+ * @memberOf core.web
+ *
+ * @mermaid
+ *  sequenceDiagram
+ *      actor wallet
+ *      actor fromWeb
+ *      wallet->>fromWeb(app, "primary", false)
+ */
+export function wallet(app: string, derive: boolean = true) {
+    return (target: any, propertyKey: string) => {
+        fromWeb(app, "primary", false, derive)(target, propertyKey);
     }
 }

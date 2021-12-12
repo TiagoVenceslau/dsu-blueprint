@@ -619,3 +619,32 @@ export function updateFromDecorators<T extends DSUModel>(this: OpenDSURepository
         });
     });
 }
+
+/**
+ * Will try to derive the key as many times as required
+ *
+ * @param {string | KeySSI} keySSI
+ * @param {boolean | number} derive
+ *
+ * @function handleKeyDerivation
+ *
+ * @memberOf core.repository
+ */
+export function handleKeyDerivation(keySSI: string | KeySSI, derive: boolean | number = false){
+    if (typeof keySSI === 'string')
+        try {
+            keySSI = getKeySSIApi().parse(keySSI);
+        } catch(e) {
+            throw new CriticalError(e);
+        }
+    if (typeof derive === 'boolean')
+        derive = derive ? 1 : 0;
+
+    for (let i = 0; i < derive; i++)
+        try {
+            keySSI = keySSI.derive();
+        } catch (e) {
+            throw new CriticalError(e);
+        }
+    return keySSI;
+}

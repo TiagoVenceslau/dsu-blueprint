@@ -10,7 +10,7 @@ import {
     DSUCreationHandler,
     DSUCreationUpdateHandler,
     DSUEditingHandler,
-    fromCache,
+    fromCache, handleKeyDerivation,
     OpenDSURepository,
     ReadCallback
 } from "../repository";
@@ -25,7 +25,7 @@ import {
     OperationKeys
 } from "@tvenceslau/db-decorators/lib";
 import {KeySSI, KeySSISpecificArgs, KeySSIType} from "../opendsu/apis/keyssi";
-import {ConstantsApi} from "../opendsu";
+import {ConstantsApi, getKeySSIApi} from "../opendsu";
 import {
     DSUPostProcess,
     getDSUFactoryRegistry,
@@ -75,9 +75,8 @@ export type DSUClassCreationMetadata = {
  *  - Automatic serialization -> transmission -> deserialization;
  *  - Controlled accesses: Ability easily to add business logic at key points of any CRUD operations
  *
- *  TODO:
- *  Because everything is declarative, the hash of the {@link DSUModel} class file string literal + the hash of the dsu-blueprint bundle file
- *  can be used stored as DSU metadata and serve as proof of authenticity in theory. I guess if we store this lib.
+ *  @todo Because everything is declarative, the hash of the {@link DSUModel} class file string literal + the hash of the dsu-blueprint bundle file
+ *  @todo can be used stored as DSU metadata and serve as proof of authenticity in theory. I guess if we store this lib.
  *
  * Supported {@link KeySSIType}s:
  *  - {@link KeySSIType.SEED}: Expects:
@@ -430,6 +429,7 @@ export function dsuFile(dsuPath: string = DsuKeys.DEFAULT_DSU_PATH) {
  * Mounts the {@link keySSI} in the property value it holds.
  *
  * @param {string} [mountPath] defines the mount path. defaults to the property key
+ * @param {boolean | number} [derive]
  * @param {DSUIOOptions} [options]
  * @param {any[]} [args] optional params. meant for extending decorators
  *
@@ -437,7 +437,7 @@ export function dsuFile(dsuPath: string = DsuKeys.DEFAULT_DSU_PATH) {
  * @namespace decorators
  * @memberOf model
  */
-export function mount(mountPath?: string, options?: DSUIOOptions, ...args: any[]) {
+export function mount(mountPath?: string, derive: boolean | number = false, options?: DSUIOOptions, ...args: any[]) {
     return (target: any, propertyKey: string) => {
         mountPath = mountPath ? mountPath : propertyKey;
         if (!mountPath)
@@ -447,6 +447,7 @@ export function mount(mountPath?: string, options?: DSUIOOptions, ...args: any[]
             operation: DSUOperation.EDITING,
             phase: [OperationKeys.READ, OperationKeys.CREATE],
             dsuPath: mountPath,
+            derive: derive,
             options: options,
             propKey: propertyKey,
             args: args
@@ -460,14 +461,28 @@ export function mount(mountPath?: string, options?: DSUIOOptions, ...args: any[]
         );
 
         const createHandler: DSUEditingHandler = function<T extends DBModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, obj: T | {[indexer: string]: any}, dsu: DSU, decorator: DSUEditMetadata, callback: DSUCallback<T> | ReadCallback): void {
-            const {dsuPath, options, propKey} = decorator;
+            const {dsuPath, options, propKey, derive} = decorator.props;
             if (!decorator.key)
                 return criticalCallback(new Error(`Decorator does not hold the property key`), callback);
-            const keySSI: string = obj[propKey];
+            let keySSI: string | KeySSI = obj[propKey];
             if (!keySSI)
                 return criticalCallback(new Error(`Model does not hold the key under its ${propKey} property but ${obj[propKey]} instead`), callback);
+
+            if (typeof keySSI === 'string')
+                try {
+                    keySSI = getKeySSIApi().parse(keySSI as string);
+                } catch (e) {
+                    return criticalCallback(e, callback);
+                }
+
+            try {
+                keySSI = handleKeyDerivation(keySSI, derive);
+            } catch (e) {
+                return criticalCallback(e, callback);
+            }
+
             all(`Mounting DSU with KeySSI ${keySSI} under path ${dsuPath}`);
-            dsu.mount(dsuPath, keySSI, options, err => {
+            dsu.mount(dsuPath, keySSI.getIdentifier(), options, err => {
                 if (err)
                     return criticalCallback(err, callback);
                 all(`Mounting DSU with KeySSI ${keySSI} under path ${dsuPath} Successful`);

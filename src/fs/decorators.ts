@@ -3,7 +3,14 @@ import {DSU, DSUIOOptions, getKeySSIApi} from "../core/opendsu";
 import {getFS, getPath} from "./utils";
 import {Callback, criticalCallback, DBOperations, Err, OperationKeys} from "@tvenceslau/db-decorators/lib";
 import {getDSUOperationsRegistry} from "../core/repository/registry";
-import {DSUCache, DSUCallback, DSUEditingHandler, OpenDSURepository, ReadCallback} from "../core/repository";
+import {
+    DSUCache,
+    DSUCallback,
+    DSUEditingHandler,
+    handleKeyDerivation,
+    OpenDSURepository,
+    ReadCallback
+} from "../core/repository";
 import DBModel from "@tvenceslau/db-decorators/lib/model/DBModel";
 import {DsuFsKeys, FSOptions} from "./constants";
 
@@ -58,9 +65,7 @@ export function dsuFS(app: string, derive: boolean = false, mountPath?: string, 
                         return criticalCallback(err || new Error(`Missing data`), callback);
                     try {
                         keySSI = getKeySSIApi().parse(keySSI.toString());
-                        if (derive)
-                            keySSI = keySSI.derive();
-
+                        keySSI = handleKeyDerivation(keySSI, derive);
                     } catch (e) {
                         return criticalCallback(`Could not parse KeySSI for App ${app}`, callback);
                     }

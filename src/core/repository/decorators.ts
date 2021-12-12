@@ -4,9 +4,10 @@ import {repository} from "@tvenceslau/db-decorators/lib/repository/decorators";
 import {DSUEditingHandler} from "./types";
 import {DSUCallback, OpenDSURepository, ReadCallback} from "./repository";
 import {DSUCache} from "./cache";
-import {DSU, DSUIOOptions} from "../opendsu";
+import {DSU, DSUIOOptions, KeySSI} from "../opendsu";
 import {criticalCallback, OperationKeys, warn} from "@tvenceslau/db-decorators/lib";
 import {getDSUOperationsRegistry} from "./registry";
+import {handleKeyDerivation} from "./utils";
 
 /**
  * @namespace core.repository.decorators
@@ -51,11 +52,15 @@ export function fromCache<T extends DSUModel>(model: {new(): T}, derive: boolean
 
             if (cached.length > 1)
                 warn(`Cached DSUs for this property exceed the ones allowed. using only the first one`);
-            const {keySSI} = cached[0];
+            let {keySSI} = cached[0];
 
-            const ssi = derive ? keySSI.derive().getIdentifier() : keySSI.getIdentifier();
+            try {
+                keySSI = handleKeyDerivation(keySSI, derive);
+            } catch (e) {
+                return criticalCallback(e, callback);
+            }
 
-            parentDsu.mount(dsuPath, ssi, options, (err) => {
+            parentDsu.mount(dsuPath, keySSI.getIdentifier(), options, (err) => {
                 if (err)
                     return criticalCallback(err, callback);
                 callback(undefined, model as T);
