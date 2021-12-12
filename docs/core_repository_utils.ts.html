@@ -92,7 +92,7 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-Cli.html">Cli</a></li><li><a href="module-Core.html">Core</a></li><li><a href="module-filesystem.html">filesystem</a></li><li><a href="module-repository.html">repository</a></li></ul><h3>Namespaces</h3><ul><li><a href="Cli.cli.html">cli</a></li><li><a href="core.model.html">model</a></li><li><a href="core.web.html">web</a></li><li><a href="dsu-blueprint.OpenDSU.html">OpenDSU</a></li><li><a href="FileSystem.filesystem.html">filesystem</a></li><li><a href="model.decorators.html">decorators</a></li><li><a href="module-Core-core.html">core</a></li><li><a href="OpenDSU.html">OpenDSU</a></li><li><a href="repository.html">repository</a></li></ul><h3>Classes</h3><ul><li><a href="core.model.ArrayDSU.html">ArrayDSU</a></li><li><a href="core.model.DbDsuBlueprint.html">DbDsuBlueprint</a></li><li><a href="core.model.SeedDSU.html">SeedDSU</a></li><li><a href="core.model.WalletDSU.html">WalletDSU</a></li><li><a href="OpenDSU.factory.DSUFactoryRegistry.html">DSUFactoryRegistry</a></li><li><a href="OpenDSU.factory.KeySSIFactoryRegistry.html">KeySSIFactoryRegistry</a></li><li><a href="OpenDSURepository_OpenDSURepository.html">OpenDSURepository</a></li><li><a href="WebServiceImp_WebServiceImp.html">WebServiceImp</a></li></ul><h3>Interfaces</h3><ul><li><a href="ConstantsApi.html">ConstantsApi</a></li><li><a href="DSU.html">DSU</a></li><li><a href="EnvironmentTypes.html">EnvironmentTypes</a></li><li><a href="fs.html">fs</a></li><li><a href="path.html">path</a></li><li><a href="WalletDsu.html">WalletDsu</a></li></ul><h3>Global</h3><ul><li><a href="global.html#buildOrUpdate">buildOrUpdate</a></li><li><a href="global.html#createObjectToValueChain">createObjectToValueChain</a></li><li><a href="global.html#getValueFromValueChain">getValueFromValueChain</a></li></ul></div><div class="category"><h2>Services</h2><h3>Classes</h3><ul><li><a href="core.web.WebServiceImp.html">WebServiceImp</a></li></ul><h3>Interfaces</h3><ul><li><a href="core.web.WebService.html">WebService</a></li></ul></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-Cli.html">Cli</a></li><li><a href="module-Core.html">Core</a></li><li><a href="module-filesystem.html">filesystem</a></li><li><a href="module-Filesystem_.html">Filesystem</a></li></ul><h3>Namespaces</h3><ul><li><a href="Cli.cli.html">cli</a></li><li><a href="Core.core.html">core</a></li><li><a href="core.model.html">model</a></li><li><a href="core.repository.html">repository</a></li><li><a href="core.repository.cache.html">cache</a></li><li><a href="core.repository.decorators.html">decorators</a></li><li><a href="core.repository.registry.html">registry</a></li><li><a href="core.web.html">web</a></li><li><a href="dsu-blueprint.OpenDSU.html">OpenDSU</a></li><li><a href="FileSystem.filesystem.html">filesystem</a></li><li><a href="model.decorators.html">decorators</a></li><li><a href="OpenDSU.html">OpenDSU</a></li></ul><h3>Classes</h3><ul><li><a href="core.model.ArrayDSU.html">ArrayDSU</a></li><li><a href="core.model.DbDsuBlueprint.html">DbDsuBlueprint</a></li><li><a href="core.model.SeedDSU.html">SeedDSU</a></li><li><a href="core.model.WalletDSU.html">WalletDSU</a></li><li><a href="core.repository.cache.DSUCache.html">DSUCache</a></li><li>core.repository.OpenDSURepository.&lt;<a href="global.html#T">T</a>></li><li>core.repository.OpenDSURepositoryDeterministic.&lt;<a href="global.html#T">T</a>></li><li><a href="core.repository.registry.DSUOperationRegistry.html">DSUOperationRegistry</a></li><li><a href="OpenDSU.factory.DSUFactoryRegistry.html">DSUFactoryRegistry</a></li><li><a href="OpenDSU.factory.KeySSIFactoryRegistry.html">KeySSIFactoryRegistry</a></li><li><a href="OpenDSURepository_OpenDSURepository.html">OpenDSURepository</a></li><li><a href="WebServiceImp_WebServiceImp.html">WebServiceImp</a></li></ul><h3>Interfaces</h3><ul><li><a href="ConstantsApi.html">ConstantsApi</a></li><li><a href="DSU.html">DSU</a></li><li><a href="EnvironmentTypes.html">EnvironmentTypes</a></li><li><a href="fs.html">fs</a></li><li><a href="path.html">path</a></li><li><a href="WalletDsu.html">WalletDsu</a></li></ul><h3>Global</h3><ul><li><a href="global.html#buildOrUpdate">buildOrUpdate</a></li></ul></div><div class="category"><h2>Services</h2><h3>Classes</h3><ul><li><a href="core.web.WebServiceImp.html">WebServiceImp</a></li></ul><h3>Interfaces</h3><ul><li><a href="core.web.WebService.html">WebService</a></li></ul></div>
                 
             </nav>
         </div>
@@ -120,8 +120,7 @@
 import {DsuKeys, DSUModel, DSUOperation} from "../model";
 import {
     DSU,
-    getKeySSIApi,
-    WalletDsu,
+    getKeySSIApi
 } from "../opendsu";
 import {
     all,
@@ -139,7 +138,8 @@ import {
 import {getDSUOperationsRegistry} from "./registry";
 import {ModelKeys} from "@tvenceslau/decorator-validation/lib";
 import {DSUCache} from "./cache";
-import {KeySSI, KeySSIType} from "../opendsu/apis/keyssi";
+import {KeySSI} from "../opendsu/apis/keyssi";
+
 
 /**
  * Util method that handles the {@link DSU}'s batch operation close
@@ -149,8 +149,9 @@ import {KeySSI, KeySSIType} from "../opendsu/apis/keyssi";
  * @param {any[]} args
  *      The last arg will be considered to be the {@link Callback};
  *
+ * @function batchCallback
  * 
- * @namespace repository
+ * @memberOf core.repository
  */
 export function batchCallback(err: Err, dsu: DSU, ...args: any[]){
     const callback: Callback = args.pop();
@@ -170,6 +171,16 @@ export function batchCallback(err: Err, dsu: DSU, ...args: any[]){
     }) : callback(undefined, ...args);
 }
 
+/**
+ * util method to safely parse a KeySSI string
+ *
+ * @param {string} keySSI
+ * @param {Callback} callback
+ *
+ * @function safeParseKeySSI
+ *
+ * @memberOf core.repository
+ */
 export function safeParseKeySSI(keySSI: string, callback: Callback){
     let key: KeySSI;
     try{
@@ -188,8 +199,9 @@ export function safeParseKeySSI(keySSI: string, callback: Callback){
  * @param {DSUCache&lt;T> | undefined} [dsuCache] undefined for new transactions, inherited otherwise
  * @param {any[] | DSUCallback[]} keyGenArgs key generation args when required (for Array SSIs for instance). The last arg will be considered to be the {@link DSUCallback&lt;T>};
  *
- * 
- * @namespace repository
+ * @function createFromDecorators
+ *
+ * @memberOf core.repository
  */
 export function createFromDecorators&lt;T extends DSUModel>(this: OpenDSURepository&lt;T>, model: T, dsuCache: DSUCache&lt;T> | undefined, ...keyGenArgs: (any | DSUCallback&lt;T>)[]){
     const callback: DSUCallback&lt;T> = keyGenArgs.pop();
@@ -248,8 +260,9 @@ export function createFromDecorators&lt;T extends DSUModel>(this: OpenDSUReposit
  * @param {string[]} [args] parameters to be passed to the KeyGeneration Function, after the ones originated from the {@link DSUModel}'s properties, as defined in the {@link DSUBlueprint}
  *       The last arg will be considered to be the {@link DSUCallback&lt;T>};
  *
- * 
- * @namespace repository
+ * @function handleDSUClassDecorators
+ *
+ * @memberOf core.repository
  */
 export function handleDSUClassDecorators&lt;T extends DSUModel>(this: OpenDSURepository&lt;T>, dsuCache: DSUCache&lt;T>, model: T, operation: string = OperationKeys.CREATE, ...args: (any | DSUCallback&lt;T>)[]){
     const callback: DSUCallback&lt;T> = args.pop();
@@ -285,8 +298,10 @@ export function handleDSUClassDecorators&lt;T extends DSUModel>(this: OpenDSURep
  * @param {string} [phase]
  * @return {{creation: DSUCreationDecorator[], editing: DSUEditDecorator[]}} split decorators
  *
- * 
- * @namespace repository
+ *
+ * @function splitDSUDecorators
+ *
+ * @memberOf core.repository
  */
 export function splitDSUDecorators&lt;T extends DSUModel>(model: T, phase: string = OperationKeys.CREATE) : {creation?: DSUCreationDecorator[], editing?: DSUEditDecorator[]} | undefined{
     const propDecorators: {[indexer: string]: any[]} | undefined = getAllPropertyDecorators&lt;T>(model as T, DsuKeys.REFLECT);
@@ -324,8 +339,8 @@ export function splitDSUDecorators&lt;T extends DSUModel>(model: T, phase: strin
 /**
  * Util type to describe the results of DSU creation operations
  *
- * @type DSUCreationResults
- * @namespace repository
+ * @typedef DSUCreationResults
+ * @memberOf core.repository
  */
 export type DSUCreationResults = {[indexer: string]: {model: DSUModel, dsu: DSU, keySSI: KeySSI}[]};
 
@@ -338,8 +353,10 @@ export type DSUCreationResults = {[indexer: string]: {model: DSUModel, dsu: DSU,
  * @param {any[]} [args]
  *       The last arg will be considered to be the {@link DSUMultipleCallback&lt;T>};
  *
- * 
- * @namespace repository
+ *
+ * @function handleDSUCreationPropertyDecorators
+ *
+ * @memberOf core.repository
  */
 export function handleCreationPropertyDecorators&lt;T extends DSUModel>(this: OpenDSURepository&lt;T>, dsuCache: DSUCache&lt;T>, model: T, decorators: DSUDecorator[], ...args: (any | DSUMultipleCallback&lt;T>)[]){
     const callback: DSUMultipleCallback&lt;DSUModel> = args.pop();
@@ -388,7 +405,7 @@ export function handleCreationPropertyDecorators&lt;T extends DSUModel>(this: Op
 
 /**
  * given a chain like 'a.b.c', and a model:
- * &lt;pre>
+ * @example
  *     {
  *         a: {
  *             b: {
@@ -396,13 +413,18 @@ export function handleCreationPropertyDecorators&lt;T extends DSUModel>(this: Op
  *             }
  *         }
  *     }
- * &lt;/pre>
  *
  * this method will return "value"
  *
  * @param {{}} model
  * @param {string[]} chains
+ *
+ * @returns {any[]}
  * @throws CriticalError if the value is not found in the object
+ *
+ * @function getValueFromValueChain
+ *
+ * @memberOf core.repository
  */
 export function getValueFromValueChain(model: {[indexer: string]: any}, ...chains: string[]): any[]{
     return chains.map(c => {
@@ -436,9 +458,13 @@ export function getValueFromValueChain(model: {[indexer: string]: any}, ...chain
  *     }
  * &lt;/pre>
  *
- * @param obj
- * @param chain
- * @param value
+ * @param {{}} obj
+ * @param {string} chain
+ * @param {any} value
+ *
+ * @function createObjectTovalueChain
+ *
+ * @memberOf core.repository
  */
 export function createObjectToValueChain(obj: {[indexer: string]: any}, chain: string, value: any): {} {
     const split = chain.split(".");
@@ -466,8 +492,10 @@ export function createObjectToValueChain(obj: {[indexer: string]: any}, chain: s
  * @param {any[]} [args]
  *       The last arg will be considered to be the {@link DSUCallback&lt;T>};
  *
- * 
- * @namespace repository
+ *
+ * @function handleEditingPropertyDecorators
+ *
+ * @memberOf core.repository
  */
 export function handleEditingPropertyDecorators&lt;T extends DSUModel>(this: OpenDSURepository&lt;T>, dsuCache: DSUCache&lt;T>, model: T | {[indexer: string]: any}, dsu: DSU, decorators: DSUEditDecorator[], phase: string = OperationKeys.CREATE, ...args: (any | DSUCallback&lt;T>)[]){
     const callback: DSUCallback&lt;T> = args.pop();
@@ -540,6 +568,21 @@ export function handleEditingPropertyDecorators&lt;T extends DSUModel>(this: Ope
     });
 }
 
+/**
+ * Will update a {@link DSU} based on the definitions of the {@link DSUBlueprint}
+ *
+ * @param {DSUCache} dsuCache
+ * @param {T} model {@link DSUBlueprint} decorated {@link DSUModel}
+ * @param {T} oldModel {@link DSUBlueprint} decorated {@link DSUModel}
+ * @param {DSU} dsu
+ * @param {DSUDecorator[]} decorators
+ * @param {string[]} [args] parameters to be passed to the KeyGeneration Function, after the ones originated from the {@link DSUModel}'s properties, as defined in the {@link DSUBlueprint}
+ *       The last arg will be considered to be the {@link DSUMultipleCallback&lt;T>};
+ *
+ * @function handleUpdateCreationPropertyDecorator
+ *
+ * @memberOf core.repository
+ */
 export function handleUpdateCreationPropertyDecorator&lt;T extends DSUModel>(this: OpenDSURepository&lt;T>, dsuCache: DSUCache&lt;T>, model: T, oldModel: T, dsu: DSU, decorators: DSUDecorator[], ...args: (any | DSUMultipleCallback&lt;T>)[]){
     const callback: DSUMultipleCallback&lt;DSUModel> = args.pop();
     if (!callback)
@@ -584,6 +627,17 @@ export function handleUpdateCreationPropertyDecorator&lt;T extends DSUModel>(thi
     });
 }
 
+/**
+ * Will read a {@link DSU} based on the definitions of the {@link DSUBlueprint} and output a {@link DSUModel}
+ *
+ * @param {DSU} dsu
+ * @param {string[]} [args] parameters to be passed to the KeyGeneration Function, after the ones originated from the {@link DSUModel}'s properties, as defined in the {@link DSUBlueprint}
+ *       The last arg will be considered to be the {@link DSUCallback&lt;T>};
+ *
+ * @function readFromDecorators
+ *
+ * @memberOf core.repository
+ */
 export function readFromDecorators&lt;T extends DSUModel>(this: OpenDSURepository&lt;T>, dsu: DSU, ...args: (any | DSUCallback&lt;T>)[]){
     const callback: DSUCallback&lt;T> = args.pop();
     if (!callback)
@@ -614,6 +668,20 @@ export function readFromDecorators&lt;T extends DSUModel>(this: OpenDSURepositor
     });
 }
 
+/**
+ * Will update a {@link DSU} based on the definitions of the {@link DSUBlueprint}
+ *
+ * @param {T} model {@link DSUBlueprint} decorated {@link DSUModel}
+ * @param {T} oldModel {@link DSUBlueprint} decorated {@link DSUModel}
+ * @param {DSU} dsu
+ * @param {DSUCache} dsuCache
+ * @param {string[]} [args] parameters to be passed to the KeyGeneration Function, after the ones originated from the {@link DSUModel}'s properties, as defined in the {@link DSUBlueprint}
+ *       The last arg will be considered to be the {@link DSUCallback&lt;T>};
+ *
+ * @function updateFromDecorators
+ *
+ * @memberOf core.repository
+ */
 export function updateFromDecorators&lt;T extends DSUModel>(this: OpenDSURepository&lt;T>, model: T, oldModel: T, dsu: DSU, dsuCache: DSUCache&lt;T>, ...args: (any | DSUCallback&lt;T>)[]){
     const callback: DSUCallback&lt;T> = args.pop();
     if (!callback)
@@ -647,16 +715,6 @@ export function updateFromDecorators&lt;T extends DSUModel>(this: OpenDSUReposit
             });
         });
     });
-}
-
-export function handleDSUTypes(keySSIType: KeySSIType, dsu: DSU): DSU {
-    switch (keySSIType) {
-        case KeySSIType.WALLET:
-            const wallet = dsu as WalletDsu;
-            return wallet.getWritableDSU() as DSU;
-        default:
-            return dsu as DSU;
-    }
 }</code></pre>
         </article>
     </section>

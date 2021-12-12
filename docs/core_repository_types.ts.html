@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,7 +7,7 @@
   
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Declarative OpenDSU creation and management API decorators</title>
+  <title>Declarative OpenDSU creation and management API core/repository/types.ts</title>
 
   <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -97,195 +99,51 @@
         <div class="core" id="main-content-wrapper">
             <div class="content">
                 <header class="page-title">
-                    <p>Namespace</p>
-                    <h1>decorators</h1>
+                    <p>Source</p>
+                    <h1>core/repository/types.ts</h1>
                 </header>
                 
 
 
 
-
-<section>
-
-<header>
-    
-        <h2>decorators</h2>
-        
-    
-</header>
-
-<article>
-    <div class="container-overview">
-    
-        
-            <div class="description"><script type="text/javascript" src="https://unpkg.com/mermaid@7.1.0/dist/mermaid.min.js"></script></div>
-        
-
-        
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    
-
-    
-
-    
-
-    
-        <p class="tag-source">
-            <a href="core_model_decorators.ts.html" class="button">View Source</a>
-            <span>
-                <a href="core_model_decorators.ts.html">core/model/decorators.ts</a>, <a href="core_model_decorators.ts.html#line230">line 230</a>
-            </span>
-        </p>
-    
-</dl>
-
-
-        
-    
-    </div>
-    
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
-
-
-
-
-
-
-
-<section>
-
-<header>
-    
-        <h2>decorators</h2>
-        
-    
-</header>
-
-<article>
-    <div class="container-overview">
-    
-        
-            <div class="description"><script type="text/javascript" src="https://unpkg.com/mermaid@7.1.0/dist/mermaid.min.js"></script></div>
-        
-
-        
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
     
-
-    
-    
-
-    
-
-    
-
-    
-        <p class="tag-source">
-            <a href="core_model_decorators.ts.html" class="button">View Source</a>
-            <span>
-                <a href="core_model_decorators.ts.html">core/model/decorators.ts</a>, <a href="core_model_decorators.ts.html#line287">line 287</a>
-            </span>
-        </p>
-    
-</dl>
-
-
-        
-    
-    </div>
-    
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import {
+    DSU
+} from "../opendsu/types";
+import {DSUClassCreationMetadata, DSUCreationMetadata, DSUModel} from "../model";
+import {DSUCallback, OpenDSURepository, ReadCallback} from "./repository";
+import {DSUCache} from "./cache";
+import {ModelCallback} from "@tvenceslau/db-decorators/lib";
+
+/**
+ * @typedef DSUCreationHandler
+ * @memberOf core.repository
+ */
+export type DSUCreationHandler = &lt;T extends DSUModel>(this: OpenDSURepository&lt;T>, dsuCache: DSUCache&lt;T>, model: T, decorator: DSUCreationMetadata, ...keyGenArgs: (string | ModelCallback&lt;T>)[]) => void;
+/**
+ * @typedef DSUClassCreationHandler
+ * @memberOf core.repository
+ */
+export type DSUClassCreationHandler = &lt;T extends DSUModel>(this: OpenDSURepository&lt;T>, dsuCache: DSUCache&lt;T>, model: T, decorator: DSUClassCreationMetadata, ...keyGenArgs: (string | DSUCallback&lt;T>)[]) => void;
+/**
+ * @typedef DSUCreationUpdateHandler
+ * @memberOf core.repository
+ */
+export type DSUCreationUpdateHandler = &lt;T extends DSUModel>(this: OpenDSURepository&lt;T>, dsuCache: DSUCache&lt;T>, model: T, oldModel: T, dsu: DSU, decorator: any, callback: DSUCallback&lt;T>) => void;
+/**
+ * @typedef DSUEditingHandler
+ * @memberOf core.repository
+ */
+export type DSUEditingHandler = &lt;T extends DSUModel>(this: OpenDSURepository&lt;T>, dsuCache: DSUCache&lt;T>, model: T | {[indexer: string]: any}, dsu: DSU, decorator: any, callback: DSUCallback&lt;T> | ReadCallback) => void;
+/**
+ * @typedef DSUOperationHandler Union of {@link DSUCreationHandler}, {@link DSUEditingHandler}, {@link DSUCreationUpdateHandler} and {@link DSUClassCreationHandler}
+ * @memberOf core.repository
+ */
+export type DSUOperationHandler = DSUCreationHandler | DSUEditingHandler | DSUCreationUpdateHandler | DSUClassCreationHandler;</code></pre>
+        </article>
+    </section>
 
 
 

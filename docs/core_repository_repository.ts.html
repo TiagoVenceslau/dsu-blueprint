@@ -92,7 +92,7 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-Cli.html">Cli</a></li><li><a href="module-Core.html">Core</a></li><li><a href="module-filesystem.html">filesystem</a></li><li><a href="module-repository.html">repository</a></li></ul><h3>Namespaces</h3><ul><li><a href="Cli.cli.html">cli</a></li><li><a href="core.model.html">model</a></li><li><a href="core.web.html">web</a></li><li><a href="dsu-blueprint.OpenDSU.html">OpenDSU</a></li><li><a href="FileSystem.filesystem.html">filesystem</a></li><li><a href="model.decorators.html">decorators</a></li><li><a href="module-Core-core.html">core</a></li><li><a href="OpenDSU.html">OpenDSU</a></li><li><a href="repository.html">repository</a></li></ul><h3>Classes</h3><ul><li><a href="core.model.ArrayDSU.html">ArrayDSU</a></li><li><a href="core.model.DbDsuBlueprint.html">DbDsuBlueprint</a></li><li><a href="core.model.SeedDSU.html">SeedDSU</a></li><li><a href="core.model.WalletDSU.html">WalletDSU</a></li><li><a href="OpenDSU.factory.DSUFactoryRegistry.html">DSUFactoryRegistry</a></li><li><a href="OpenDSU.factory.KeySSIFactoryRegistry.html">KeySSIFactoryRegistry</a></li><li><a href="OpenDSURepository_OpenDSURepository.html">OpenDSURepository</a></li><li><a href="WebServiceImp_WebServiceImp.html">WebServiceImp</a></li></ul><h3>Interfaces</h3><ul><li><a href="ConstantsApi.html">ConstantsApi</a></li><li><a href="DSU.html">DSU</a></li><li><a href="EnvironmentTypes.html">EnvironmentTypes</a></li><li><a href="fs.html">fs</a></li><li><a href="path.html">path</a></li><li><a href="WalletDsu.html">WalletDsu</a></li></ul><h3>Global</h3><ul><li><a href="global.html#buildOrUpdate">buildOrUpdate</a></li><li><a href="global.html#createObjectToValueChain">createObjectToValueChain</a></li><li><a href="global.html#getValueFromValueChain">getValueFromValueChain</a></li></ul></div><div class="category"><h2>Services</h2><h3>Classes</h3><ul><li><a href="core.web.WebServiceImp.html">WebServiceImp</a></li></ul><h3>Interfaces</h3><ul><li><a href="core.web.WebService.html">WebService</a></li></ul></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-Cli.html">Cli</a></li><li><a href="module-Core.html">Core</a></li><li><a href="module-filesystem.html">filesystem</a></li><li><a href="module-Filesystem_.html">Filesystem</a></li></ul><h3>Namespaces</h3><ul><li><a href="Cli.cli.html">cli</a></li><li><a href="Core.core.html">core</a></li><li><a href="core.model.html">model</a></li><li><a href="core.repository.html">repository</a></li><li><a href="core.repository.cache.html">cache</a></li><li><a href="core.repository.decorators.html">decorators</a></li><li><a href="core.repository.registry.html">registry</a></li><li><a href="core.web.html">web</a></li><li><a href="dsu-blueprint.OpenDSU.html">OpenDSU</a></li><li><a href="FileSystem.filesystem.html">filesystem</a></li><li><a href="model.decorators.html">decorators</a></li><li><a href="OpenDSU.html">OpenDSU</a></li></ul><h3>Classes</h3><ul><li><a href="core.model.ArrayDSU.html">ArrayDSU</a></li><li><a href="core.model.DbDsuBlueprint.html">DbDsuBlueprint</a></li><li><a href="core.model.SeedDSU.html">SeedDSU</a></li><li><a href="core.model.WalletDSU.html">WalletDSU</a></li><li><a href="core.repository.cache.DSUCache.html">DSUCache</a></li><li>core.repository.OpenDSURepository.&lt;<a href="global.html#T">T</a>></li><li>core.repository.OpenDSURepositoryDeterministic.&lt;<a href="global.html#T">T</a>></li><li><a href="core.repository.registry.DSUOperationRegistry.html">DSUOperationRegistry</a></li><li><a href="OpenDSU.factory.DSUFactoryRegistry.html">DSUFactoryRegistry</a></li><li><a href="OpenDSU.factory.KeySSIFactoryRegistry.html">KeySSIFactoryRegistry</a></li><li><a href="OpenDSURepository_OpenDSURepository.html">OpenDSURepository</a></li><li><a href="WebServiceImp_WebServiceImp.html">WebServiceImp</a></li></ul><h3>Interfaces</h3><ul><li><a href="ConstantsApi.html">ConstantsApi</a></li><li><a href="DSU.html">DSU</a></li><li><a href="EnvironmentTypes.html">EnvironmentTypes</a></li><li><a href="fs.html">fs</a></li><li><a href="path.html">path</a></li><li><a href="WalletDsu.html">WalletDsu</a></li></ul><h3>Global</h3><ul><li><a href="global.html#buildOrUpdate">buildOrUpdate</a></li></ul></div><div class="category"><h2>Services</h2><h3>Classes</h3><ul><li><a href="core.web.WebServiceImp.html">WebServiceImp</a></li></ul><h3>Interfaces</h3><ul><li><a href="core.web.WebService.html">WebService</a></li></ul></div>
                 
             </nav>
         </div>
@@ -120,34 +120,67 @@ import {
 import {DSU} from "../opendsu/types";
 import {createFromDecorators, readFromDecorators, safeParseKeySSI, updateFromDecorators} from "./utils";
 import DBModel from "@tvenceslau/db-decorators/lib/model/DBModel";
-import {repository} from "@tvenceslau/db-decorators/lib/repository/decorators";
 import {getResolverApi} from "../opendsu";
 import ModelErrorDefinition from "@tvenceslau/decorator-validation/lib/Model/ModelErrorDefinition";
 import {getModelRegistry} from "@tvenceslau/decorator-validation/lib";
 import {DSUCache, isDSUCache} from "./cache";
 import {KeySSI} from "../opendsu/apis/keyssi";
 
+
+/**
+ * @typedef DSUKey
+ * @memberOf core.repository
+ */
 export type DSUKey = string | KeySSI;
 
+/**
+ * @typedef T extends DBModel
+ * @typedef DSUCallback&lt;T>
+ * @memberOf core.repository
+ */
 export type DSUCallback&lt;T extends DBModel> = (err?: Err, model?: T, dsu?: DSU, ...args: any[]) => void;
 
+/**
+ * @typedef ReadCallback
+ * @memberOf core.repository
+ */
 export type ReadCallback = (err?: Err, model?: {[indexer: string]: any}, dsu?: DSU, keySSI?: KeySSI, ...args: any[]) => void;
 
+/**
+ * @typedef DSUMultipleCallback
+ * @memberOf core.repository
+ */
 export type DSUMultipleCallback&lt;T extends DBModel> = (err?: Err, model?: T[], dsu?: DSU[], keySSI?: KeySSI[], ...args: any[]) => void;
 
+/**
+ * @typedef DSUDecorator Union of {@link DSUCreationDecorator} with {@link DSUEditDecorator}
+ * @memberOf core.repository
+ */
 export type DSUDecorator = DSUCreationDecorator | DSUEditDecorator;
 
+/**
+ * @typedef DSUCreationDecorator
+ * @memberOf core.repository
+ */
 export type DSUCreationDecorator = {
     key: string,
     prop: string,
     props: DSUCreationMetadata
 }
 
+/**
+ * @typedef DSUEditDecorator
+ * @memberOf core.repository
+ */
 export type DSUEditDecorator = {
     key: string,
     prop: string,
     props: DSUEditMetadata
 }
+
+/**
+ * @typedef T extends DSUModel
+ */
 
 /**
  * Provide the Base implementation to a global single OpenDSU Repository implementation
@@ -160,7 +193,8 @@ export type DSUEditDecorator = {
  * @typedef T extends DSUModel
  * @class OpenDSURepository&lt;T>
  * @extends AsyncRepositoryImp&lt;T>
- * @namespace repository
+ *
+ * @memberOf core.repository
  */
 export class OpenDSURepository&lt;T extends DSUModel> extends AsyncRepositoryImp&lt;T>{
     protected fallbackDomain: string;
@@ -179,10 +213,13 @@ export class OpenDSURepository&lt;T extends DSUModel> extends AsyncRepositoryImp
     }
 
     /**
-     * Creates the corresponding {@link DSU} from the provided {@link DSUModel}
+     * Creates the corresponding {@link DSU} from the provided {@link DSUBlueprint} decorated {@link DSUModel}
+     *
      * @param {T} model the {@link DSUModel}
      * @param {DSUCache} [dsuCache] if building during a nested transaction, the dsuCache needs to be passed along
      * @param {any[]} [args]
+     *
+     * @methodOf OpenDSURepository
      */
     // @ts-ignore
     create(model?: T, dsuCache?: DSUCache&lt;T> | any, ...args: any[]): void {
@@ -216,11 +253,21 @@ export class OpenDSURepository&lt;T extends DSUModel> extends AsyncRepositoryImp
      * Override to disable the key param on {@link AsyncRepositoryImp#createPrefix} method
      * @see AsyncRepositoryImp#createPrefix
      * @override
+     *
+     * @methodOf OpenDSURepository
      */
     createPrefix(model?: T, ...args: any[]){
         super.createPrefix(undefined, model, ...args);
     }
 
+    /**
+     * Deletes the corresponding {@link DSU} from the provided {@link DSUBlueprint} decorated {@link DSUModel}
+     *
+     * @param {DSUKey} key
+     * @param {any[]} args
+     *
+     * @methodOf OpenDSURepository
+     */
     delete(key?: DSUKey, ...args: any[]): void {
         const callback: DSUCallback&lt;T> = args.pop();
         if (!callback)
@@ -233,6 +280,14 @@ export class OpenDSURepository&lt;T extends DSUModel> extends AsyncRepositoryImp
                 : self.delete.call(self, key, ...args, callback));
     }
 
+    /**
+     * Reads the corresponding {@link DSU} from the provided {@link DSUBlueprint} decorated {@link DSUModel}
+     *
+     * @param {DSUKey} key
+     * @param {any[]} args
+     *
+     * @methodOf OpenDSURepository
+     */
     read(key?: DSUKey, ...args: any[]): void {
         const callback: DSUCallback&lt;T> = args.pop();
         if (!callback)
@@ -259,6 +314,16 @@ export class OpenDSURepository&lt;T extends DSUModel> extends AsyncRepositoryImp
         });
     }
 
+    /**
+     * Updates the corresponding {@link DSU} from the provided {@link DSUBlueprint} decorated {@link DSUModel}
+     *
+     * @param {DSUKey} key
+     * @param {T} model the {@link DSUModel}
+     * @param {DSUCache} [dsuCache] if building during a nested transaction, the dsuCache needs to be passed along
+     * @param {any[]} [args]
+     *
+     * @methodOf OpenDSURepository
+     */
     update(key?: DSUKey, model?: T, dsuCache?: DSUCache&lt;T> | any, ...args: any[]): void {
         if (!isDSUCache(dsuCache)){
             args.unshift(dsuCache);
@@ -298,6 +363,14 @@ export class OpenDSURepository&lt;T extends DSUModel> extends AsyncRepositoryImp
     }
 }
 
+/**
+ * @class OpenDSURepositoryDeterministic&lt;T>
+ * @extends AsyncRepositoryImp&lt;T>
+ *
+ * @memberOf core.repository
+ *
+ * @deprecated
+ */
 export abstract class OpenDSURepositoryDeterministic&lt;T extends DSUModel> extends OpenDSURepository&lt;T>{
 
     abstract generateKey(model: T, ...args: any[]): KeySSI;

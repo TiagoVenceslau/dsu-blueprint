@@ -109,7 +109,8 @@
 
 <header>
     
-        <h2>decorators</h2>
+        <h2>
+            <span class="ancestors"><a href="core.repository.html">.repository</a>.</span>decorators</h2>
         
     
 </header>
@@ -157,9 +158,9 @@
 
     
         <p class="tag-source">
-            <a href="core_model_decorators.ts.html" class="button">View Source</a>
+            <a href="core_repository_decorators.ts.html" class="button">View Source</a>
             <span>
-                <a href="core_model_decorators.ts.html">core/model/decorators.ts</a>, <a href="core_model_decorators.ts.html#line230">line 230</a>
+                <a href="core_repository_decorators.ts.html">core/repository/decorators.ts</a>, <a href="core_repository_decorators.ts.html#line7">line 7</a>
             </span>
         </p>
     
@@ -185,37 +186,48 @@
     
 
     
+        <div class='vertical-section'>
+            <h1>Methods</h1>
+            <div class="members">
+            
+                <div class="member">
+
 
     
-
-    
-</article>
-
-</section>
-
-
-
-
-
-
-
-<section>
-
-<header>
-    
-        <h2>decorators</h2>
+    <h4 class="name" id=".dsuRepository">
+        <a class="href-link" href="#.dsuRepository">#</a>
         
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                dsuRepository<span class="signature">()</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
     
-</header>
 
-<article>
-    <div class="container-overview">
     
-        
-            <div class="description"><script type="text/javascript" src="https://unpkg.com/mermaid@7.1.0/dist/mermaid.min.js"></script></div>
-        
+    <p class="summary"><p>Defines a class as a DSU Repository (makes it injectable)</p>.</p>
+    
+    
+    <div class="description">
+        <script type="text/javascript" src="https://unpkg.com/mermaid@7.1.0/dist/mermaid.min.js"></script><p>Defines a class as a DSU Repository (makes it injectable)</p>
+    </div>
+    
 
-        
+
+
+
+
+
+
+
+
+
+
 
 
 <dl class="details">
@@ -251,20 +263,241 @@
 
     
         <p class="tag-source">
-            <a href="core_model_decorators.ts.html" class="button">View Source</a>
+            <a href="core_repository_decorators.ts.html" class="button">View Source</a>
             <span>
-                <a href="core_model_decorators.ts.html">core/model/decorators.ts</a>, <a href="core_model_decorators.ts.html#line287">line 287</a>
+                <a href="core_repository_decorators.ts.html">core/repository/decorators.ts</a>, <a href="core_repository_decorators.ts.html#line52">line 52</a>
             </span>
         </p>
     
 </dl>
 
 
-        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
     
+    <h4 class="name" id=".fromCache">
+        <a class="href-link" href="#.fromCache">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                fromCache<span class="signature">(model, derive<span class="signature-attributes">opt</span>, mountPath<span class="signature-attributes">opt</span>, mountOptions<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+    <div class="description">
+        <script type="text/javascript" src="https://unpkg.com/mermaid@7.1.0/dist/mermaid.min.js"></script>
     </div>
     
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
     
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+            <th>Attributes</th>
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>model</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">Object</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>derive</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">boolean</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"><p>if the received DSU should have its KeySSI derived. defaults to false</p></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>mountPath</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">string</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"><p>defines the mount path. defaults to the property key</p></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>mountOptions</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">DSUIOOptions</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"><p>options to be passed to OpenDSU for the mounting operation</p></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
 
     
 
@@ -278,6 +511,57 @@
 
     
 
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="core_repository_decorators.ts.html" class="button">View Source</a>
+            <span>
+                <a href="core_repository_decorators.ts.html">core/repository/decorators.ts</a>, <a href="core_repository_decorators.ts.html#line11">line 11</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+            </div>
+        </div>
     
 
     

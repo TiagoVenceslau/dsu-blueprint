@@ -5,9 +5,31 @@ import {DSUModel} from "../model";
 import {IRegistry} from "@tvenceslau/decorator-validation/lib/utils/registry";
 import {all, CriticalError} from "@tvenceslau/db-decorators/lib";
 
+/**
+ * @namespace core.repository.registry
+ * @memberOf core.repository
+ */
+
+/**
+ * Stores and handles all {@link DSUOperationHandler}s
+ *
+ * @class DSUOperationRegistry
+ *
+ * @implements {IRegistry<DSUOperationHandler>}
+ *
+ * @memberOf core.repository.registry
+ */
 export class DSUOperationRegistry implements IRegistry<DSUOperationHandler>{
     private cache: { [indexer: string]: any } = {};
 
+    /**
+     * Retrieves a {@link DSUOperationHandler}
+     *
+     * @param {string} targetName the {@link DSUModel}'s name
+     * @param {string} propKey the {@link DSUModel}'s property name
+     * @param {string} operation the {@link DBOpe}
+     * @param {string} phase
+     */
     get<DSUOperationHandler>(targetName: string, propKey: string, operation: string, phase: string): DSUOperationHandler | undefined {
         try{
             return this.cache[targetName][propKey][operation][phase];

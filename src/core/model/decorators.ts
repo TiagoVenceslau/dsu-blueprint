@@ -116,7 +116,7 @@ export type DSUClassCreationMetadata = {
  * @prop {boolean} [batchMode] defaults to true. decides if batchMode is meant to be used for this DSU
  * @prop {string[]} [props] any object properties that must be passed to the KeySSI generation function (eg: for Array SSIs)
  *
- * @function
+ * @function DSUBlueprint
  *
  * @category Decorators
  * @memberOf core.model

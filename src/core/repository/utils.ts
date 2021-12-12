@@ -9,8 +9,7 @@ import {
 import {DsuKeys, DSUModel, DSUOperation} from "../model";
 import {
     DSU,
-    getKeySSIApi,
-    WalletDsu,
+    getKeySSIApi
 } from "../opendsu";
 import {
     all,
@@ -28,7 +27,8 @@ import {
 import {getDSUOperationsRegistry} from "./registry";
 import {ModelKeys} from "@tvenceslau/decorator-validation/lib";
 import {DSUCache} from "./cache";
-import {KeySSI, KeySSIType} from "../opendsu/apis/keyssi";
+import {KeySSI} from "../opendsu/apis/keyssi";
+
 
 /**
  * Util method that handles the {@link DSU}'s batch operation close
@@ -38,8 +38,9 @@ import {KeySSI, KeySSIType} from "../opendsu/apis/keyssi";
  * @param {any[]} args
  *      The last arg will be considered to be the {@link Callback};
  *
+ * @function batchCallback
  * 
- * @namespace repository
+ * @memberOf core.repository
  */
 export function batchCallback(err: Err, dsu: DSU, ...args: any[]){
     const callback: Callback = args.pop();
@@ -59,6 +60,16 @@ export function batchCallback(err: Err, dsu: DSU, ...args: any[]){
     }) : callback(undefined, ...args);
 }
 
+/**
+ * util method to safely parse a KeySSI string
+ *
+ * @param {string} keySSI
+ * @param {Callback} callback
+ *
+ * @function safeParseKeySSI
+ *
+ * @memberOf core.repository
+ */
 export function safeParseKeySSI(keySSI: string, callback: Callback){
     let key: KeySSI;
     try{
@@ -77,8 +88,9 @@ export function safeParseKeySSI(keySSI: string, callback: Callback){
  * @param {DSUCache<T> | undefined} [dsuCache] undefined for new transactions, inherited otherwise
  * @param {any[] | DSUCallback[]} keyGenArgs key generation args when required (for Array SSIs for instance). The last arg will be considered to be the {@link DSUCallback<T>};
  *
- * 
- * @namespace repository
+ * @function createFromDecorators
+ *
+ * @memberOf core.repository
  */
 export function createFromDecorators<T extends DSUModel>(this: OpenDSURepository<T>, model: T, dsuCache: DSUCache<T> | undefined, ...keyGenArgs: (any | DSUCallback<T>)[]){
     const callback: DSUCallback<T> = keyGenArgs.pop();
@@ -137,8 +149,9 @@ export function createFromDecorators<T extends DSUModel>(this: OpenDSURepository
  * @param {string[]} [args] parameters to be passed to the KeyGeneration Function, after the ones originated from the {@link DSUModel}'s properties, as defined in the {@link DSUBlueprint}
  *       The last arg will be considered to be the {@link DSUCallback<T>};
  *
- * 
- * @namespace repository
+ * @function handleDSUClassDecorators
+ *
+ * @memberOf core.repository
  */
 export function handleDSUClassDecorators<T extends DSUModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, model: T, operation: string = OperationKeys.CREATE, ...args: (any | DSUCallback<T>)[]){
     const callback: DSUCallback<T> = args.pop();
@@ -174,8 +187,10 @@ export function handleDSUClassDecorators<T extends DSUModel>(this: OpenDSUReposi
  * @param {string} [phase]
  * @return {{creation: DSUCreationDecorator[], editing: DSUEditDecorator[]}} split decorators
  *
- * 
- * @namespace repository
+ *
+ * @function splitDSUDecorators
+ *
+ * @memberOf core.repository
  */
 export function splitDSUDecorators<T extends DSUModel>(model: T, phase: string = OperationKeys.CREATE) : {creation?: DSUCreationDecorator[], editing?: DSUEditDecorator[]} | undefined{
     const propDecorators: {[indexer: string]: any[]} | undefined = getAllPropertyDecorators<T>(model as T, DsuKeys.REFLECT);
@@ -213,8 +228,8 @@ export function splitDSUDecorators<T extends DSUModel>(model: T, phase: string =
 /**
  * Util type to describe the results of DSU creation operations
  *
- * @type DSUCreationResults
- * @namespace repository
+ * @typedef DSUCreationResults
+ * @memberOf core.repository
  */
 export type DSUCreationResults = {[indexer: string]: {model: DSUModel, dsu: DSU, keySSI: KeySSI}[]};
 
@@ -227,8 +242,10 @@ export type DSUCreationResults = {[indexer: string]: {model: DSUModel, dsu: DSU,
  * @param {any[]} [args]
  *       The last arg will be considered to be the {@link DSUMultipleCallback<T>};
  *
- * 
- * @namespace repository
+ *
+ * @function handleDSUCreationPropertyDecorators
+ *
+ * @memberOf core.repository
  */
 export function handleCreationPropertyDecorators<T extends DSUModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, model: T, decorators: DSUDecorator[], ...args: (any | DSUMultipleCallback<T>)[]){
     const callback: DSUMultipleCallback<DSUModel> = args.pop();
@@ -277,7 +294,7 @@ export function handleCreationPropertyDecorators<T extends DSUModel>(this: OpenD
 
 /**
  * given a chain like 'a.b.c', and a model:
- * <pre>
+ * @example
  *     {
  *         a: {
  *             b: {
@@ -285,13 +302,18 @@ export function handleCreationPropertyDecorators<T extends DSUModel>(this: OpenD
  *             }
  *         }
  *     }
- * </pre>
  *
  * this method will return "value"
  *
  * @param {{}} model
  * @param {string[]} chains
+ *
+ * @returns {any[]}
  * @throws CriticalError if the value is not found in the object
+ *
+ * @function getValueFromValueChain
+ *
+ * @memberOf core.repository
  */
 export function getValueFromValueChain(model: {[indexer: string]: any}, ...chains: string[]): any[]{
     return chains.map(c => {
@@ -325,9 +347,13 @@ export function getValueFromValueChain(model: {[indexer: string]: any}, ...chain
  *     }
  * </pre>
  *
- * @param obj
- * @param chain
- * @param value
+ * @param {{}} obj
+ * @param {string} chain
+ * @param {any} value
+ *
+ * @function createObjectTovalueChain
+ *
+ * @memberOf core.repository
  */
 export function createObjectToValueChain(obj: {[indexer: string]: any}, chain: string, value: any): {} {
     const split = chain.split(".");
@@ -355,8 +381,10 @@ export function createObjectToValueChain(obj: {[indexer: string]: any}, chain: s
  * @param {any[]} [args]
  *       The last arg will be considered to be the {@link DSUCallback<T>};
  *
- * 
- * @namespace repository
+ *
+ * @function handleEditingPropertyDecorators
+ *
+ * @memberOf core.repository
  */
 export function handleEditingPropertyDecorators<T extends DSUModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, model: T | {[indexer: string]: any}, dsu: DSU, decorators: DSUEditDecorator[], phase: string = OperationKeys.CREATE, ...args: (any | DSUCallback<T>)[]){
     const callback: DSUCallback<T> = args.pop();
@@ -429,6 +457,21 @@ export function handleEditingPropertyDecorators<T extends DSUModel>(this: OpenDS
     });
 }
 
+/**
+ * Will update a {@link DSU} based on the definitions of the {@link DSUBlueprint}
+ *
+ * @param {DSUCache} dsuCache
+ * @param {T} model {@link DSUBlueprint} decorated {@link DSUModel}
+ * @param {T} oldModel {@link DSUBlueprint} decorated {@link DSUModel}
+ * @param {DSU} dsu
+ * @param {DSUDecorator[]} decorators
+ * @param {string[]} [args] parameters to be passed to the KeyGeneration Function, after the ones originated from the {@link DSUModel}'s properties, as defined in the {@link DSUBlueprint}
+ *       The last arg will be considered to be the {@link DSUMultipleCallback<T>};
+ *
+ * @function handleUpdateCreationPropertyDecorator
+ *
+ * @memberOf core.repository
+ */
 export function handleUpdateCreationPropertyDecorator<T extends DSUModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, model: T, oldModel: T, dsu: DSU, decorators: DSUDecorator[], ...args: (any | DSUMultipleCallback<T>)[]){
     const callback: DSUMultipleCallback<DSUModel> = args.pop();
     if (!callback)
@@ -473,6 +516,17 @@ export function handleUpdateCreationPropertyDecorator<T extends DSUModel>(this: 
     });
 }
 
+/**
+ * Will read a {@link DSU} based on the definitions of the {@link DSUBlueprint} and output a {@link DSUModel}
+ *
+ * @param {DSU} dsu
+ * @param {string[]} [args] parameters to be passed to the KeyGeneration Function, after the ones originated from the {@link DSUModel}'s properties, as defined in the {@link DSUBlueprint}
+ *       The last arg will be considered to be the {@link DSUCallback<T>};
+ *
+ * @function readFromDecorators
+ *
+ * @memberOf core.repository
+ */
 export function readFromDecorators<T extends DSUModel>(this: OpenDSURepository<T>, dsu: DSU, ...args: (any | DSUCallback<T>)[]){
     const callback: DSUCallback<T> = args.pop();
     if (!callback)
@@ -503,6 +557,20 @@ export function readFromDecorators<T extends DSUModel>(this: OpenDSURepository<T
     });
 }
 
+/**
+ * Will update a {@link DSU} based on the definitions of the {@link DSUBlueprint}
+ *
+ * @param {T} model {@link DSUBlueprint} decorated {@link DSUModel}
+ * @param {T} oldModel {@link DSUBlueprint} decorated {@link DSUModel}
+ * @param {DSU} dsu
+ * @param {DSUCache} dsuCache
+ * @param {string[]} [args] parameters to be passed to the KeyGeneration Function, after the ones originated from the {@link DSUModel}'s properties, as defined in the {@link DSUBlueprint}
+ *       The last arg will be considered to be the {@link DSUCallback<T>};
+ *
+ * @function updateFromDecorators
+ *
+ * @memberOf core.repository
+ */
 export function updateFromDecorators<T extends DSUModel>(this: OpenDSURepository<T>, model: T, oldModel: T, dsu: DSU, dsuCache: DSUCache<T>, ...args: (any | DSUCallback<T>)[]){
     const callback: DSUCallback<T> = args.pop();
     if (!callback)
@@ -536,14 +604,4 @@ export function updateFromDecorators<T extends DSUModel>(this: OpenDSURepository
             });
         });
     });
-}
-
-export function handleDSUTypes(keySSIType: KeySSIType, dsu: DSU): DSU {
-    switch (keySSIType) {
-        case KeySSIType.WALLET:
-            const wallet = dsu as WalletDsu;
-            return wallet.getWritableDSU() as DSU;
-        default:
-            return dsu as DSU;
-    }
 }

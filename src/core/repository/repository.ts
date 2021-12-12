@@ -9,34 +9,67 @@ import {
 import {DSU} from "../opendsu/types";
 import {createFromDecorators, readFromDecorators, safeParseKeySSI, updateFromDecorators} from "./utils";
 import DBModel from "@tvenceslau/db-decorators/lib/model/DBModel";
-import {repository} from "@tvenceslau/db-decorators/lib/repository/decorators";
 import {getResolverApi} from "../opendsu";
 import ModelErrorDefinition from "@tvenceslau/decorator-validation/lib/Model/ModelErrorDefinition";
 import {getModelRegistry} from "@tvenceslau/decorator-validation/lib";
 import {DSUCache, isDSUCache} from "./cache";
 import {KeySSI} from "../opendsu/apis/keyssi";
 
+
+/**
+ * @typedef DSUKey
+ * @memberOf core.repository
+ */
 export type DSUKey = string | KeySSI;
 
+/**
+ * @typedef T extends DBModel
+ * @typedef DSUCallback<T>
+ * @memberOf core.repository
+ */
 export type DSUCallback<T extends DBModel> = (err?: Err, model?: T, dsu?: DSU, ...args: any[]) => void;
 
+/**
+ * @typedef ReadCallback
+ * @memberOf core.repository
+ */
 export type ReadCallback = (err?: Err, model?: {[indexer: string]: any}, dsu?: DSU, keySSI?: KeySSI, ...args: any[]) => void;
 
+/**
+ * @typedef DSUMultipleCallback
+ * @memberOf core.repository
+ */
 export type DSUMultipleCallback<T extends DBModel> = (err?: Err, model?: T[], dsu?: DSU[], keySSI?: KeySSI[], ...args: any[]) => void;
 
+/**
+ * @typedef DSUDecorator Union of {@link DSUCreationDecorator} with {@link DSUEditDecorator}
+ * @memberOf core.repository
+ */
 export type DSUDecorator = DSUCreationDecorator | DSUEditDecorator;
 
+/**
+ * @typedef DSUCreationDecorator
+ * @memberOf core.repository
+ */
 export type DSUCreationDecorator = {
     key: string,
     prop: string,
     props: DSUCreationMetadata
 }
 
+/**
+ * @typedef DSUEditDecorator
+ * @memberOf core.repository
+ */
 export type DSUEditDecorator = {
     key: string,
     prop: string,
     props: DSUEditMetadata
 }
+
+/**
+ * @typedef T extends DSUModel
+ */
 
 /**
  * Provide the Base implementation to a global single OpenDSU Repository implementation
@@ -49,7 +82,8 @@ export type DSUEditDecorator = {
  * @typedef T extends DSUModel
  * @class OpenDSURepository<T>
  * @extends AsyncRepositoryImp<T>
- * @namespace repository
+ *
+ * @memberOf core.repository
  */
 export class OpenDSURepository<T extends DSUModel> extends AsyncRepositoryImp<T>{
     protected fallbackDomain: string;
@@ -68,10 +102,13 @@ export class OpenDSURepository<T extends DSUModel> extends AsyncRepositoryImp<T>
     }
 
     /**
-     * Creates the corresponding {@link DSU} from the provided {@link DSUModel}
+     * Creates the corresponding {@link DSU} from the provided {@link DSUBlueprint} decorated {@link DSUModel}
+     *
      * @param {T} model the {@link DSUModel}
      * @param {DSUCache} [dsuCache] if building during a nested transaction, the dsuCache needs to be passed along
      * @param {any[]} [args]
+     *
+     * @methodOf OpenDSURepository
      */
     // @ts-ignore
     create(model?: T, dsuCache?: DSUCache<T> | any, ...args: any[]): void {
@@ -105,11 +142,21 @@ export class OpenDSURepository<T extends DSUModel> extends AsyncRepositoryImp<T>
      * Override to disable the key param on {@link AsyncRepositoryImp#createPrefix} method
      * @see AsyncRepositoryImp#createPrefix
      * @override
+     *
+     * @methodOf OpenDSURepository
      */
     createPrefix(model?: T, ...args: any[]){
         super.createPrefix(undefined, model, ...args);
     }
 
+    /**
+     * Deletes the corresponding {@link DSU} from the provided {@link DSUBlueprint} decorated {@link DSUModel}
+     *
+     * @param {DSUKey} key
+     * @param {any[]} args
+     *
+     * @methodOf OpenDSURepository
+     */
     delete(key?: DSUKey, ...args: any[]): void {
         const callback: DSUCallback<T> = args.pop();
         if (!callback)
@@ -122,6 +169,14 @@ export class OpenDSURepository<T extends DSUModel> extends AsyncRepositoryImp<T>
                 : self.delete.call(self, key, ...args, callback));
     }
 
+    /**
+     * Reads the corresponding {@link DSU} from the provided {@link DSUBlueprint} decorated {@link DSUModel}
+     *
+     * @param {DSUKey} key
+     * @param {any[]} args
+     *
+     * @methodOf OpenDSURepository
+     */
     read(key?: DSUKey, ...args: any[]): void {
         const callback: DSUCallback<T> = args.pop();
         if (!callback)
@@ -148,6 +203,16 @@ export class OpenDSURepository<T extends DSUModel> extends AsyncRepositoryImp<T>
         });
     }
 
+    /**
+     * Updates the corresponding {@link DSU} from the provided {@link DSUBlueprint} decorated {@link DSUModel}
+     *
+     * @param {DSUKey} key
+     * @param {T} model the {@link DSUModel}
+     * @param {DSUCache} [dsuCache] if building during a nested transaction, the dsuCache needs to be passed along
+     * @param {any[]} [args]
+     *
+     * @methodOf OpenDSURepository
+     */
     update(key?: DSUKey, model?: T, dsuCache?: DSUCache<T> | any, ...args: any[]): void {
         if (!isDSUCache(dsuCache)){
             args.unshift(dsuCache);
@@ -187,6 +252,14 @@ export class OpenDSURepository<T extends DSUModel> extends AsyncRepositoryImp<T>
     }
 }
 
+/**
+ * @class OpenDSURepositoryDeterministic<T>
+ * @extends AsyncRepositoryImp<T>
+ *
+ * @memberOf core.repository
+ *
+ * @deprecated
+ */
 export abstract class OpenDSURepositoryDeterministic<T extends DSUModel> extends OpenDSURepository<T>{
 
     abstract generateKey(model: T, ...args: any[]): KeySSI;

@@ -1,3 +1,8 @@
+/**
+ * @namespace core.repository
+ */
+
+
 export * from './repository';
 export * from './cache';
 export * from './utils';

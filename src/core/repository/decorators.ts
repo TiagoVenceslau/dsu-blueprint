@@ -8,6 +8,10 @@ import {DSU, DSUIOOptions} from "../opendsu";
 import {criticalCallback, OperationKeys, warn} from "@tvenceslau/db-decorators/lib";
 import {getDSUOperationsRegistry} from "./registry";
 
+/**
+ * @namespace core.repository.decorators
+ * @memberOf core.repository
+ */
 
 /**
  * @typedef T extends DSUModel
@@ -16,9 +20,11 @@ import {getDSUOperationsRegistry} from "./registry";
  * @param {string} [mountPath] defines the mount path. defaults to the property key
  * @param {DSUIOOptions} [mountOptions] options to be passed to OpenDSU for the mounting operation
  *
- * @decorator fromCache
- * @namespace decorators
- * @memberOf model
+ * @function fromCache
+ *
+ * @category decorators
+ *
+ * @memberOf core.repository.decorators
  */
 export function fromCache<T extends DSUModel>(model: {new(): T}, derive: boolean | number = false, mountPath?: string, mountOptions?: DSUIOOptions) {
     return (target: T, propertyKey: string) => {
@@ -63,9 +69,11 @@ export function fromCache<T extends DSUModel>(model: {new(): T}, derive: boolean
 /**
  * Defines a class as a DSU Repository (makes it injectable)
  *
- * @decorator dsuRepository
- * @namespace decorators
- * @memberOf model
+ * @function dsuRepository
+ *
+ * @category decorators
+ *
+ * @memberOf core.repository.decorators
  */
 export function dsuRepository(...args: any[]){
     return (original: Function) => {
