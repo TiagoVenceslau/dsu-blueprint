@@ -6,12 +6,6 @@ import {HttpApi} from "./apis/http";
 import {BdnsApi, ConfigApi, ConstantsApi, CrypoApi, DBApi, EnclaveApi, SecurityContextApi, SystemApi} from "./apis";
 import {loadDefaultKeySSIFactories} from "./factory";
 
-/**
- * Handles the integration with the OpenDSU Framework
- * @namespace OpenDSU
- * @memberOf dsu-blueprint
- */
-
 let openDSU: OpenDSU;
 
 /**
@@ -19,7 +13,7 @@ let openDSU: OpenDSU;
  *
  * @return OpenDSU the {@link OpenDSU} object;
  * @throws {CriticalError} when it fails to load
- * @namespace OpenDSU
+ * @namespace memberOf core.opendsu
  */
 export function getOpenDSU(): OpenDSU {
     if (!openDSU){

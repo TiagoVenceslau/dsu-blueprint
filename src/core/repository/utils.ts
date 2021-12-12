@@ -143,8 +143,6 @@ export function createFromDecorators<T extends DSUModel>(this: OpenDSURepository
     });
 }
 
-
-
 /**
  * Will create a {@link DSU} based on the definitions of the {@link DSUBlueprint}
  *
@@ -290,12 +288,13 @@ export function handleCreationPropertyDecorators<T extends DSUModel>(this: OpenD
         if (args)
             keyGenArgs.push(...args);
 
-        all(`[{0}] - calling DSU Property Creation Handler for model {1}'s {2} property`, self.constructor.name, model, decorator.prop);
+        all(`[{0}] - ${ !isPreparation ? `calling DSU Property Creation Handler` : "setting up preparations"} for model {1}'s {2} property`, self.constructor.name, model, decorator.prop);
         handler.call(self, isPreparation ? dsuCache : dsuCache.bindToParent(model, decorator.prop), isPreparation ? model : model[decorator.prop], decorator.props, ...keyGenArgs, (err: Err, newModel?: DSUModel, dsu?: DSU, keySSI?: KeySSI) => {
-            if (err || !newModel || !dsu || !keySSI)
+            if (err || !newModel || (!isPreparation && (!dsu || !keySSI)))
                 return criticalCallback(err || new Error(`Missing Results`), callback);
 
-            dsuCache.cache(model, decorator.prop, dsu, keySSI)
+            if (!isPreparation)
+                dsuCache.cache(model, decorator.prop, dsu as DSU, keySSI as KeySSI)
             all(`[{0}] - DSU Property Creation Handler for model {1}'s {2} property finished`, self.constructor.name, model.constructor.name, decorator.prop);
             decoratorIterator(decoratorsCopy, callback);
         });

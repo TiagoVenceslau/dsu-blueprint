@@ -2,8 +2,7 @@
  * Environment Types
  *
  * @interface EnvironmentTypes
- * @namespace OpenDSU.api.constants
- * @memberOf OpenDSU.api
+ * @memberOf core.opendsu.api.constants
  */
 export interface EnvironmentTypes {
     /**
@@ -40,7 +39,7 @@ export interface EnvironmentTypes {
  * Interface representing the OpenDSU Constants
  *
  * @interface ConstantsApi
- * @memberOf OpenDSU.api
+ * @memberOf core.opendsu.api.constants
  */
 export interface ConstantsApi {
     /**

@@ -55,7 +55,7 @@ export interface WebService {
  *
  * @memberOf core.web
  */
-export function mergeWebServiceOptions(options?: WebServiceOptions): WebServiceOptions {
+export function mergeWebServiceOptions(options?: WebServiceOptions | {}): WebServiceOptions {
     return Object.assign({},
         {
             hosts: getSystemApi().getBaseURL(),
@@ -83,7 +83,7 @@ export class WebServiceImp implements WebService {
      *
      * @constructor
      */
-    constructor(options?: WebServiceOptions){
+    constructor(options?: WebServiceOptions | {}){
         this.options = mergeWebServiceOptions(options);
         this.isBrowser = get$$().environmentType === getConstantsApi().ENVIRONMENT_TYPES.BROWSER_ENVIRONMENT_TYPE;
     }
@@ -109,7 +109,7 @@ export class WebServiceImp implements WebService {
             url = `${protocol}//${host}/${prefix}${appName}`;
             return url;
         } else {
-            return `http://${this.options.hosts}/${prefix}${this.options.walletPath}`;
+            return `${this.options.hosts}/${prefix}${this.options.walletPath}`;
         }
     }
 
@@ -221,12 +221,9 @@ let activeWebService: WebService;
  *
  * @memberOf core.web
  */
-export function getWebService(options?: WebServiceOptions): WebService {
+export function getWebService(options?: WebServiceOptions | {}): WebService {
     if (!activeWebService)
-        if (options)
             activeWebService = new WebServiceImp(options);
-        else
-            throw new CriticalError('No Options Supplied');
     return activeWebService;
 }
 

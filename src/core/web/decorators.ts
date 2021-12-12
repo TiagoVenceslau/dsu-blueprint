@@ -98,7 +98,9 @@ export function fromWeb(appOrUrl: string, slot: "primary" | "secondary" | undefi
         const createHandler: DSUPreparationHandler = function<T extends DSUModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, model: T, decorator: DSUPreparationMetadata, callback: ModelCallback<T>): void {
             const {prop, appName, slot} = decorator;
 
-            const webService = getWebService();
+            const webService = getWebService({
+                walletPath: appName
+            });
 
             const urlValidator = getValidatorRegistry().get(ValidationKeys.URL) as URLValidator || new URLValidator();
 
@@ -108,8 +110,8 @@ export function fromWeb(appOrUrl: string, slot: "primary" | "secondary" | undefi
                 return criticalCallback(new Error(`App name supplied with no slot`), callback);
 
             const method = errs
-                ? (slot === 'secondary' ? (callback: Callback) => webService.getAppSeed(appName, callback) : webService.getWalletSeed)
-                : (callback: Callback) => getWebService().doGet(appName, undefined, callback);
+                ? (slot === 'secondary' ? (callback: Callback) => webService.getAppSeed.call(webService, appName, callback) : webService.getWalletSeed.bind(webService))
+                : (callback: Callback) => webService.doGet.call(webService, appName, undefined, callback);
 
             method((err: Err, ssi?: any) => {
                 if (err || !ssi)

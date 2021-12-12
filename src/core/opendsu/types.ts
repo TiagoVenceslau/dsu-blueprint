@@ -1,6 +1,6 @@
 import {Err} from "@tvenceslau/db-decorators/lib";
 import { HttpApi } from "./apis/http";
-import {KeyssiApi, KeySSICallback} from "./apis/keyssi";
+import {KeySSI, KeyssiApi, KeySSICallback} from "./apis/keyssi";
 import { ResolverApi } from "./apis/resolver";
 import { SystemApi } from "./apis/system";
 import {SecurityContextApi} from "./apis/sc";
@@ -23,13 +23,30 @@ import {M2DsuApi} from "./apis/m2dsu";
 import {StorageApi} from "./apis/storage";
 import {ConstantsApi} from "./apis";
 
+/**
+ * @typedef ObjectCallback
+ * @memberOf core.opendsu
+ */
 export type ObjectCallback = (err?: Err, object?: any) => void;
+/**
+ * @typedef ErrCallback
+ * @memberOf core.opendsu
+ */
 export type ErrCallback = (err?: Err) => void;
-
+/**
+ * @typedef GenericCallback
+ * @memberOf core.opendsu
+ */
 export type GenericCallback<T> = (err?: Err, result?: T, ...args: any[]) => void;
-
+/**
+ * @typedef SimpleDSUCallback
+ * @memberOf core.opendsu
+ */
 export type SimpleDSUCallback = GenericCallback<DSU>;
-
+/**
+ * @typedef DSUIOOptions
+ * @memberOf core.opendsu
+ */
 export type DSUIOOptions = {
     embedded?: boolean,
     encrypt?: boolean,
@@ -37,10 +54,18 @@ export type DSUIOOptions = {
     recursive?: boolean
 }
 
+/**
+ * @typedef DSUAnchoringOptions
+ * @memberOf core.opendsu
+ */
 export type DSUAnchoringOptions = {
     dsuTypeSSI?: string
 }
 
+/**
+ * @constant
+ * @memberOf core.opendsu
+ */
 export const DefaultIOOptions: DSUIOOptions = {
     embedded: false,
     encrypt: true,
@@ -48,15 +73,48 @@ export const DefaultIOOptions: DSUIOOptions = {
     recursive: true
 }
 
+/**
+ * @interface
+ * @memberOf core.opendsu
+ */
 export interface DSUHandler{}
-export interface DSUFactory{}
-
+/**
+ * @interface
+ * @memberOf core.opendsu
+ */
+export interface DSUFactory{
+    create(keySSI: KeySSI, options: DSUIOOptions, callback: SimpleDSUCallback): void;
+    load(keySSI: KeySSI, options: DSUIOOptions, callback: SimpleDSUCallback): void
+}
+/**
+ * @typedef IoOptionsOrCallback
+ * @memberOf core.opendsu
+ */
 export type IoOptionsOrCallback<T> = DSUIOOptions | GenericCallback<T>;
+/**
+ * @typedef IoOptionsOrErrCallback
+ * @memberOf core.opendsu
+ */
 export type IoOptionsOrErrCallback = DSUIOOptions | ErrCallback;
+/**
+ * @typedef IoOptionsOrDSUCallback
+ * @memberOf core.opendsu
+ */
 export type IoOptionsOrDSUCallback = DSUIOOptions | SimpleDSUCallback;
-
+/**
+ * @typedef AnchoringOptsOrCallback
+ * @memberOf core.opendsu
+ */
 export type AnchoringOptsOrCallback<T> = DSUAnchoringOptions | GenericCallback<T>;
+/**
+ * @typedef AnchoringOptsOrErrCallback
+ * @memberOf core.opendsu
+ */
 export type AnchoringOptsOrErrCallback = DSUAnchoringOptions | ErrCallback;
+/**
+ * @typedef AnchoringOptsOrDSUCallback
+ * @memberOf core.opendsu
+ */
 export type AnchoringOptsOrDSUCallback = DSUAnchoringOptions | SimpleDSUCallback;
 
 
@@ -64,7 +122,7 @@ export type AnchoringOptsOrDSUCallback = DSUAnchoringOptions | SimpleDSUCallback
  * Exposes an interface with the OpenDSU Archive APi
  *
  * @interface
- * @namespace OpenDSU
+ * @memberOf core.opendsu
  */
 export interface DSU {
     directAccessEnabled: boolean;
@@ -117,7 +175,7 @@ export interface DSU {
  * Exposes an interface with the OpenDSU WalletDSU APi
  *
  * @interface
- * @namespace OpenDSU
+ * @memberOf core.opendsu
  */
 export interface WalletDsu extends DSU {
     getWritableDSU(): DSU;
@@ -128,7 +186,7 @@ export interface WalletDsu extends DSU {
  * Exposes an interface with the OpenDSU APi
  *
  * @interface
- * @namespace OpenDSU
+ * @memberOf core.opendsu
  */
 export interface OpenDSU {
     constants: ConstantsApi;
@@ -140,6 +198,6 @@ export interface OpenDSU {
  * Exposes an Union Type will all mapped OpenDSU Apis
  *
  * @type OpenDSUApi
- * @namespace OpenDSU
+ * @memberOf core.opendsu
  */
 export type OpenDSUApi = StorageApi | M2DsuApi | MessageQueueApi | NotificationsApi | OAuthApi | OpenDSUWorkersApi | OpenDSUUtilsApi | AnchoringApi | ErrorApi | ResolverApi | KeyssiApi | SystemApi | HttpApi | SecurityContextApi | W3cDIDApi | DBApi | EnclaveApi | BdnsApi | ConfigApi | CacheApi | ContractsApi | CrypoApi;

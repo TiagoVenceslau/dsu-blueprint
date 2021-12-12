@@ -1,6 +1,6 @@
 /**
- * @namespace OpenDSU.api
- * @memberOf OpenDSU
+ * @namespace core.opendsu.api
+ * @memberOf core.opendsu
  */
 
 
