@@ -1,5 +1,4 @@
 import {DSUOperationHandler} from "./types";
-import {DSU} from "../opendsu";
 import {OpenDSURepository} from "./repository";
 import {DSUModel} from "../model";
 import {IRegistry} from "@tvenceslau/decorator-validation/lib/utils/registry";
@@ -29,6 +28,7 @@ export class DSUOperationRegistry implements IRegistry<DSUOperationHandler>{
      * @param {string} propKey the {@link DSUModel}'s property name
      * @param {string} operation the {@link DBOpe}
      * @param {string} phase
+     * @return DSUOperationHandler | undefined
      */
     get<DSUOperationHandler>(targetName: string, propKey: string, operation: string, phase: string): DSUOperationHandler | undefined {
         try{
@@ -40,6 +40,15 @@ export class DSUOperationRegistry implements IRegistry<DSUOperationHandler>{
         }
     }
 
+    /**
+     * Registers a {@link DSUOperationHandler}
+     *
+     * @param {DSUOperationHandler} handler
+     * @param {string} operation on of {@link DBKeys}
+     * @param {DSUOperation} phase
+     * @param {any} target
+     * @param {string} propKey
+     */
     register<DSUOperationHandler>(handler: DSUOperationHandler, operation: string, phase: string, target: { [indexer: string]: any }, propKey: string | symbol): void {
         const name = target.constructor.name;
         if (!this.cache[name])
@@ -61,9 +70,11 @@ let actingDSUOperationsRegistry: IRegistry<DSUOperationHandler>;
 
 /**
  * Returns the current {@link DSUOperationRegistry}
+ *
+ * @function getDSUOperationSRegistry
  * 
  * @return IRegistry<DSUOperationHandler>, defaults to {@link DSUOperationRegistry}
- * @memberOf repository
+ * @memberOf core.repository.registry
  */
 export function getDSUOperationsRegistry(): IRegistry<DSUOperationHandler> {
     if (!actingDSUOperationsRegistry)
@@ -75,63 +86,42 @@ export function getDSUOperationsRegistry(): IRegistry<DSUOperationHandler> {
  * Returns the current DSUOperationsRegistry
  * 
  * @prop {IRegistry<DSUOperationHandler>} dsuOperationsRegistry the new implementation of Registry
- * @memberOf repository
+ *
+ * @function setDSUOperationsRegistry
+ *
+ * @memberOf core.repository.registry
  */
 export function setDSUOperationsRegistry(operationsRegistry: IRegistry<DSUOperationHandler>){
     actingDSUOperationsRegistry = operationsRegistry;
 }
 
-export class DSURegistry implements IRegistry<DSU>{
-    private cache: { [indexer: string]: any } = {};
-
-    get<DSU>(name: string): DSU | undefined {
-        try{
-            return this.cache[name].dsu;
-        } catch (e: any){
-            all(e);
-            return undefined;
-        }
-    }
-
-    register<DSU>(dsu: DSU, name: string): void {
-        if (!this.cache[name])
-            this.cache[name] = {
-                dsu: dsu
-            };
-    }
-}
-
-let actingDSURegistry: IRegistry<DSU>;
-
 /**
- * Returns the current {@link DSURegistry}
- * 
- * @return IRegistry<DSUOModel>, defaults to {@link DSURegistry}
- * @memberOf repository
+ * @typedef OpenDSURepo
+ * @memberOf core.repository.registry
  */
-export function getDSURegistry(): IRegistry<DSU> {
-    if (!actingDSURegistry)
-        actingDSUOperationsRegistry = new DSURegistry();
-    return actingDSURegistry;
-}
-
-/**
- * Returns the current DSURegistry
- * 
- * @prop {IRegistry<DSU>} dsuOperationsRegistry the new implementation of Registry
- * @memberOf repository
- */
-export function setDSURegistry(dsuRegistry: IRegistry<DSU>){
-    actingDSURegistry = dsuRegistry;
-}
-
 export type OpenDSURepo = OpenDSURepository<DSUModel>;
-
+/**
+ * @typedef OpenDSURepoFactory
+ * @memberOf core.repository.registry
+ */
 export type OpenDSURepoFactory = {new(): OpenDSURepo}
 
+/**
+ * @class RepositoryRegistry
+ *
+ * @implements IRegistry
+ *
+ * @memberOf core.repository.registry
+ */
 export class RepositoryRegistry implements IRegistry<OpenDSURepo>{
     private cache: { [indexer: string]: any } = {};
 
+    /**
+     * Retrieves an {@link OpenDSURepo}
+     *
+     * @param {{new: DSUModel}} clazz
+     * @return {OpenDSURepo | undefined}
+     */
     get<OpenDSURepo>(clazz: {new(): DSUModel} | string): OpenDSURepo | undefined {
         const name = typeof clazz === 'string' ? clazz : (clazz.constructor ? clazz.constructor.name : clazz.name);
         try{
@@ -141,6 +131,13 @@ export class RepositoryRegistry implements IRegistry<OpenDSURepo>{
         }
     }
 
+    /**
+     * Instantiates an {@link OpenDSURepo}
+     *
+     * @param {{new: DSUModel}} clazz
+     * @param {OpenDSURepoFactory} [repo]
+     * @private
+     */
     private instantiateRepo(clazz: {new(): DSUModel}, repo?: OpenDSURepoFactory): OpenDSURepository<DSUModel>{
         const name = clazz.constructor ? clazz.constructor.name : clazz.name;
         try {
@@ -155,6 +152,12 @@ export class RepositoryRegistry implements IRegistry<OpenDSURepo>{
         }
     }
 
+    /**
+     *
+     * @param {{new: DSUModel} | Function | string} clazz
+     * @param {OpenDSURepoFactory} [repo]
+     * @param {boolean} [isCustom] defaults to false
+     */
     // @ts-ignore
     register<OpenDSURepo>(clazz: {new(): DSUModel} | string | Function, repo?: OpenDSURepoFactory, isCustom: boolean = false): void {
         const name = typeof clazz === 'string' ? clazz : (clazz.constructor && clazz.constructor.name !== 'Function' ? clazz.constructor.name : clazz.name);
@@ -172,7 +175,10 @@ let actingRepoRegistry: RepositoryRegistry;
  * Returns the current {@link IRegistry<OpenDSURepo>y}
  * 
  * @return RepositoryRegistry
- * @memberOf repository
+ *
+ * @function getRepoRegistry
+ *
+ * @memberOf core.repository.registry
  */
 export function getRepoRegistry(): RepositoryRegistry {
     if (!actingRepoRegistry)
@@ -184,7 +190,10 @@ export function getRepoRegistry(): RepositoryRegistry {
  * Returns the current DSURegistry
  * 
  * @prop {RepositoryRegistry} dsuOperationsRegistry the new implementation of Registry
- * @memberOf repository
+ *
+ * @function setRepoRegistry
+ *
+ * @memberOf core.repository.registry
  */
 export function setRepoRegistry(repoRegistry: RepositoryRegistry){
     actingRepoRegistry = repoRegistry;

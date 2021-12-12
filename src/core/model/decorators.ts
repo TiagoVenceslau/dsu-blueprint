@@ -340,6 +340,12 @@ export function dsu<T extends DSUModel>(dsu: {new(): T}, derive: boolean | numbe
     }
 }
 
+/**
+ * Metadata passed to {@link DSUEditingHandler}s
+ *
+ * @typedef DSUEditMetadata
+ * @memberOf core.model
+ */
 export type DSUEditMetadata = {
     [indexer: string]: any;
 
@@ -436,10 +442,6 @@ export function mount(mountPath?: string, options?: DSUIOOptions, ...args: any[]
         mountPath = mountPath ? mountPath : propertyKey;
         if (!mountPath)
             throw new CriticalError(`Missing mount path`);
-
-        const keySSI: string | KeySSI | undefined = target[propertyKey];
-        if (!keySSI)
-            throw new CriticalError(`Model does not hold the key under its ${propertyKey} property`);
 
         const metadata: DSUEditMetadata = {
             operation: DSUOperation.EDITING,

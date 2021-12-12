@@ -3,7 +3,6 @@
  *
  * @enum DsuKeys
  *
- * @category Constants
  * @memberOf core.model
  */
 export enum DsuKeys {
@@ -18,7 +17,9 @@ export enum DsuKeys {
 }
 
 /**
- * Describe the 3 distinct stages of a DSUOperation on a {@link DSUBlueprint}:
+ * Describe the 4 distinct stages of a DSUOperation on a {@link DSUBlueprint}:
+ *  - PREPARATION: handles dependencies for the build process:
+ *   - {@link fromWeb}: the the preparation phase retrieves the Seed from the Web, Sets up '@mount' to later perform the mounting operation
  *  - CREATION: handles the creation of all nested {@link DSU}s (typically from the {@link dsu} decorator)
  *  - CLASS: handles the creation of the actual 'end' {@link DSU} (typically from the {@link DSU} decorator)
  *  - EDITING: handles the editing of the end {@link DSU} and all its available operations:
@@ -76,10 +77,10 @@ export enum DsuKeys {
  *       - DSU: the {@link DSU} object
  * @enum DSUOperation
  *
- * @category Constants
  * @memberOf core.model
  */
 export enum DSUOperation {
+    PREPARATION = 'preparation',
     CREATION = "creation",
     CLASS = 'class',
     EDITING = "editing"

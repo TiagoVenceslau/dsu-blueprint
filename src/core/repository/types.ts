@@ -5,6 +5,13 @@ import {DSUClassCreationMetadata, DSUCreationMetadata, DSUEditMetadata, DSUModel
 import {DSUCallback, DSUEditDecorator, OpenDSURepository, ReadCallback} from "./repository";
 import {DSUCache} from "./cache";
 import {ModelCallback} from "@tvenceslau/db-decorators/lib";
+import {DSUPreparationMetadata} from "../web";
+
+/**
+ * @typedef DSUPreparationHandler
+ * @memberOf core.repository
+ */
+export type DSUPreparationHandler = <T extends DSUModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, model: T, decorator: DSUPreparationMetadata, callback: ModelCallback<T>) => void;
 
 /**
  * @typedef DSUCreationHandler
@@ -30,4 +37,4 @@ export type DSUEditingHandler = <T extends DSUModel>(this: OpenDSURepository<T>,
  * @typedef DSUOperationHandler Union of {@link DSUCreationHandler}, {@link DSUEditingHandler}, {@link DSUCreationUpdateHandler} and {@link DSUClassCreationHandler}
  * @memberOf core.repository
  */
-export type DSUOperationHandler = DSUCreationHandler | DSUEditingHandler | DSUCreationUpdateHandler | DSUClassCreationHandler;
+export type DSUOperationHandler = DSUCreationHandler | DSUEditingHandler | DSUCreationUpdateHandler | DSUClassCreationHandler | DSUPreparationHandler;

@@ -97,7 +97,7 @@ export function createFromDecorators<T extends DSUModel>(this: OpenDSURepository
     if (!callback)
         throw new CriticalError(`Missing callback`);
 
-    const splitDecorators: {creation?: DSUCreationDecorator[], editing?: DSUEditDecorator[]} | undefined = splitDSUDecorators<T>(model);
+    const splitDecorators: DSUDecoratorByPhase | undefined = splitDSUDecorators<T>(model);
 
     dsuCache = dsuCache || new DSUCache<T>();
 
@@ -118,27 +118,32 @@ export function createFromDecorators<T extends DSUModel>(this: OpenDSURepository
             batchCallback(undefined, dsu, newModel, dsu, cb);
         });
 
-    const {creation, editing} = splitDecorators;
+    const {creation, editing, preparation} = splitDecorators;
 
-    handleCreationPropertyDecorators.call(this, dsuCache, model, creation || [],  (err: Err) => {
+    handleCreationPropertyDecorators.call(this, dsuCache, model, preparation || [], true, (err: Err) => {
         if (err)
             return callback(err);
+        handleCreationPropertyDecorators.call(this, dsuCache as DSUCache<T>, model, creation || [],  false, (err: Err) => {
+            if (err)
+                return callback(err);
+            handleDSUClassDecorators.call(this, dsuCache as DSUCache<T>, model, OperationKeys.CREATE, ...keyGenArgs, (err: Err, updatedModel?: T, dsu?: DSU, isBatchMode: boolean = false) => {
+                if (err || !updatedModel || !dsu)
+                    return callback(err || new CriticalError("Invalid Results"));
 
-        handleDSUClassDecorators.call(this, dsuCache as DSUCache<T>, model, OperationKeys.CREATE, ...keyGenArgs, (err: Err, updatedModel?: T, dsu?: DSU, isBatchMode: boolean = false) => {
-            if (err || !updatedModel || !dsu)
-                return callback(err || new CriticalError("Invalid Results"));
+                if (isBatchMode)
+                    dsu.beginBatch();
 
-            if (isBatchMode)
-                dsu.beginBatch();
-
-            handleEditingPropertyDecorators.call(this, dsuCache as DSUCache<DSUModel>, updatedModel, dsu, editing || [], OperationKeys.CREATE, (err: Err, otherModel: T) => {
-                if (err || !otherModel)
-                    return batchCallback(err || new Error("Invalid Results"), dsu, cb);
-                batchCallback(undefined, dsu, otherModel, dsu, cb);
+                handleEditingPropertyDecorators.call(this, dsuCache as DSUCache<DSUModel>, updatedModel, dsu, editing || [], OperationKeys.CREATE, (err: Err, otherModel: T) => {
+                    if (err || !otherModel)
+                        return batchCallback(err || new Error("Invalid Results"), dsu, cb);
+                    batchCallback(undefined, dsu, otherModel, dsu, cb);
+                });
             });
         });
     });
 }
+
+
 
 /**
  * Will create a {@link DSU} based on the definitions of the {@link DSUBlueprint}
@@ -182,6 +187,12 @@ export function handleDSUClassDecorators<T extends DSUModel>(this: OpenDSUReposi
 }
 
 /**
+ * @typedef DSUDecoratorByPhase
+ * @memberOf core.repository
+ */
+export type DSUDecoratorByPhase = {creation?: DSUCreationDecorator[], editing?: DSUEditDecorator[], preparation?: DSUCreationDecorator[]}
+
+/**
  * Splits the Attribute decorators between their matching {@link DSUOperation}
  * @param {T} model
  * @param {string} [phase]
@@ -192,11 +203,11 @@ export function handleDSUClassDecorators<T extends DSUModel>(this: OpenDSUReposi
  *
  * @memberOf core.repository
  */
-export function splitDSUDecorators<T extends DSUModel>(model: T, phase: string = OperationKeys.CREATE) : {creation?: DSUCreationDecorator[], editing?: DSUEditDecorator[]} | undefined{
+export function splitDSUDecorators<T extends DSUModel>(model: T, phase: string = OperationKeys.CREATE) : DSUDecoratorByPhase | undefined{
     const propDecorators: {[indexer: string]: any[]} | undefined = getAllPropertyDecorators<T>(model as T, DsuKeys.REFLECT);
     if (!propDecorators)
         return;
-    return Object.keys(propDecorators).reduce((accum: {creation?: DSUCreationDecorator[], editing?: DSUEditDecorator[]} | undefined, key) => {
+    return Object.keys(propDecorators).reduce((accum: DSUDecoratorByPhase | undefined, key) => {
         const decorators: DSUDecorator[] = propDecorators[key].filter(dec => dec.key !== ModelKeys.TYPE && dec.props.phase && dec.props.phase.indexOf(phase) !== -1);
         if (!decorators || ! decorators.length)
             return accum;
@@ -214,6 +225,10 @@ export function splitDSUDecorators<T extends DSUModel>(model: T, phase: string =
                 case DSUOperation.EDITING:
                     accum.editing = accum.editing || [];
                     accum.editing.push(decorator as DSUEditDecorator);
+                    break;
+                case DSUOperation.PREPARATION:
+                    accum.preparation = accum.preparation || [];
+                    accum.preparation.push(decorator as DSUCreationDecorator);
                     break;
                 default:
                     throw new LoggedError(`Invalid DSU Operation provided ${decorator.props.operation}`);
@@ -239,6 +254,7 @@ export type DSUCreationResults = {[indexer: string]: {model: DSUModel, dsu: DSU,
  * @param {DSUCache} dsuCache the current {@link DSUCache}
  * @param {T} model {@link DSUBlueprint} decorated {@link DSUModel}
  * @param {any} decorators
+ * @param {boolean} [isPreparation] defaults to false. is not preparation, the {@link DSUCache} will be bound to the parent before calling the handler via {@link DSUCache#bindToParent} and the handler will be called on the model[prop] instead to the model itself
  * @param {any[]} [args]
  *       The last arg will be considered to be the {@link DSUMultipleCallback<T>};
  *
@@ -247,7 +263,7 @@ export type DSUCreationResults = {[indexer: string]: {model: DSUModel, dsu: DSU,
  *
  * @memberOf core.repository
  */
-export function handleCreationPropertyDecorators<T extends DSUModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, model: T, decorators: DSUDecorator[], ...args: (any | DSUMultipleCallback<T>)[]){
+export function handleCreationPropertyDecorators<T extends DSUModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, model: T, decorators: DSUDecorator[], isPreparation: boolean = false, ...args: (any | DSUMultipleCallback<T>)[]){
     const callback: DSUMultipleCallback<DSUModel> = args.pop();
     if (!callback)
         throw new LoggedError(`Missing callback`);
@@ -275,7 +291,7 @@ export function handleCreationPropertyDecorators<T extends DSUModel>(this: OpenD
             keyGenArgs.push(...args);
 
         all(`[{0}] - calling DSU Property Creation Handler for model {1}'s {2} property`, self.constructor.name, model, decorator.prop);
-        handler.call(self, dsuCache.bindToParent(model, decorator.prop), model[decorator.prop], decorator.props, ...keyGenArgs, (err: Err, newModel?: DSUModel, dsu?: DSU, keySSI?: KeySSI) => {
+        handler.call(self, isPreparation ? dsuCache : dsuCache.bindToParent(model, decorator.prop), isPreparation ? model : model[decorator.prop], decorator.props, ...keyGenArgs, (err: Err, newModel?: DSUModel, dsu?: DSU, keySSI?: KeySSI) => {
             if (err || !newModel || !dsu || !keySSI)
                 return criticalCallback(err || new Error(`Missing Results`), callback);
 

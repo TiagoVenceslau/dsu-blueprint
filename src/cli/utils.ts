@@ -9,7 +9,7 @@ import {KeySSI} from "../core/opendsu/apis/keyssi";
  * @param {any} defaultOpts the default options to the overwritten when necessary
  * @param {string} args the process.argv
  *
- * @return {{}} updated options
+ * @return {CliOptions} updated options
  *
  * @function argParser
  *
@@ -59,11 +59,11 @@ export function buildOrUpdate(config: CliOptions, callback: DSUCallback<DSUModel
     if (!BLUEPRINT)
         return criticalCallback(`Could not find BLUEPRINT export`, callback);
 
-    const blueprint = new BLUEPRINT();
+    const blueprint: DSUModel = new BLUEPRINT();
 
     const repo = new OpenDSURepository(BLUEPRINT, config.domain, config.pathAdaptor || './');
 
-    repo.create(blueprint, (err: Err, newModel: typeof BLUEPRINT, dsu: DSU, keySSI: KeySSI) => {
+    repo.create(blueprint, (err: Err, newModel: DSUModel, dsu: DSU, keySSI: KeySSI) => {
         if (err)
             return callback(err);
         callback(undefined, newModel, dsu, keySSI);

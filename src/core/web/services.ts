@@ -4,7 +4,6 @@ import {get$$, getHttpApi} from "../opendsu";
 /**
  * @type WebServiceOptions
  *
- * @category Services
  * @memberOf core.web
  */
 export type WebServiceOptions = {
@@ -21,7 +20,6 @@ export type WebServiceOptions = {
  * Reference interface for a {@link WebService}
  *
  * @interface WebService
- * @category Services
  * @memberOf core.web
  */
 export interface WebService {
@@ -39,7 +37,6 @@ export interface WebService {
  *
  * @class WebServiceImp
  *
- * @category Services
  * @memberOf core.web
  */
 export class WebServiceImp implements WebService {
@@ -189,7 +186,6 @@ let activeWebService: WebService;
  *
  * @function
  *
- * @category Services
  * @memberOf core.web
  */
 export function getWebService(options?: WebServiceOptions): WebService {
@@ -208,7 +204,6 @@ export function getWebService(options?: WebServiceOptions): WebService {
  *
  * @function
  *
- * @category Services
  * @memberOf core.web
  */
 export function setWebService(webService: WebService): void {
