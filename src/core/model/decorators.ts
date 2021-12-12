@@ -16,6 +16,7 @@ import {
 } from "../repository";
 import DBModel from "@tvenceslau/db-decorators/lib/model/DBModel";
 import {
+    all,
     criticalCallback,
     CriticalError,
     DBOperations,
@@ -420,8 +421,8 @@ export function dsuFile(dsuPath: string = DsuKeys.DEFAULT_DSU_PATH) {
 }
 
 /**
+ * Mounts the {@link keySSI} in the property value it holds.
  *
- * @param {string} keySSI the KeySSI to mount
  * @param {string} [mountPath] defines the mount path. defaults to the property key
  * @param {DSUIOOptions} [options]
  * @param {any[]} [args] optional params. meant for extending decorators
@@ -430,18 +431,22 @@ export function dsuFile(dsuPath: string = DsuKeys.DEFAULT_DSU_PATH) {
  * @namespace decorators
  * @memberOf model
  */
-export function mount(keySSI: string, mountPath?: string, options?: DSUIOOptions, ...args: any[]) {
+export function mount(mountPath?: string, options?: DSUIOOptions, ...args: any[]) {
     return (target: any, propertyKey: string) => {
-        mountPath = mountPath ? mountPath : target[propertyKey];
-
+        mountPath = mountPath ? mountPath : propertyKey;
         if (!mountPath)
             throw new CriticalError(`Missing mount path`);
+
+        const keySSI: string | KeySSI | undefined = target[propertyKey];
+        if (!keySSI)
+            throw new CriticalError(`Model does not hold the key under its ${propertyKey} property`);
 
         const metadata: DSUEditMetadata = {
             operation: DSUOperation.EDITING,
             phase: [OperationKeys.READ, OperationKeys.CREATE],
             dsuPath: mountPath,
             options: options,
+            propKey: propertyKey,
             args: args
         };
 
@@ -452,11 +457,18 @@ export function mount(keySSI: string, mountPath?: string, options?: DSUIOOptions
             propertyKey
         );
 
-        const createHandler: DSUEditingHandler = function<T extends DBModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, obj: T | {}, dsu: DSU, decorator: DSUEditMetadata, callback: DSUCallback<T> | ReadCallback): void {
-            const {keySSI, dsuPath, options} = decorator;
+        const createHandler: DSUEditingHandler = function<T extends DBModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, obj: T | {[indexer: string]: any}, dsu: DSU, decorator: DSUEditMetadata, callback: DSUCallback<T> | ReadCallback): void {
+            const {dsuPath, options, propKey} = decorator;
+            if (!decorator.key)
+                return criticalCallback(new Error(`Decorator does not hold the property key`), callback);
+            const keySSI: string = obj[propKey];
+            if (!keySSI)
+                return criticalCallback(new Error(`Model does not hold the key under its ${propKey} property but ${obj[propKey]} instead`), callback);
+            all(`Mounting DSU with KeySSI ${keySSI} under path ${dsuPath}`);
             dsu.mount(dsuPath, keySSI, options, err => {
                 if (err)
                     return criticalCallback(err, callback);
+                all(`Mounting DSU with KeySSI ${keySSI} under path ${dsuPath} Successful`);
                 callback(undefined, obj as T, dsu);
             });
         }

@@ -36,6 +36,16 @@ export type KeySSIFactoryResponse = {
 
 export type KeySSIFactoryCallback = GenericCallback<KeySSIFactoryResponse>;
 
+/**
+ * Provides the base implementation for Factory Registries
+ *
+ * @class FactoryRegistryImp
+ *
+ * @abstract
+ * @implements IRegistry<any>
+ *
+ * @memberOf OpenDSU.factory
+ */
 export abstract class FactoryRegistry<T> implements IRegistry<T>{
     protected supportedTypes: string[] = [];
     protected factories: {[indexer: string]: T} = {};

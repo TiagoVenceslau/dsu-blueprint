@@ -3,7 +3,7 @@ import {DSU} from "../opendsu";
 import {OpenDSURepository} from "./repository";
 import {DSUModel} from "../model";
 import {IRegistry} from "@tvenceslau/decorator-validation/lib/utils/registry";
-import {all, CriticalError} from "@tvenceslau/db-decorators/lib";
+import {all, CriticalError, debug} from "@tvenceslau/db-decorators/lib";
 
 /**
  * @namespace core.repository.registry
@@ -32,9 +32,10 @@ export class DSUOperationRegistry implements IRegistry<DSUOperationHandler>{
      */
     get<DSUOperationHandler>(targetName: string, propKey: string, operation: string, phase: string): DSUOperationHandler | undefined {
         try{
+            all(`[{0}] - Trying to retrieve a DSUOperationHandler under {1}.`, this.constructor.name, [targetName, propKey, operation, phase].join(' | '))
             return this.cache[targetName][propKey][operation][phase];
         } catch (e: any){
-            all(e);
+            debug(e);
             return undefined;
         }
     }
@@ -47,9 +48,12 @@ export class DSUOperationRegistry implements IRegistry<DSUOperationHandler>{
             this.cache[name][propKey] = {};
         if (!this.cache[name][propKey][operation])
             this.cache[name][propKey][operation] = {};
-        if (this.cache[name][propKey][operation][phase])
+        if (this.cache[name][propKey][operation][phase]){
+            debug(`[{0}] - Trying to register a second DSUOperation handler under {1}. Ignoring!`, this.constructor.name, [name,propKey, operation, phase].join(' | '));
             return;
+        }
         this.cache[name][propKey][operation][phase] = handler;
+        all(`[{0}] - Registration of DSUOperation handler under {1} successful`, this.constructor.name, [name,propKey, operation, phase].join(' | '))
     }
 }
 
