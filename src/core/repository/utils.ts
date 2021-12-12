@@ -29,7 +29,6 @@ import {ModelKeys} from "@tvenceslau/decorator-validation/lib";
 import {DSUCache} from "./cache";
 import {KeySSI} from "../opendsu/apis/keyssi";
 
-
 /**
  * Util method that handles the {@link DSU}'s batch operation close
  *
