@@ -1,8 +1,9 @@
 /**
  * Environment Types
  *
- * @namespace opendsu
- * @interface
+ * @interface EnvironmentTypes
+ * @namespace OpenDSU.api.constants
+ * @memberOf OpenDSU.api
  */
 export interface EnvironmentTypes {
     /**
@@ -38,8 +39,8 @@ export interface EnvironmentTypes {
 /**
  * Interface representing the OpenDSU Constants
  *
- * @namespace opendsu
- * @interface
+ * @interface ConstantsApi
+ * @memberOf OpenDSU.api
  */
 export interface ConstantsApi {
     /**
@@ -215,6 +216,9 @@ export interface ConstantsApi {
          */
         VAULT: string
     },
+    /**
+     * Vault domain definitions
+     */
     VAULT:{
         /**
          * Name for bricks. defaults to 'bricks'
@@ -253,7 +257,7 @@ export interface ConstantsApi {
     /**
      * Boot config file name. defaults to 'boot-cfg.json'
      */
-    BOOT_CONFIG_FILE: 'boot-cfg.json',
+    BOOT_CONFIG_FILE: string,
     KEY_SSIS: () => any,
     CRYPTO_FUNCTION_TYPES: () => any
 }

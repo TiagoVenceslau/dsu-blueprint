@@ -1,3 +1,9 @@
+/**
+ * @namespace OpenDSU.api
+ * @memberOf OpenDSU
+ */
+
+
 export * from './anchoring';
 export * from './bdns';
 export * from './bricking';

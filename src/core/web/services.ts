@@ -1,5 +1,5 @@
-import {Callback, CriticalError, Err} from "@tvenceslau/db-decorators/lib";
-import {get$$, getHttpApi} from "../opendsu";
+import {Callback, criticalCallback, CriticalError, Err} from "@tvenceslau/db-decorators/lib";
+import {get$$, getConstantsApi, getHttpApi, getSystemApi} from "../opendsu";
 
 /**
  * @type WebServiceOptions
@@ -7,13 +7,27 @@ import {get$$, getHttpApi} from "../opendsu";
  * @memberOf core.web
  */
 export type WebServiceOptions = {
+    /**
+     * defaults to the result of {@link SystemApi#getBaseURL}
+     */
     hosts: string,
+    /**
+     * defaults to 'seed'
+     */
     seedFileName: string,
+    /**
+     * not sure
+     */
     walletPath: string,
-    slots: {
-        primary: string,
-        secondary: string
-    }
+    /**
+     * defaults to 'wallet-patch'
+     */
+    primaryslot: string,
+    /**
+     * defaults to 'apps-patch'
+     */
+    secondaryslot: string
+
 }
 
 /**
@@ -33,6 +47,26 @@ export interface WebService {
 }
 
 /**
+ * Merges the provided options (if any) with the currently defined configuration from OpenDSU
+ *
+ * @param {WebServiceOptions | undefined} options
+ *
+ * @function mergeWebServiceOptions
+ *
+ * @memberOf core.web
+ */
+export function mergeWebServiceOptions(options?: WebServiceOptions): WebServiceOptions {
+    return Object.assign({},
+        {
+            hosts: getSystemApi().getBaseURL(),
+            seedFileName: "seed",
+            walletPath: "",
+            primaryslot: "wallet-patch",
+            secondaryslot: "apps-patch"
+        }, options || {}) as WebServiceOptions;
+}
+
+/**
  * Default implementation for a {@link WebService}
  *
  * @class WebServiceImp
@@ -45,13 +79,13 @@ export class WebServiceImp implements WebService {
 
     /**
      *
-     * @param {WebServiceOptions} options
+     * @param {WebServiceOptions} [options]
      *
      * @constructor
      */
-    constructor(options: WebServiceOptions){
-        this.options = options;
-        this.isBrowser = get$$().environmentType === 'browser';
+    constructor(options?: WebServiceOptions){
+        this.options = mergeWebServiceOptions(options);
+        this.isBrowser = get$$().environmentType === getConstantsApi().ENVIRONMENT_TYPES.BROWSER_ENVIRONMENT_TYPE;
     }
 
     private constructUrlBase(prefix?: string){
@@ -85,7 +119,7 @@ export class WebServiceImp implements WebService {
      * @param {Callback} callback
      */
     getWalletSeed(callback: Callback){
-        this.getAppSeed(this.options.slots.primary, callback);
+        this.getAppSeed(this.options.primaryslot, callback);
     }
 
     /**
@@ -111,16 +145,15 @@ export class WebServiceImp implements WebService {
      * @param {Callback} callback
      */
     doGet(url: string, options: {} | undefined, callback: Callback){
-
         getHttpApi().fetch(url, {
             method: 'GET'
         }).then((response: any) => {
             return response.arrayBuffer().then((data: ArrayBuffer) => {
                 if (!response.ok)
-                    return callback("array data failed")
+                    return criticalCallback(new Error("array data failed"), callback);
                 callback(undefined, data);
-            }).catch((e: Err) => callback(e));
-        }).catch((err: Err) => callback(err));
+            }).catch((e: Err) => criticalCallback(e as Error, callback));
+        }).catch((err: Err) => criticalCallback(err as Error, callback));
     }
 
     /**

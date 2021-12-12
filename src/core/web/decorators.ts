@@ -74,10 +74,11 @@ export function fromWeb(appOrUrl: string, slot: "primary" | "secondary" | undefi
         mountPath =  mountPath ? mountPath : propertyKey;
 
         mount(mountPath, mountOptions)(target, propertyKey);
-
+        const name = target.constructor.name;
         const metadata: DSUPreparationMetadata = {
             operation: DSUOperation.PREPARATION,
             phase: DBOperations.CREATE,
+            dsu: name,
             prop: propertyKey,
             derive: derive,
             appName: appOrUrl,
@@ -95,8 +96,7 @@ export function fromWeb(appOrUrl: string, slot: "primary" | "secondary" | undefi
         );
 
         const createHandler: DSUPreparationHandler = function<T extends DSUModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, model: T, decorator: DSUPreparationMetadata, callback: ModelCallback<T>): void {
-            const {prop} = decorator;
-            const {appName, slot} = decorator.props;
+            const {prop, appName, slot} = decorator;
 
             const webService = getWebService();
 

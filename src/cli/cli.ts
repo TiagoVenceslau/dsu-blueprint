@@ -1,7 +1,7 @@
 import {DSU, DSUModel} from "../core";
 import {Callback, CriticalError, Err, error, info} from "@tvenceslau/db-decorators/lib";
 import {CliActions, CliOptions} from "./types";
-import {argParser, buildOrUpdate} from "./utils";
+import {argParser, buildOrUpdate} from "./toolkit";
 import {KeySSI} from "../core/opendsu/apis/keyssi";
 
 /**

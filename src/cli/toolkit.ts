@@ -1,7 +1,33 @@
-import {DSU, DSUCallback, DSUModel, OpenDSURepository} from "../core";
+import {ConstantsApi, DSU, DSUCallback, DSUModel, getConstantsApi, OpenDSURepository} from "../core";
 import {criticalCallback, Err} from "@tvenceslau/db-decorators/lib";
 import {CliOptions} from "./types";
 import {KeySSI} from "../core/opendsu/apis/keyssi";
+
+/**
+ * @namespace cli.toolkit
+ * @memberOf cle
+ */
+
+export const defaultOptions = {
+    anchoring: "default",
+    publicSecretsKey: '-$Identity-',
+    environmentKey: "-$Environment-",
+    basePath: "",
+    stripBasePathOnInstall: false,
+    walletPath: "",
+    hosts: "",
+    hint: undefined,
+    vault: "vault",
+    seedFileName: "seed",
+    appsFolderName: "apps",
+    appFolderName: "app",
+    codeFolderName: "code",
+    initFile: "init.file",
+    environment: {},
+    primaryslot: "wallet-patch",
+    secondaryslot: "apps-patch"
+
+}
 
 /**
  * Overrides any custom options passed in process args into the default options provided
@@ -13,7 +39,7 @@ import {KeySSI} from "../core/opendsu/apis/keyssi";
  *
  * @function argParser
  *
- * @memberOf cli
+ * @memberOf cli.toolkit
  */
 export function argParser(defaultOpts: {[indexer: string]: any}, args: string[]){
     let config = JSON.parse(JSON.stringify(defaultOpts));
@@ -40,13 +66,31 @@ export function argParser(defaultOpts: {[indexer: string]: any}, args: string[])
 }
 
 /**
+ *
+ * @param {CliOptions} options
+ *
+ * @function mergeWithOpenDSUOptions
+ *
+ * @memberOf cli.toolkit
+ */
+export function mergeWithOpenDSUOptions(options: CliOptions){
+    const constants: ConstantsApi = getConstantsApi();
+    return Object.assign({}, defaultOptions, {
+        vault: constants.DOMAINS.VAULT,
+        appsFolderName: constants.APPS_FOLDER,
+        appFolderName: constants.APP_FOLDER,
+        codeFolderName: constants.CODE_FOLDER
+    }, options)
+}
+
+/**
  * Builds a DSU from a transpiled {@link DSUBlueprint} file or Updates it
  * @param {CliOptions} config the cli options
  * @param {DSUCallback<DSUModel>} callback
  *
  * @function buildOrUpdate
  * 
- * @emberOf cli
+ * @emberOf cli.toolkit
  */
 export function buildOrUpdate(config: CliOptions, callback: DSUCallback<DSUModel>): void{
     let blueprintFile;
