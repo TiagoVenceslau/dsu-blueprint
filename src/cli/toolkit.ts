@@ -5,9 +5,13 @@ import {KeySSI} from "../core/opendsu/apis/keyssi";
 
 /**
  * @namespace cli.toolkit
- * @memberOf cle
+ * @memberOf cli
  */
 
+/**
+ * @enum defaultOptions
+ * @memberOf cli.toolkit
+ */
 export const defaultOptions = {
     anchoring: "default",
     publicSecretsKey: '-$Identity-',

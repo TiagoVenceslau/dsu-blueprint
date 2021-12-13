@@ -5,6 +5,9 @@ import {ConstantsApi} from "../core";
  *
  * all of them can be overwritten in the cli, for eg:
  *
+ * @typedef CliOptions
+ * @memberOf cli
+ *
  * @example
  * NodeJS:
  * $ node ./node_modules/@tvenceslau/lib/cli --action='build' --domain='some domain'
@@ -14,9 +17,6 @@ import {ConstantsApi} from "../core";
  *
  * you can add params or override already present ones by:
  * $ npm run build -- --action='other action' --domain='some other domain'
- *
- * @typedef CliOptions
- * @memberOf cli
  */
 export type CliOptions = {
     /**

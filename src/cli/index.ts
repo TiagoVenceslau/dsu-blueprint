@@ -5,10 +5,11 @@
  *
  * Available options: {@link CliOptions} eg for option 'action':
  *
+ * @module Cli
+ *
  * @example
  * node ./node_modules/@tvenceslau/dsu-blueprint/lib/cli --action=build
  *
- * @module Cli
  */
 
 /**
