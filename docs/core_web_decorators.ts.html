@@ -199,7 +199,7 @@ export function fromURL(url: string, toJson: boolean = false, options?: {}){
                     try {
                         result = JSON.parse(result);
                     } catch (e) {
-                        return criticalCallback(e, callback);
+                        return criticalCallback(e as Error, callback);
                     }
 
                 // @ts-ignore
@@ -289,13 +289,13 @@ export function fromWeb(appOrUrl: string, slot: "primary" | "secondary" | undefi
                 try {
                     ssi = getKeySSIApi().parse(ssi) as KeySSI;
                 } catch (e) {
-                    return criticalCallback(e, callback);
+                    return criticalCallback(e as Error, callback);
                 }
 
                 try {
                     ssi = handleKeyDerivation(ssi, derive);
                 } catch (e) {
-                    return criticalCallback(e, callback);
+                    return criticalCallback(e as Error, callback);
                 }
                 // @ts-ignore
                 model[prop] = ssi.getIdentifier();
@@ -379,7 +379,7 @@ export function environment(fileName: string = "environment.js"){
 
                 // @ts-ignore
                 model[prop] = env;
-                callback(undefined, model);
+                 callback(undefined, model);
             });
         }
 

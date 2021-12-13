@@ -1,21 +1,44 @@
-import {constructFromObject} from "@tvenceslau/db-decorators/lib";
-import {email} from "@tvenceslau/decorator-validation/lib";
-import {DbDsuBlueprint, dsu, DSUBlueprint, dsuFile, DSUModel, environment, fromCache, wallet} from "../core";
+import {constructFromObject, DBOperations, OperationKeys, timestamp} from "@tvenceslau/db-decorators/lib";
+import {email, required} from "@tvenceslau/decorator-validation/lib";
+import {DbDsuBlueprint, dsu, DSUBlueprint, dsuFile, DsuKeys, DSUModel, environment, fromCache, wallet} from "../core";
 import {addFileFS, addFolderFS, dsuFS} from "../fs";
 import {KeySSIType} from "../core/opendsu/apis/keyssi";
 
 @DSUBlueprint(undefined, KeySSIType.SEED)
 export class IdDsuBlueprint extends DSUModel{
 
-    @dsuFile()
+    @dsuFile(DsuKeys.DEFAULT_DSU_PATH)
     name?: string = undefined;
-    @dsuFile()
+    @dsuFile(DsuKeys.DEFAULT_DSU_PATH)
     id?: string = undefined;
-    @dsuFile()
+    @dsuFile(DsuKeys.DEFAULT_DSU_PATH)
+    @email(DsuKeys.DEFAULT_DSU_PATH)
+    email?: string = undefined;
+    @dsuFile(DsuKeys.DEFAULT_DSU_PATH)
+    address?: string = undefined;
+
+    constructor(blueprint?: IdDsuBlueprint | {}) {
+        super();
+        constructFromObject<IdDsuBlueprint>(this, blueprint);
+    }
+}
+
+@DSUBlueprint(undefined, KeySSIType.SEED)
+export class TestIdDsuBlueprint extends DSUModel{
+
+    @dsuFile(DsuKeys.DEFAULT_DSU_PATH)
+    name?: string = undefined;
+    @dsuFile(DsuKeys.DEFAULT_DSU_PATH)
     @email()
     email?: string = undefined;
+
+    @timestamp(DBOperations.CREATE)
     @dsuFile()
-    address?: string = undefined;
+    createdOn?: Date = undefined;
+
+    @required()
+    @dsuFile("environment.json")
+    environment?: any = undefined;
 
     constructor(blueprint?: IdDsuBlueprint | {}) {
         super();

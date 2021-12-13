@@ -53,7 +53,7 @@ export type DSUPreparationMetadata = {
  * @param {boolean} [toJson] defaults to false. if true, tries to parse the result to json
  * @param {{}} [options] options to be passed to the get request
  *
- * @function fromURL
+ * @decorator fromURL
  *
  * @category Decorators
  */
@@ -88,7 +88,7 @@ export function fromURL(url: string, toJson: boolean = false, options?: {}){
                     try {
                         result = JSON.parse(result);
                     } catch (e) {
-                        return criticalCallback(e, callback);
+                        return criticalCallback(e as Error, callback);
                     }
 
                 // @ts-ignore
@@ -122,10 +122,9 @@ export function fromURL(url: string, toJson: boolean = false, options?: {}){
  * @param {string} [keyOverride] and extension tool, to allow wallet decorator to use this one for himself
  * @param {any[]} [args] Not used in current implementation. Meant for extending decorators
  *
- * @function fromWeb
+ * @decorator fromWeb
  *
  * @category Decorators
- * @memberOf core.web
  */
 export function fromWeb(appOrUrl: string, slot: "primary" | "secondary" | undefined, triggerMount: boolean = true, derive: boolean | number = false, mountPath?: string, mountOptions?: DSUIOOptions, keyOverride?: string, ...args: any[]) {
     return (target: any, propertyKey: string) => {
@@ -178,13 +177,13 @@ export function fromWeb(appOrUrl: string, slot: "primary" | "secondary" | undefi
                 try {
                     ssi = getKeySSIApi().parse(ssi) as KeySSI;
                 } catch (e) {
-                    return criticalCallback(e, callback);
+                    return criticalCallback(e as Error, callback);
                 }
 
                 try {
                     ssi = handleKeyDerivation(ssi, derive);
                 } catch (e) {
-                    return criticalCallback(e, callback);
+                    return criticalCallback(e as Error, callback);
                 }
                 // @ts-ignore
                 model[prop] = ssi.getIdentifier();
@@ -204,15 +203,12 @@ export function fromWeb(appOrUrl: string, slot: "primary" | "secondary" | undefi
  * @param {string} app the app name to look for in ApiHub
  * @param {boolean} [derive] If the KeySSI should be derived (how many times). defaults to true
  *
- * @function wallet
+ * @decorator wallet
  *
  * @category Decorators
- * @memberOf core.web
  *
  * @mermaid
  *  sequenceDiagram
- *      actor wallet
- *      actor fromWeb
  *      wallet->>fromWeb(app, "primary", false)
  */
 export function wallet(app: string, derive: boolean = true) {
@@ -221,7 +217,16 @@ export function wallet(app: string, derive: boolean = true) {
     }
 }
 
-export function environment(fileName: string = "environment.js"){
+/**
+ * Writes the Environment configuration into a DSU (mandatory for for SSApps)
+ *
+ * @param {string} [fileName] defaults to {@link ConstantsApi.ENVIRONMENT_PATH}
+ *
+ * @decorator environment
+ *
+ * @category Decorators
+ */
+export function environment(fileName: string = "environment.json"){
     return (target: any, propertyKey: string) => {
         const name = target.constructor.name;
         const metadata: DSUPreparationMetadata = {
@@ -268,7 +273,7 @@ export function environment(fileName: string = "environment.js"){
 
                 // @ts-ignore
                 model[prop] = env;
-                callback(undefined, model);
+                 callback(undefined, model);
             });
         }
 

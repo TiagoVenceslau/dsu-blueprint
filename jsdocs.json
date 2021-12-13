@@ -2,7 +2,7 @@
     "plugins": [
         "plugins/markdown",
         "plugins/summarize",
-        "jsdoc-mermaid",
+        "node_modules/jsdoc-mermaid",
         "node_modules/better-docs/typescript",
         "node_modules/better-docs/category"
     ],
@@ -49,6 +49,6 @@
         "readme": "./README.md",
         "recurse": true,
         "verbose": true,
-        "tutorials": "./tests"
+        "tutorials": "./workdocs/tutorials"
     }
 }

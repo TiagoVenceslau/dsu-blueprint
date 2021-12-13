@@ -365,7 +365,7 @@ export function getValueFromValueChain(model: {[indexer: string]: any}, ...chain
  * @param {string} chain
  * @param {any} value
  *
- * @function createObjectTovalueChain
+ * @function createObjectToValueChain
  *
  * @memberOf core.repository
  */
@@ -635,7 +635,7 @@ export function handleKeyDerivation(keySSI: string | KeySSI, derive: boolean | n
         try {
             keySSI = getKeySSIApi().parse(keySSI);
         } catch(e) {
-            throw new CriticalError(e);
+            throw new CriticalError(e as Error);
         }
     if (typeof derive === 'boolean')
         derive = derive ? 1 : 0;
@@ -644,7 +644,7 @@ export function handleKeyDerivation(keySSI: string | KeySSI, derive: boolean | n
         try {
             keySSI = keySSI.derive();
         } catch (e) {
-            throw new CriticalError(e);
+            throw new CriticalError(e as Error);
         }
     return keySSI;
 }

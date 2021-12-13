@@ -1,6 +1,6 @@
 import {constructFromObject, DBOperations, readonly, timestamp} from "@tvenceslau/db-decorators/lib";
 import {maxlength, minlength, required, max, min} from "@tvenceslau/decorator-validation/lib";
-import {DSUBlueprint, dsuFile, DSUModel} from "../core";
+import {DSUBlueprint, dsuFile, DsuKeys, DSUModel} from "../core";
 
 @DSUBlueprint("default")
 export class SeedDSUBlueprint extends DSUModel{
@@ -9,12 +9,12 @@ export class SeedDSUBlueprint extends DSUModel{
     @minlength(5)
     @maxlength(15)
     @readonly()
-    @dsuFile("info.json")
+    @dsuFile(DsuKeys.DEFAULT_DSU_PATH)
     name?: string = undefined;
 
     @max(15)
     @min(1)
-    @dsuFile("info.json")
+    @dsuFile(DsuKeys.DEFAULT_DSU_PATH)
     count?: number = undefined;
 
     @timestamp(DBOperations.CREATE)

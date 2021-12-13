@@ -359,21 +359,22 @@ export type DSUEditMetadata = {
 
 /**
  *
- * @param {string} [dsuPath] defines the mount path. defaults to {@link DsuKeys#DEFAULT_DSU_PATH}
+ * @param {string} [dsuPath] defines the mount path. defaults to the property key
  *
  * @decorator dsuFile
  * @namespace decorators
  * @memberOf model
  */
-export function dsuFile(dsuPath: string = DsuKeys.DEFAULT_DSU_PATH) {
+export function dsuFile(dsuPath?: string) {
     return (target: any, propertyKey: string) => {
+        const path = dsuPath || propertyKey;
         const metadata: DSUEditMetadata = {
             operation: DSUOperation.EDITING,
             phase: DBOperations.ALL,
             key: DsuKeys.DSU_FILE,
             grouped: true,
-            grouping: dsuPath,
-            dsuPath: dsuPath
+            grouping: path,
+            dsuPath: path
         };
 
         Reflect.defineMetadata(
@@ -386,6 +387,8 @@ export function dsuFile(dsuPath: string = DsuKeys.DEFAULT_DSU_PATH) {
         const editingHandler: DSUEditingHandler = function<T extends DBModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, obj: any, dsu: DSU, decorator: DSUEditMetadata, callback: DSUCallback<T>): void {
             const {value, props} = decorator;
             const {dsuPath} = props;
+            if (!value)
+                return criticalCallback(`Missing Value to write in ${dsuPath}`, callback)
             dsu.writeFile(dsuPath, JSON.stringify(value), (err: Err) => {
                 if (err)
                     return criticalCallback(err, callback);
@@ -472,13 +475,13 @@ export function mount(mountPath?: string, derive: boolean | number = false, opti
                 try {
                     keySSI = getKeySSIApi().parse(keySSI as string);
                 } catch (e) {
-                    return criticalCallback(e, callback);
+                    return criticalCallback(e as Error, callback);
                 }
 
             try {
                 keySSI = handleKeyDerivation(keySSI, derive);
             } catch (e) {
-                return criticalCallback(e, callback);
+                return criticalCallback(e as Error, callback);
             }
 
             all(`Mounting DSU with KeySSI ${keySSI} under path ${dsuPath}`);

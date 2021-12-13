@@ -476,7 +476,7 @@ export function getValueFromValueChain(model: {[indexer: string]: any}, ...chain
  * @param {string} chain
  * @param {any} value
  *
- * @function createObjectTovalueChain
+ * @function createObjectToValueChain
  *
  * @memberOf core.repository
  */
@@ -527,16 +527,8 @@ export function handleEditingPropertyDecorators&lt;T extends DSUModel>(this: Ope
             return accum;
         }
         accum.grouped = accum.grouped || {};
-
         if (!dec.props || !dec.props.key || !dec.props.grouping)
             return criticalCallback(new Error(`Missing Decorator properties`), callback);
-
-        accum.grouped[dec.props.key] = accum.grouped[dec.props.key] || {};
-
-        if (decorators.filter(d => d.props &amp;&amp; d.props.grouped &amp;&amp; d.props.grouping === dec.props.grouping).length === 1) {
-            accum.grouped[dec.props.key][dec.props.grouping] = dec;
-            return accum;
-        }
 
         accum.grouped[dec.props.key] = accum.grouped[dec.props.key] || {};
 
@@ -754,7 +746,7 @@ export function handleKeyDerivation(keySSI: string | KeySSI, derive: boolean | n
         try {
             keySSI = getKeySSIApi().parse(keySSI);
         } catch(e) {
-            throw new CriticalError(e);
+            throw new CriticalError(e as Error);
         }
     if (typeof derive === 'boolean')
         derive = derive ? 1 : 0;
@@ -763,7 +755,7 @@ export function handleKeyDerivation(keySSI: string | KeySSI, derive: boolean | n
         try {
             keySSI = keySSI.derive();
         } catch (e) {
-            throw new CriticalError(e);
+            throw new CriticalError(e as Error);
         }
     return keySSI;
 }</code></pre>

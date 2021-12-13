@@ -3,7 +3,7 @@ import {get$$, getConstantsApi, getHttpApi, getSystemApi} from "../opendsu";
 import {parseEnvJS} from "../../fs";
 
 /**
- * @type WebServiceOptions
+ * @typedef WebServiceOptions
  *
  * @memberOf core.web
  */
@@ -90,6 +90,13 @@ export class WebServiceImp implements WebService {
         this.isBrowser = get$$().environmentType === getConstantsApi().ENVIRONMENT_TYPES.BROWSER_ENVIRONMENT_TYPE;
     }
 
+    /**
+     *
+     * @param prefix
+     * @private
+     *
+     * @memberOf WebServiceImp
+     */
     private constructUrlBase(prefix?: string){
         let url, protocol, host;
         prefix = prefix || "";
@@ -115,6 +122,13 @@ export class WebServiceImp implements WebService {
         }
     }
 
+    /**
+     *
+     * @param {string} envFileName
+     * @param {Callback} callback
+     *
+     * @memberOf WebServiceImp
+     */
     getEnvironmentFile(envFileName?: string | Callback, callback?: Callback): void {
         if (!callback){
             callback = envFileName as Callback;
@@ -129,18 +143,19 @@ export class WebServiceImp implements WebService {
             try {
                 env = parseEnvJS(data.toString())
             } catch (e) {
-                return criticalCallback(e, callback as Callback);
+                return criticalCallback(e as Error, callback as Callback);
             }
 
             (callback as Callback)(undefined, env);
         });
-
     }
 
     /**
      * Gets the seed in the primary slot
      *
      * @param {Callback} callback
+     *
+     * @memberOf WebServiceImp
      */
     getWalletSeed(callback: Callback){
         this.getAppSeed(this.options.primaryslot, callback);
@@ -151,6 +166,8 @@ export class WebServiceImp implements WebService {
      *
      * @param {string} appName
      * @param {Callback} callback
+     *
+     * @memberOf WebServiceImp
      */
     getAppSeed(appName: string, callback: Callback){
         const self = this;
@@ -167,6 +184,8 @@ export class WebServiceImp implements WebService {
      * @param {string} url
      * @param {{} | undefined} options
      * @param {Callback} callback
+     *
+     * @memberOf WebServiceImp
      */
     doGet(url: string, options: {} | undefined, callback: Callback){
         getHttpApi().fetch(url, {
@@ -186,6 +205,8 @@ export class WebServiceImp implements WebService {
      * @param {string} appName
      * @param {string} fileName
      * @param {function(err, Uint8Array)} callback
+     *
+     * @memberOf WebServiceImp
      */
     getFile(appName: string, fileName: string, callback: Callback){
         const suffix = `${appName}/${fileName}`;
@@ -201,8 +222,10 @@ export class WebServiceImp implements WebService {
     /**
      * Requests a folder content in JSON format from the ApiHib
      *
-     * @param innerFolder
-     * @param callback
+     * @param {string} innerFolder
+     * @param {Callback} callback
+     *
+     * @memberOf WebServiceImp
      */
     getFolderContentAsJSON(innerFolder: string, callback: Callback){
         const url = this.constructUrlBase("directory-summary/") + (innerFolder ? `/${innerFolder}` : '') ;
@@ -218,6 +241,8 @@ export class WebServiceImp implements WebService {
      * (simpler methods fail for big content jsons)
      * @param {Uint8Array} array
      * @param {function(err, string)} callback
+     *
+     * @memberOf WebServiceImp
      */
     private Utf8ArrayToStr(array: Uint8Array, callback: Callback) {
         if (!this.isBrowser)
@@ -236,10 +261,10 @@ export class WebServiceImp implements WebService {
 /**
  * Retrieves a new  {@link WebService}
  *
- * @param {WebServiceOptions} [options]
+ * @param {WebServiceOptions | {}} [options]
  * @return WebService
  *
- * @function
+ * @function getWebService
  *
  * @memberOf core.web
  */
