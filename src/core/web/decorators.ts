@@ -19,9 +19,9 @@ import {
     OperationKeys
 } from "@tvenceslau/db-decorators/lib";
 import {
-    DSUCache, DSUCallback, DSUEditingHandler,
+    DSUCache,
     DSUPreparationHandler, handleKeyDerivation,
-    OpenDSURepository, ReadCallback
+    OpenDSURepository
 } from "../repository";
 import {getDSUOperationsRegistry} from "../repository/registry";
 import {getWebService} from "./services";
@@ -220,13 +220,15 @@ export function wallet(app: string, derive: boolean = true) {
 /**
  * Writes the Environment configuration into a DSU (mandatory for for SSApps)
  *
+ * The environment file will be saved in json format in the DSU
+ *
  * @param {string} [fileName] defaults to {@link ConstantsApi.ENVIRONMENT_PATH}
  *
  * @decorator environment
  *
  * @category Decorators
  */
-export function environment(fileName: string = "environment.json"){
+export function environment(fileName: string = "environment.js"){
     return (target: any, propertyKey: string) => {
         const name = target.constructor.name;
         const metadata: DSUPreparationMetadata = {
@@ -244,7 +246,7 @@ export function environment(fileName: string = "environment.json"){
             propertyKey
         );
 
-        dsuFile(fileName)(target, propertyKey);
+        dsuFile(fileName.replace('json', 'js'))(target, propertyKey);
 
         const createHandler: DSUPreparationHandler = function<T extends DSUModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, model: T, decorator: DSUPreparationMetadata, callback: ModelCallback<T>): void {
             const {prop, fileName} = decorator;

@@ -412,7 +412,10 @@ export function groupDecorators(model: DSUModel, decorators: DSUEditDecorator[])
         accum.grouped[dec.props.key] = accum.grouped[dec.props.key] || {};
 
         if (decorators.filter(d => d.props.grouping === dec.props.grouping).length === 1){
-            accum.grouped[dec.props.key] = dec;
+            accum.grouped[dec.props.key][dec.props.grouping] = Object.assign({}, dec, {
+                value:  model[dec.prop],
+                hasBeenGrouped: false
+            });
             return accum;
         }
 
@@ -424,7 +427,8 @@ export function groupDecorators(model: DSUModel, decorators: DSUEditDecorator[])
             const newPropValue: {[indexer: string] : any} = {};
             newPropValue[dec.prop] = model[dec.prop];
             accum.grouped[dec.props.key][dec.props.grouping] = Object.assign({}, dec, {
-                value: newPropValue
+                value: newPropValue,
+                hasBeenGrouped : true
             });
         }
         return accum;

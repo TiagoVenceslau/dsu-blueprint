@@ -134,6 +134,9 @@ export class WebServiceImp implements WebService {
             callback = envFileName as Callback;
             envFileName = undefined;
         }
+
+        let a = getConstantsApi()
+
         const url = this.constructUrlBase() + '/loader' + (envFileName ? ((envFileName as string).startsWith('/') ? envFileName : '/' + envFileName) : getConstantsApi().ENVIRONMENT_PATH);
 
         this.doGet(url, undefined, (err, data) => {
