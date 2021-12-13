@@ -350,12 +350,8 @@ export type DSUEditMetadata = {
     operation: string
     phase: string[],
     key?: string,
-    /**
-     * @todo grouped flag should be used instead of the hasBednGrouped that the group method sets later on. the existence of grouping alone is enough to know if they should be grouped or not
-     */
     grouped?: boolean,
     grouping?: string
-    hasBeenGrouped?: boolean,
     dsuPath: string
     ,
 }
@@ -401,8 +397,8 @@ export function dsuFile(dsuPath?: string) {
         }
 
         const readHandler: DSUEditingHandler = function<T extends DBModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, obj: {}, dsu: DSU, decorator: DSUEditMetadata, callback: DSUCallback<T>): void {
-            const {props, prop, hasBeenGrouped} = decorator;
-            const {dsuPath} = props;
+            const {props, prop} = decorator;
+            const {dsuPath, grouped} = props;
             dsu.readFile(dsuPath, (err: Err, data: any) => {
                 if (err || !data)
                     return criticalCallback(err || new Error("Missing Data"), callback);
@@ -414,7 +410,7 @@ export function dsuFile(dsuPath?: string) {
 
                 let resultingObj: {[indexer: string]: any} = {};
 
-                if (hasBeenGrouped)
+                if (grouped)
                     resultingObj = data;
                 else
                     resultingObj[prop] = data;

@@ -399,13 +399,14 @@ export function createObjectToValueChain(obj: {[indexer: string]: any}, chain: s
  */
 export function groupDecorators(model: DSUModel, decorators: DSUEditDecorator[]): GroupedDecorators{
     return decorators.reduce((accum: any, dec: DSUEditDecorator) => {
-        if (!dec.props.grouped){
+        if (!dec.props || !dec.props.key)
+            throw new CriticalError(`Missing Decorator properties`);
+
+        if (!dec.props.grouping){
             accum.single = accum.single || [];
             accum.single.push(dec)
             return accum;
         }
-        if (!dec.props || !dec.props.key || !dec.props.grouping)
-            throw new CriticalError(`Missing Decorator properties`);
 
         accum.grouped = accum.grouped || {};
 
@@ -413,8 +414,7 @@ export function groupDecorators(model: DSUModel, decorators: DSUEditDecorator[])
 
         if (decorators.filter(d => d.props.grouping === dec.props.grouping).length === 1){
             accum.grouped[dec.props.key][dec.props.grouping] = Object.assign({}, dec, {
-                value:  model[dec.prop],
-                hasBeenGrouped: false
+                value:  model[dec.prop]
             });
             return accum;
         }
@@ -426,9 +426,9 @@ export function groupDecorators(model: DSUModel, decorators: DSUEditDecorator[])
         } else {
             const newPropValue: {[indexer: string] : any} = {};
             newPropValue[dec.prop] = model[dec.prop];
+            dec.props.grouped = true;
             accum.grouped[dec.props.key][dec.props.grouping] = Object.assign({}, dec, {
-                value: newPropValue,
-                hasBeenGrouped : true
+                value: newPropValue
             });
         }
         return accum;
