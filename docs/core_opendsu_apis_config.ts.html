@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,7 +7,7 @@
   
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Declarative OpenDSU creation and management API OpenDSURepositoryDeterministic<T></title>
+  <title>Declarative OpenDSU creation and management API core/opendsu/apis/config.ts</title>
 
   <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -97,172 +99,66 @@
         <div class="core" id="main-content-wrapper">
             <div class="content">
                 <header class="page-title">
-                    <p>Class</p>
-                    <h1>OpenDSURepositoryDeterministic<T></h1>
+                    <p>Source</p>
+                    <h1>core/opendsu/apis/config.ts</h1>
                 </header>
                 
 
 
 
-
-<section>
-
-<header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>
-            <span class="ancestors"><a href="core.repository.html">.repository</a>.</span>OpenDSURepositoryDeterministic<T><span class="signature">()</span><span class="type-signature"></span></h2>
-        
-    
-</header>
-
-<article>
-    <div class="container-overview">
-    
-        
-            <div class='vertical-section'>
-                <div class="members">
-                    <div class="member">
-                        <div class=name>
-                            <span class="tag">Constructor</span>
-                        </div>
-                        
-
-
-    
-    <h4 class="name" id="OpenDSURepositoryDeterministic<T>">
-        <a class="href-link" href="#OpenDSURepositoryDeterministic<T>">#</a>
-        
-        <span class="code-name">
-            
-                new OpenDSURepositoryDeterministic<T><span class="signature">()</span><span class="type-signature"></span>
-            
-        </span>
-    </h4>
-    
-
-    
-    
-    <div class="description">
-        <script type="text/javascript" src="https://unpkg.com/mermaid@7.1.0/dist/mermaid.min.js"></script>
-    </div>
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-        <dt class="important tag-deprecated">Deprecated:</dt><dd class="yes-def tag-deprecated"><ul class="dummy"><li>Yes</li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-    
-
-    
-
-    
-
-    
-        <p class="tag-source">
-            <a href="core_repository_repository.ts.html" class="button">View Source</a>
-            <span>
-                <a href="core_repository_repository.ts.html">core/repository/repository.ts</a>, <a href="core_repository_repository.ts.html#line168">line 168</a>
-            </span>
-        </p>
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                    </div>
-                </div>
-            </div>
-        
-    
-    </div>
-    
-    
-        <h3 class="subsection-title">Extends</h3>
-
-        
-
-
-    <ul>
-        <li>AsyncRepositoryImp.&lt;<a href="global.html#T">T</a>></li>
-    </ul>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import {Callback} from "@tvenceslau/db-decorators/lib";
+
+/**
+ * Interface representing the OpenDSU Config Api Space
+ *
+ * @interface ConfigApi
+ * @memberOf core.opendsu.api
+ */
+export interface ConfigApi {
+    /**
+     *
+     * @param key
+     * @param value
+     */
+    set(key: string, value: any): void;
+
+    /**
+     *
+     * @param key
+     */
+    get(key: string): any;
+
+    /**
+     *
+     * @param key
+     * @param value
+     * @param callback
+     */
+    setEnv(key: string, value: any, callback: Callback): void,
+
+    /**
+     *
+     * @param key
+     * @param callback
+     */
+    getEnv(key: string, callback: Callback): void;
+
+    /**
+     *
+     * @param environment
+     */
+    autoconfigFromEnvironment(environment: {}): void,
+
+    /**
+     *
+     */
+    disableLocalVault(): void
+}</code></pre>
+        </article>
+    </section>
 
 
 

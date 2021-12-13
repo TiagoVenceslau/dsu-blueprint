@@ -32,33 +32,27 @@ export enum DsuKeys {
  *
  *   Sequence Diagram for a Single {@link DSU} creation:
  *   @mermaid
- *   sequenceDiagram
- *   participant System
- *   participant Repository
- *   participant RepositoryLoop
- *   participant RepositoryUtils
- *   participant DSUPhaseLoop
- *   participant DSU
- *   System->>Repository:create(DSUModel, ...keyArgs, callback)
- *   Repository->>RepositoryLoop:onCreate(DSUModel, callback)
- *   RepositoryLoop->>RepositoryUtils.createFromDecorators(DSUModel)
- *   RepositoryUtils->>DSUPhaseLoop.handleCreationDecorators(DSUModel, decorators, callback)
- *   loop CreationDecorators
- *      DSUPhaseLoop->>Repository:create(DSUModel, ...keyArgs, callback)
- *      Repository->>DSUPhaseLoop: Updated DSUModel, created DSU
- *      DSUPhaseLoop->>DSUPhaseLoop: Cache DSU
- *   end
- *   DSUPhaseLoop->>RepositoryUtils: Updated DSUModel and cached DSUs
- *   RepositoryUtils->>DSUPhaseLoop.handleClassDecorators(DSUModel, decorators, callback);
- *   DSUPhaseLoop->>RepositoryUtils: Updated DSUModel and DSU
- *   RepositoryUtils->>DSUPhaseLoop.handleEditDecorators(DSUModel, cachedDSUs, dsu, decorators, callback)
- *   loop EditDecorators
- *      DSUPhaseLoop->>DSU.edit()
- *   end
- *   DSUPhaseLoop->>RepositoryUtils: Final DSUModel, DSU and KeySSI
- *   RepositoryUtils->>RepositoryLoop.afterCreate(DSUModel, DSU, KeySSI, callback)
- *   RepositoryLoop->>Repository: Final DSUModel, DSU and KeySSI
- *   RepositoryLoop->>System: Final DSUModel, DSU and KeySSI
+ *      sequenceDiagram
+ *          System->>Repository:create(DSUModel, ...keyArgs, callback)
+ *          Repository->>RepositoryLoop:onCreate(DSUModel, callback)
+ *          RepositoryLoop->>RepositoryUtils.createFromDecorators(DSUModel)
+ *          RepositoryUtils->>DSUPhaseLoop:handleCreationDecorators(DSUModel, decorators, callback)
+ *          loop CreationDecorators
+ *             DSUPhaseLoop->>Repository:create(DSUModel, ...keyArgs, callback)
+ *             Repository->>DSUPhaseLoop: Updated DSUModel, created DSU
+ *             DSUPhaseLoop->>DSUPhaseLoop: Cache DSU
+ *          end
+ *          DSUPhaseLoop->>RepositoryUtils: Updated DSUModel and cached DSUs
+ *          RepositoryUtils->>DSUPhaseLoop:handleClassDecorators(DSUModel, decorators, callback);
+ *          DSUPhaseLoop->>RepositoryUtils: Updated DSUModel and DSU
+ *          RepositoryUtils->>DSUPhaseLoop:handleEditDecorators(DSUModel, cachedDSUs, dsu, decorators, callback)
+ *          loop EditDecorators
+ *             DSUPhaseLoop->>DSU:edit()
+ *          end
+ *          DSUPhaseLoop->>RepositoryUtils: Final DSUModel, DSU and KeySSI
+ *          RepositoryUtils->>RepositoryLoop:afterCreate(DSUModel, DSU, KeySSI, callback)
+ *          RepositoryLoop->>Repository: Final DSUModel, DSU and KeySSI
+ *          Repository->>System: Final DSUModel, DSU and KeySSI
  *
  *  * Note:
  *      - RepositoryLoop: Set of hooks one can use to attach functionality ('on'/'after' based decorators):
@@ -66,7 +60,7 @@ export enum DsuKeys {
  *          - onRead: Not used;
  *          - onDelete: Not used;
  *          - onUpdate: Used to update server bound properties on the model and perform static, dynamic and versioned validation;
- *          - similar implementations for afterCreate, afterRead, afterDelete and afterUpdate...
+ *          - analog implementations for afterCreate, afterRead, afterDelete and afterUpdate...
  *      - RepositoryUtils: Functional Library Repositories depend on;
  *      - DSUPhaseLoop: Order in which the different decorators ares processed during a DSU Blueprint creation/update/read/delete process:
  *          - Creation decorators: property decorators that create new DSUs like {@link dsu}. Since these are nested, these run first and their success is mandatory to continue the operation;
