@@ -13,7 +13,7 @@ import {
     all,
     Callback,
     criticalCallback,
-    DBOperations,
+    DBOperations, debug,
     Err,
     ModelCallback,
     OperationKeys
@@ -221,12 +221,15 @@ export function wallet(app: string, derive: boolean = true) {
     }
 }
 
-export function environment(){
+export function environment(fileName: string = "environment.js"){
     return (target: any, propertyKey: string) => {
+        const name = target.constructor.name;
         const metadata: DSUPreparationMetadata = {
             operation: DSUOperation.PREPARATION,
             phase: DBOperations.CREATE,
-            prop: propertyKey
+            dsu: name,
+            fileName: fileName,
+            prop: propertyKey,
         }
 
         Reflect.defineMetadata(
@@ -236,10 +239,10 @@ export function environment(){
             propertyKey
         );
 
-        dsuFile(getConstantsApi().ENVIRONMENT_PATH)(target, propertyKey);
+        dsuFile(fileName)(target, propertyKey);
 
         const createHandler: DSUPreparationHandler = function<T extends DSUModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, model: T, decorator: DSUPreparationMetadata, callback: ModelCallback<T>): void {
-            const {prop, app} = decorator;
+            const {prop, fileName} = decorator;
 
             let codeProp = getOpenDSU().constants.CODE_FOLDER;
             codeProp = codeProp.startsWith('/') ? codeProp.substring(1) : codeProp;
@@ -247,23 +250,25 @@ export function environment(){
             const decorators: {prop: string | symbol, decorators: any[]} | undefined = getPropertyDecorators(DsuKeys.REFLECT, model, codeProp, true);
             if (!decorators)
                 return criticalCallback(`Could not find wallet decorator`, callback);
-            const walletDec = decorators.decorators.find(d => d.prop === DsuKeys.WALLET);
+            const walletDec = decorators.decorators.find(d => d.key === DsuKeys.WALLET);
             if (!walletDec)
                 return criticalCallback(`Could not find wallet decorator`, callback);
 
-            getWebService().getFile(app, "seed", (err, result?: any) => {
-                if (err || !result)
-                    return criticalCallback(err || new Error(`No plausible response received from server`), callback);
+            const appName = walletDec.props.appName;
 
-                try {
-                    result = JSON.parse(result);
-                } catch (e) {
-                    return criticalCallback(e, callback);
-                }
+            const ws = getWebService({
+                walletPath: appName
+            });
+
+            all(`Retrieving Environment definition {0} for App {1}`, getConstantsApi().ENVIRONMENT_PATH, appName);
+            ws.getEnvironmentFile(fileName, (err, env) => {
+                if (err || !env)
+                    return criticalCallback(err || new Error("Missing environment"), callback);
+                debug(`Environment definition for App {0} is {1}`, appName, env);
 
                 // @ts-ignore
-                model[prop] = result;
-                callback(undefined, model as T);
+                model[prop] = env;
+                callback(undefined, model);
             });
         }
 

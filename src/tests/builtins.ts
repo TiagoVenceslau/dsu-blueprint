@@ -1,6 +1,6 @@
 import {constructFromObject} from "@tvenceslau/db-decorators/lib";
 import {email} from "@tvenceslau/decorator-validation/lib";
-import {DbDsuBlueprint, dsu, DSUBlueprint, dsuFile, DSUModel, fromCache, wallet} from "../core";
+import {DbDsuBlueprint, dsu, DSUBlueprint, dsuFile, DSUModel, environment, fromCache, wallet} from "../core";
 import {addFileFS, addFolderFS, dsuFS} from "../fs";
 import {KeySSIType} from "../core/opendsu/apis/keyssi";
 
@@ -97,6 +97,9 @@ export class SSAppWebDsuBlueprint extends DSUModel{
 
     @wallet("dsu-explorer")
     code?: string = undefined;
+
+    @environment()
+    environment?: {} = undefined;
 
     constructor(blueprint?: SSAppWebDsuBlueprint | {}) {
         super();

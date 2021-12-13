@@ -1,5 +1,6 @@
 import {Callback, criticalCallback, CriticalError, Err} from "@tvenceslau/db-decorators/lib";
 import {get$$, getConstantsApi, getHttpApi, getSystemApi} from "../opendsu";
+import {parseEnvJS} from "../../fs";
 
 /**
  * @type WebServiceOptions
@@ -44,6 +45,7 @@ export interface WebService {
     doGet(url: string, options: {} | undefined, callback: Callback): void;
     getFile(appName: string, fileName: string, callback: Callback): void;
     getFolderContentAsJSON(innerFolder: string, callback: Callback): void;
+    getEnvironmentFile(envFileName?: string | Callback, callback?: Callback): void;
 }
 
 /**
@@ -113,8 +115,26 @@ export class WebServiceImp implements WebService {
         }
     }
 
-    getAppSeedUrl(appName: string, slot: "primary" | "secondary"): string {
-        return this.constructUrlBase(appName) + '/' + (slot === "primary" ? this.options.primaryslot : this.options.secondaryslot);
+    getEnvironmentFile(envFileName?: string | Callback, callback?: Callback): void {
+        if (!callback){
+            callback = envFileName as Callback;
+            envFileName = undefined;
+        }
+        const url = this.constructUrlBase() + '/loader' + (envFileName ? ((envFileName as string).startsWith('/') ? envFileName : '/' + envFileName) : getConstantsApi().ENVIRONMENT_PATH);
+
+        this.doGet(url, undefined, (err, data) => {
+            if (err || !data)
+                return criticalCallback(err || new Error(`Missing Dta`), callback as Callback);
+            let env;
+            try {
+                env = parseEnvJS(data.toString())
+            } catch (e) {
+                return criticalCallback(e, callback as Callback);
+            }
+
+            (callback as Callback)(undefined, env);
+        });
+
     }
 
     /**

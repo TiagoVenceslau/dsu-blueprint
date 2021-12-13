@@ -123,7 +123,7 @@ export function getPath(): path {
  *
  * @memberOf filesystem
  */
-export function parseEnvJS(strEnv: string): {}{
+export function parseEnvJS(strEnv: string): {} {
     return JSON.parse(strEnv.replace(/^export\sdefault\s/, ''));
 }
 
