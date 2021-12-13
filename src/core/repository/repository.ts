@@ -68,10 +68,6 @@ export type DSUEditDecorator = {
 }
 
 /**
- * @typedef T extends DSUModel
- */
-
-/**
  * Provide the Base implementation to a global single OpenDSU Repository implementation
  * capable of, via the decorated properties of {@link DSUModel}s, handle all of the OpenDSU API related to CRUD operations
  * in a single, scalable, maintainable and declarative fashion, supporting:
@@ -80,6 +76,7 @@ export type DSUEditDecorator = {
  *  - Controlled accesses: Ability easily to add business logic at key points of any CRUD operations
  *
  * @typedef T extends DSUModel
+ *
  * @class OpenDSURepository<T>
  * @extends AsyncRepositoryImp<T>
  *
@@ -249,35 +246,5 @@ export class OpenDSURepository<T extends DSUModel> extends AsyncRepositoryImp<T>
                 callback(undefined, updatedModel, updatedDsu, key);
             });
         });
-    }
-}
-
-/**
- * @class OpenDSURepositoryDeterministic<T>
- * @extends AsyncRepositoryImp<T>
- *
- * @memberOf core.repository
- *
- * @deprecated
- */
-export abstract class OpenDSURepositoryDeterministic<T extends DSUModel> extends OpenDSURepository<T>{
-
-    abstract generateKey(model: T, ...args: any[]): KeySSI;
-
-    readDeterministic(model: T, ...args: any[]){
-        const callback: ModelCallback<T> = args.pop();
-        if (typeof callback !== 'function')
-            throw new LoggedError(`Missing callback function`);
-        let keySSI: KeySSI;
-        try {
-            keySSI = this.generateKey(model, ...args);
-        } catch (e){
-            return errorCallback(e as Error, callback);
-        }
-
-        if (!keySSI)
-            return errorCallback(`No KeySSI was generated`, callback);
-
-        this.read(keySSI, callback);
     }
 }

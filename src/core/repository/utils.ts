@@ -307,15 +307,6 @@ export function handleCreationPropertyDecorators<T extends DSUModel>(this: OpenD
 }
 
 /**
- * given a chain like 'a.b.c', and a model:
- * @example
- *     {
- *         a: {
- *             b: {
- *                 c: "value"
- *             }
- *         }
- *     }
  *
  * this method will return "value"
  *
@@ -328,6 +319,16 @@ export function handleCreationPropertyDecorators<T extends DSUModel>(this: OpenD
  * @function getValueFromValueChain
  *
  * @memberOf core.repository
+ *
+ * @example
+ * given a chain like 'a.b.c', and a model:
+ *     {
+ *         a: {
+ *             b: {
+ *                 c: "value"
+ *             }
+ *         }
+ *     }
  */
 export function getValueFromValueChain(model: {[indexer: string]: any}, ...chains: string[]): any[]{
     return chains.map(c => {
@@ -368,6 +369,17 @@ export function getValueFromValueChain(model: {[indexer: string]: any}, ...chain
  * @function createObjectToValueChain
  *
  * @memberOf core.repository
+ *
+ * @example
+ * given a {@param chain} like 'a.b.c' and an {@param obj} like {} and a value 'value'
+ * will output:
+ *     {
+ *         a: {
+ *             b: {
+ *                 c: 'value'
+ *             }
+ *         }
+ *     }
  */
 export function createObjectToValueChain(obj: {[indexer: string]: any}, chain: string, value: any): {} {
     const split = chain.split(".");
@@ -394,7 +406,6 @@ export function createObjectToValueChain(obj: {[indexer: string]: any}, chain: s
  * @param {string} [phase] defaults to {@link OperationKeys.CREATE}
  * @param {any[]} [args]
  *       The last arg will be considered to be the {@link DSUCallback<T>};
- *
  *
  * @function handleEditingPropertyDecorators
  *

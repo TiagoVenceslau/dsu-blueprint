@@ -1,5 +1,15 @@
 import {Err} from "@tvenceslau/db-decorators/lib";
 
+/**
+ * @namespace core.opendsu.api.oauth
+ * @memberOf core.opendsu.api
+ */
+
+/**
+ * @interface OAuthStorage
+ *
+ * @memberOf core.opendsu.api.oauth
+ */
 export interface OAuthStorage {
     get(key: string): any;
     getJSON(key: string): {}
@@ -8,12 +18,22 @@ export interface OAuthStorage {
     remove(key: string):void;
 }
 
+/**
+ * @interface DecodedToken
+ *
+ * @memberOf core.opendsu.api.oauth
+ */
 export interface DecodedToken {
     header: string,
     payload: string,
     signature: any
 }
 
+/**
+ * @interface OIDC
+ *
+ * @memberOf core.opendsu.api.oauth
+ */
 export interface OIDC {
     setPeriodicRefreshTimeout(): void;
     periodicRefresh(): void;
@@ -39,6 +59,13 @@ export interface OIDC {
     resetAuthentication(err: Err): any;
 }
 
+/**
+ * Interface representing the OpenDSU 'oauth' Api Space
+ *
+ * @interface OAuthApi
+ *
+ * @memberOf core.opendsu.api
+ */
 export interface OAuthApi {
     createOIDC(options: {}): OIDC;
     getStorage: () => OAuthStorage;

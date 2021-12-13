@@ -2,6 +2,7 @@
  * Environment Types
  *
  * @interface EnvironmentTypes
+ *
  * @memberOf core.opendsu.api.constants
  */
 export interface EnvironmentTypes {

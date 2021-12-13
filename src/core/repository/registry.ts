@@ -29,6 +29,8 @@ export class DSUOperationRegistry implements IRegistry<DSUOperationHandler>{
      * @param {string} operation the {@link DBOpe}
      * @param {string} phase
      * @return DSUOperationHandler | undefined
+     *
+     * @memberOf DSUOperationRegistry
      */
     get<DSUOperationHandler>(targetName: string, propKey: string, operation: string, phase: string): DSUOperationHandler | undefined {
         try{
@@ -48,6 +50,8 @@ export class DSUOperationRegistry implements IRegistry<DSUOperationHandler>{
      * @param {DSUOperation} phase
      * @param {any} target
      * @param {string} propKey
+     *
+     * @memberOf DSUOperationRegistry
      */
     register<DSUOperationHandler>(handler: DSUOperationHandler, operation: string, phase: string, target: { [indexer: string]: any }, propKey: string | symbol): void {
         const name = target.constructor.name;
@@ -71,9 +75,10 @@ let actingDSUOperationsRegistry: IRegistry<DSUOperationHandler>;
 /**
  * Returns the current {@link DSUOperationRegistry}
  *
- * @function getDSUOperationSRegistry
- * 
  * @return IRegistry<DSUOperationHandler>, defaults to {@link DSUOperationRegistry}
+ *
+ * @function getDSUOperationSRegistry
+ *
  * @memberOf core.repository.registry
  */
 export function getDSUOperationsRegistry(): IRegistry<DSUOperationHandler> {
@@ -121,6 +126,8 @@ export class RepositoryRegistry implements IRegistry<OpenDSURepo>{
      *
      * @param {{new: DSUModel}} clazz
      * @return {OpenDSURepo | undefined}
+     *
+     * @memberOf RepositoryRegistry
      */
     get<OpenDSURepo>(clazz: {new(): DSUModel} | string): OpenDSURepo | undefined {
         const name = typeof clazz === 'string' ? clazz : (clazz.constructor ? clazz.constructor.name : clazz.name);
@@ -137,6 +144,8 @@ export class RepositoryRegistry implements IRegistry<OpenDSURepo>{
      * @param {{new: DSUModel}} clazz
      * @param {OpenDSURepoFactory} [repo]
      * @private
+     *
+     * @memberOf RepositoryRegistry
      */
     private instantiateRepo(clazz: {new(): DSUModel}, repo?: OpenDSURepoFactory): OpenDSURepository<DSUModel>{
         const name = clazz.constructor ? clazz.constructor.name : clazz.name;
@@ -157,6 +166,8 @@ export class RepositoryRegistry implements IRegistry<OpenDSURepo>{
      * @param {{new: DSUModel} | Function | string} clazz
      * @param {OpenDSURepoFactory} [repo]
      * @param {boolean} [isCustom] defaults to false
+     *
+     * @memberOf RepositoryRegistry
      */
     // @ts-ignore
     register<OpenDSURepo>(clazz: {new(): DSUModel} | string | Function, repo?: OpenDSURepoFactory, isCustom: boolean = false): void {

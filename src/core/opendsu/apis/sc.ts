@@ -3,7 +3,17 @@ import {DSU, GenericCallback, SimpleDSUCallback} from "../types";
 import {DSUDid} from "./w3cdid";
 import {KeySSI} from "./keyssi";
 
-export interface DSUSecurityContext{
+/**
+ * @namespace core.opendsu.api.sc
+ * @memberOf core.opendsu.api
+ */
+
+/**
+ * @interface DSUSecurityContext
+ *
+ * @memberOf core.opendsu.api.sc
+ */
+export interface DSUSecurityContext {
     registerDID(didDocument: DSUDid, callback: Callback): void
     addPrivateKeyForDID(didDocument: DSUDid, privateKey: any, callback: Callback): void;
     registerKeySSI(forDID: DSUDid, keySSI: KeySSI, callback: Callback): void;
@@ -19,6 +29,13 @@ export interface DSUSecurityContext{
     getSharedEnclaveDB(asDID: DSUDid, callback: Callback): void;
 }
 
+/**
+ * Interface representing the OpenDSU 'sc' Api Space
+ *
+ * @interface SecurityContextApi
+ *
+ * @memberOf core.opendsu.api
+ */
 export interface SecurityContextApi{
     getMainDSU(mainDSU: DSU): void,
     setMainDSU(callback: SimpleDSUCallback): void,

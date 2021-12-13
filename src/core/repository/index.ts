@@ -1,5 +1,6 @@
 /**
  * @namespace core.repository
+ * @memberOf core
  */
 
 

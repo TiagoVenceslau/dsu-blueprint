@@ -10,22 +10,15 @@ import {getDSUOperationsRegistry} from "./registry";
 import {handleKeyDerivation} from "./utils";
 
 /**
- * @namespace core.repository.decorators
- * @memberOf core.repository
- */
-
-/**
  * @typedef T extends DSUModel
  * @param {{new: T}} model
  * @param {boolean} [derive] if the received DSU should have its KeySSI derived. defaults to false
  * @param {string} [mountPath] defines the mount path. defaults to the property key
  * @param {DSUIOOptions} [mountOptions] options to be passed to OpenDSU for the mounting operation
  *
- * @function fromCache
+ * @decorator fromCache
  *
  * @category decorators
- *
- * @memberOf core.repository.decorators
  */
 export function fromCache<T extends DSUModel>(model: {new(): T}, derive: boolean | number = false, mountPath?: string, mountOptions?: DSUIOOptions) {
     return (target: T, propertyKey: string) => {
@@ -57,7 +50,7 @@ export function fromCache<T extends DSUModel>(model: {new(): T}, derive: boolean
             try {
                 keySSI = handleKeyDerivation(keySSI, derive);
             } catch (e) {
-                return criticalCallback(e, callback);
+                return criticalCallback(e as Error, callback);
             }
 
             parentDsu.mount(dsuPath, keySSI.getIdentifier(), options, (err) => {
@@ -74,11 +67,9 @@ export function fromCache<T extends DSUModel>(model: {new(): T}, derive: boolean
 /**
  * Defines a class as a DSU Repository (makes it injectable)
  *
- * @function dsuRepository
+ * @decorator dsuRepository
  *
  * @category decorators
- *
- * @memberOf core.repository.decorators
  */
 export function dsuRepository(...args: any[]){
     return (original: Function) => {

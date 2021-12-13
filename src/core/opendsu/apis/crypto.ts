@@ -3,15 +3,43 @@ import {GenericCallback} from "../types";
 import {DSUDid} from "./w3cdid";
 import {KeySSI, SeedSSI, sReadSSI} from "./keyssi";
 
+/**
+ * @namespace core.opendsu.api.crypto
+ * @memberOf core.opendsu.api
+ */
+
+/**
+ * @interface AuthToken
+ * @memberOf core.opendsu.api.crypto
+ */
 export interface AuthToken {}
 
+/**
+ * @interface JWT
+ * @memberOf core.opendsu.api.crypto
+ */
 export interface JWT {
 
 }
 
+/**
+ * @typedef DIDCallback
+ * @memberOf core.opendsu.api.crypto
+ */
 export type DIDCallback = GenericCallback<DSUDid>;
+/**
+ * @typedef TokenCallback
+ * @memberOf core.opendsu.api.crypto
+ */
 export type TokenCallback = GenericCallback<AuthToken>;
 
+/**
+ * Interface representing the OpenDSU 'crypto' Api Space
+ *
+ * @interface CryptoApi
+ *
+ * @memberOf core.opendsu.api
+ */
 export interface CrypoApi {
     getCryptoFunctionForKeySSI(keySSI: KeySSI, crytoFunctionTime: any): void;
     // /**

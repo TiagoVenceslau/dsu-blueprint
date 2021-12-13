@@ -3,6 +3,11 @@ import {maxlength, minlength, required} from "@tvenceslau/decorator-validation/l
 import {DSUBlueprint, DSUModel} from "../core";
 import {KeySSIType} from "../core/opendsu/apis/keyssi";
 
+/**
+ * @class ArrayDSUModel
+ *
+ * @category Tests
+ */
 @DSUBlueprint(undefined, KeySSIType.ARRAY, undefined, undefined, true, "createdOn")
 export class ArrayDSUModel extends DSUModel{
 

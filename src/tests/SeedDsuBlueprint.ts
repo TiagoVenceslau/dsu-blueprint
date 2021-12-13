@@ -2,6 +2,11 @@ import {constructFromObject, DBOperations, readonly, timestamp} from "@tvencesla
 import {maxlength, minlength, required, max, min} from "@tvenceslau/decorator-validation/lib";
 import {DSUBlueprint, dsuFile, DsuKeys, DSUModel} from "../core";
 
+/**
+ * @class SeedDSUBlueprint
+ *
+ * @category Tests
+ */
 @DSUBlueprint("default")
 export class SeedDSUBlueprint extends DSUModel{
 

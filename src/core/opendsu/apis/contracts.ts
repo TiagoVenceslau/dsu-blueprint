@@ -1,5 +1,12 @@
 import {Callback} from "@tvenceslau/db-decorators/lib";
 
+/**
+ * Interface representing the OpenDSU 'contracts' Api Space
+ *
+ * @interface ContractsApi
+ *
+ * @memberOf core.opendsu.api
+ */
 export interface ContractsApi {
     generateSafeCommand(domain: string, contractName: string, methodName: string, params: any, timestamp: any, callback: Callback): void;
     generateNoncedCommand(signerDID: any, domain: string, contractName: string, methodName: string, params: any, timestamp: any, callback: Callback): void;

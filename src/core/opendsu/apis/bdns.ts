@@ -1,5 +1,12 @@
 import {Callback} from "@tvenceslau/db-decorators/lib";
 
+/**
+ * Interface representing the OpenDSU 'bdns' Api Space
+ *
+ * @interface BdnsApi
+ *
+ * @memberOf core.opendsu.api
+ */
 export interface BdnsApi {
     getRawInfo(dlDomain: string, callback: Callback): void;
     getBrickStorages(dlDomain: string, callback: Callback): void;

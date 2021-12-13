@@ -1,5 +1,15 @@
 import {DSU, ErrCallback, ObjectCallback} from "../types";
 
+/**
+ * @namespace core.opendsu.api.storage
+ * @memberOf core.opendsu.api
+ */
+
+/**
+ * @interface DSUStorage
+ *
+ * @memberOf core.opendsu.api.storage
+ */
 export interface DSUStorage extends DSU {
     getObject(path: string, callback: ObjectCallback): void;
     getItem(path: string, callback: ObjectCallback): void;
@@ -12,6 +22,13 @@ export interface DSUStorage extends DSU {
     removeFiles(paths: string[], callback: ErrCallback): void;
 }
 
+/**
+ * Interface representing the OpenDSU 'storage' Api Space
+ *
+ * @interface StorageApi
+ *
+ * @memberOf core.opendsu.api
+ */
 export interface StorageApi {
     getStorage: () => DSUStorage;
 }

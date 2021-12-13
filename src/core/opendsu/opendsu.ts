@@ -1,7 +1,7 @@
 import {CriticalError} from "@tvenceslau/db-decorators/lib";
-import {DSUAnchoringOptions, OpenDSU} from "./types";
+import {OpenDSU} from "./types";
 import {ResolverApi} from "./apis/resolver";
-import {KeyssiApi, KeySSIType} from "./apis/keyssi";
+import {KeyssiApi} from "./apis/keyssi";
 import {HttpApi} from "./apis/http";
 import {BdnsApi, ConfigApi, ConstantsApi, CrypoApi, DBApi, EnclaveApi, SecurityContextApi, SystemApi} from "./apis";
 import {loadDefaultKeySSIFactories} from "./factory";
@@ -13,7 +13,10 @@ let openDSU: OpenDSU;
  *
  * @return OpenDSU the {@link OpenDSU} object;
  * @throws {CriticalError} when it fails to load
- * @namespace memberOf core.opendsu
+ *
+ * @function getOpenDSU
+ *
+ * @memberOf core.opendsu
  */
 export function getOpenDSU(): OpenDSU {
     if (!openDSU){
@@ -33,7 +36,10 @@ let resolver: ResolverApi;
 /**
  * @return ResolverApi the {@link ResolverApi} object;
  * @throws {CriticalError} when it fails to load
- * @namespace OpenDSU
+ *
+ * @function geResolverApi
+ *
+ * @memberOf core.opendsu
  */
 export function getResolverApi(): ResolverApi{
     if (!resolver)
@@ -51,7 +57,10 @@ let keyssi: KeyssiApi;
 /**
  * @return KeyssiApi the {@link KeyssiApi} object;
  * @throws {CriticalError} when it fails to load
- * @namespace OpenDSU
+ *
+ * @function getKeySSIApi
+ *
+ * @memberOf core.opendsu
  */
 export function getKeySSIApi(): KeyssiApi{
     if (!keyssi)
@@ -69,7 +78,10 @@ let $$Cache: any = undefined;
 /**
  * @return any the OpenDSU $$ object;
  * @throws {CriticalError} when it fails to load
- * @namespace OpenDSU
+ *
+ * @function get$$
+ *
+ * @memberOf core.opendsu
  */
 export function get$$(){
     if (!$$Cache)
@@ -88,7 +100,10 @@ let httpApi: HttpApi;
 /**
  * @return HttpApi
  * @throws {CriticalError} when it fails to load
- * @namespace OpenDSU
+ *
+ * @function getHttpApi
+ *
+ * @memberOf core.opendsu
  */
 export function getHttpApi(): HttpApi{
     if (!httpApi)
@@ -106,7 +121,10 @@ let scApi: SecurityContextApi;
 /**
  * @return SecurityContextApi
  * @throws {CriticalError} when it fails to load
- * @namespace OpenDSU
+ *
+ * @function getSCApi
+ *
+ * @memberOf core.opendsu
  */
 export function getSCApi(): SecurityContextApi{
     if (!scApi)
@@ -124,7 +142,10 @@ let systemApi: SystemApi;
 /**
  * @return SystemApi
  * @throws {CriticalError} when it fails to load
- * @namespace OpenDSU
+ *
+ * @function getSystemApi
+ *
+ * @memberOf core.opendsu
  */
 export function getSystemApi(): SystemApi {
     if (!systemApi)
@@ -142,7 +163,10 @@ let constantsApi: ConstantsApi;
 /**
  * @return ConstantsApi
  * @throws {CriticalError} when it fails to load
- * @namespace OpenDSU
+ *
+ * @function getConstantsApi
+ *
+ * @memberOf core.opendsu
  */
 export function getConstantsApi(): ConstantsApi {
     if (!constantsApi)
@@ -160,7 +184,10 @@ let BDNSApi: BdnsApi;
 /**
  * @return BdnsApi
  * @throws {CriticalError} when it fails to load
- * @namespace OpenDSU
+ *
+ * @function getBdnsApi
+ *
+ * @memberOf core.opendsu
  */
 export function getBdnsApi(): BdnsApi {
     if (!BDNSApi)
@@ -178,7 +205,10 @@ let configApi: ConfigApi;
 /**
  * @return ConfigApi
  * @throws {CriticalError} when it fails to load
- * @namespace OpenDSU
+ *
+ * @function getConfigApi
+ *
+ * @memberOf core.opendsu
  */
 export function getConfigApi(): ConfigApi {
     if (!configApi)
@@ -196,7 +226,10 @@ let dbApi: DBApi;
 /**
  * @return DBApi
  * @throws {CriticalError} when it fails to load
- * @namespace OpenDSU
+ *
+ * @function getDBApi
+ *
+ * @memberOf core.opendsu
  */
 export function getDBApi(): DBApi {
     if (!dbApi)
@@ -214,7 +247,10 @@ let enclaveApi: EnclaveApi;
 /**
  * @return EnclaveApi
  * @throws {CriticalError} when it fails to load
- * @namespace OpenDSU
+ *
+ * @function getEnclaveApi
+ *
+ * @memberOf core.opendsu
  */
 export function getEnclaveApi(): EnclaveApi {
     if (!enclaveApi)
@@ -232,7 +268,10 @@ let cryptoApi: CrypoApi;
 /**
  * @return CryptoApi
  * @throws {CriticalError} when it fails to load
- * @namespace OpenDSU
+ *
+ * @function getCryptoApi
+ *
+ * @memberOf core.opendsu
  */
 export function getCrypoApi(): CrypoApi {
     if (!cryptoApi)

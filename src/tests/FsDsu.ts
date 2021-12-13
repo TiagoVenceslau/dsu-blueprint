@@ -2,6 +2,11 @@ import {constructFromObject, DBOperations, readonly, timestamp} from "@tvencesla
 import {maxlength, minlength, required} from "@tvenceslau/decorator-validation/lib";
 import {DSUBlueprint, DSUModel} from "../core";
 
+/**
+ * @class FSDSUModel
+ *
+ * @category Tests
+ */
 @DSUBlueprint(undefined)
 export class FSDSUModel extends DSUModel{
 

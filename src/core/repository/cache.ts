@@ -26,6 +26,8 @@ export class DSUCache<T extends DSUModel>{
      * @param {DSU} dsu
      * @param {KeySSI} keySSI
      * @param {string} [parent] only meant to be used by bound objects resulting from {@link DSUCache#bindToParent}
+     *
+     * @memberOf DSUCache
      */
     cache(obj: T, propKey: string, dsu: DSU, keySSI: KeySSI, parent?: string): void{
         const name = obj.constructor.name;
@@ -42,6 +44,8 @@ export class DSUCache<T extends DSUModel>{
      * @param {T | string} obj
      * @param {string} propKey
      * @param {string} [parent] only meant to be used by bound objects resulting from {@link DSUCache#bindToParent} to reverse the hierarchical structure
+     *
+     * @memberOf DSUCache
      */
     get(obj: T | string, propKey: string, parent?: string): {dsu: DSU, keySSI: KeySSI}[] | undefined {
         const name: string = typeof  obj === 'string' ? obj : (obj.name || obj.constructor.name);
@@ -66,6 +70,8 @@ export class DSUCache<T extends DSUModel>{
      * @param {T} parentModel
      * @param {string} propKey
      * @return a {@link isDSUCache} validatable {@link DSUCache} bound to the {@param parentModel}s name and {@prop propKey} to enable recursive storage
+     *
+     * @memberOf DSUCache
      */
     bindToParent(parentModel: T, propKey: string): DSUCache<T> {
         const self: DSUCache<T> = this;

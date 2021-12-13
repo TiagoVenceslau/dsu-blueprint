@@ -1,5 +1,11 @@
 import {Callback, Err} from "@tvenceslau/db-decorators/lib";
-
+/**
+ * Interface representing the OpenDSU 'error'' Api Space
+ *
+ * @interface ErrorApi
+ *
+ * @memberOf core.opendsu.api
+ */
 export interface ErrorApi {
     createOpenDSUErrorWrapper(message: string, err: Err, otherErrors?: []): void;
     reportUserRelevantError(message: string): void;

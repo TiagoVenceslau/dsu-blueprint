@@ -116,10 +116,9 @@ export type DSUClassCreationMetadata = {
  * @prop {boolean} [batchMode] defaults to true. decides if batchMode is meant to be used for this DSU
  * @prop {string[]} [props] any object properties that must be passed to the KeySSI generation function (eg: for Array SSIs)
  *
- * @function DSUBlueprint
+ * @decorator DSUBlueprint
  *
  * @category Decorators
- * @memberOf core.model
  */
 export const DSUBlueprint = (domain: string | undefined = undefined, keySSIType: KeySSIType = KeySSIType.SEED, specificKeyArgs: KeySSISpecificArgs | undefined = undefined, options: DSUAnchoringOptions | undefined = undefined, batchMode: boolean = true, ...props: string[]) => (original: Function) => {
     getRepoRegistry().register(original.name);
@@ -218,10 +217,9 @@ export type DSUCreationMetadata = {
  * @param {string[]} [modelArgs] optional model KeySSI generation params
  * @param {any[]} [args] optional KeySSI generation params
  *
- * @function
+ * @decorator dsu
  *
  * @category Decorators
- * @memberOf core.model
  */
 export function dsu<T extends DSUModel>(dsu: {new(): T}, derive: boolean | number = false, mountPath?: string, mountOptions?: DSUIOOptions, modelArgs?: string[], ...args: any[]) {
     getRepoRegistry().register<OpenDSURepository<T>>(dsu);
@@ -358,12 +356,13 @@ export type DSUEditMetadata = {
 }
 
 /**
+ * Writes the content of the Model property onto the DSU, in the chosen path
  *
  * @param {string} [dsuPath] defines the mount path. defaults to the property key
  *
  * @decorator dsuFile
- * @namespace decorators
- * @memberOf model
+ *
+ * @category Decorators
  */
 export function dsuFile(dsuPath?: string) {
     return (target: any, propertyKey: string) => {
@@ -436,9 +435,9 @@ export function dsuFile(dsuPath?: string) {
  * @param {DSUIOOptions} [options]
  * @param {any[]} [args] optional params. meant for extending decorators
  *
- * @decorator dsu
- * @namespace decorators
- * @memberOf model
+ * @decorator mount
+ *
+ * @category Decorators
  */
 export function mount(mountPath?: string, derive: boolean | number = false, options?: DSUIOOptions, ...args: any[]) {
     return (target: any, propertyKey: string) => {

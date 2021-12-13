@@ -4,11 +4,18 @@ import {ConstantsApi, get$$} from "../core/opendsu";
 import {DSUStorage} from "../core/opendsu/apis/storage";
 
 /**
+ * @namespace filesystem.utils
+ * @memberOf filesystem
+ */
+
+/**
  * utils method to 'fake' a DSUStorage
  *
  * @param {DSU} originalDsu
  *
- * @namespace utils
+ * @function impersonateDSUStorage
+ *
+ * @memberOf filesystem.utils
  */
 export function impersonateDSUStorage(originalDsu: DSU): DSUStorage {
     const dsu: DSUStorage = originalDsu as DSUStorage;
@@ -44,18 +51,21 @@ export function impersonateDSUStorage(originalDsu: DSU): DSUStorage {
 /**
  * cache of node's fs object
  *
- * @namespace filesystem.utils
- * @memberOF fil
+ * @memberOf filesystem.utils
  */
 let  _fileSystem: fs | undefined = undefined;
 
+/**
+ * @typedef FsOptions
+ * @memberOf filesystem.utils
+ */
 export type FsOptions = {encoding?: string, flag?: string, withFileTypes?: boolean};
 
 /**
  * Interface with the used node fs methods
  *
  * @interface fs
- * @namespace utils
+ * @memberOf filesystem.utils
  */
 export interface fs {
     readdir(path: string, options: FsOptions | undefined, callback: Callback): void;
@@ -70,8 +80,9 @@ export interface fs {
  *
  * @return {fs}
  *
- * 
- * @namespace utils
+ * @function getFS
+ *
+ * @memberOf filesystem.utils
  */
 export function getFS(): fs {
     if (get$$().environmentType !== 'nodejs')
@@ -83,9 +94,9 @@ export function getFS(): fs {
 /**
  * Interface with the used node path methods
  *
- * @interface fs
- * @namespace utils
- * @module filesystem
+ * @interface path
+ *
+ * @memberOf filesystem.utils
  */
 export interface path {
     sep: string;
@@ -103,9 +114,9 @@ let  _path: path | undefined = undefined;
  *
  * @return path
  *
- * 
- * @namespace utils
- * @module filesystem
+ * @function getPath
+ *
+ * @memberOf filesystem.utils
  */
 export function getPath(): path {
     if (get$$().environmentType !== 'nodejs')
@@ -121,7 +132,7 @@ export function getPath(): path {
  *
  * @function parseEnvJS
  *
- * @memberOf filesystem
+ * @memberOf filesystem.utils
  */
 export function parseEnvJS(strEnv: string): {} {
     return JSON.parse(strEnv.replace(/^export\sdefault\s/, ''));
@@ -136,7 +147,7 @@ export function parseEnvJS(strEnv: string): {} {
  *
  * @function parseEnvJS
  *
- * @memberOf filesystem
+ * @memberOf filesystem.utils
  */
 export function getEnvJs(app: string, pathToApps: string, callback: ObjectCallback){
     const appPath = getPath().join(process.cwd(), pathToApps, "trust-loader-config", app, "loader", "environment.js");

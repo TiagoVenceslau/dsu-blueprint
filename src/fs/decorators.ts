@@ -20,9 +20,9 @@ import {DsuFsKeys, FSOptions} from "./constants";
  * @param {string} key
  * @return string
  *
- * @function getFsKey
+ * @decorator getFsKey
  *
- * @memberOf filesystem
+ * @category Decorators
  */
 const getFsKey = (key: string) => DsuKeys.REFLECT + key;
 
@@ -33,10 +33,9 @@ const getFsKey = (key: string) => DsuKeys.REFLECT + key;
  * @param {string} [mountPath] defines the mount path, overriding the property name;
  * @param {string} [mountOptions] sets the {@link DSUIOOptions} fot the mount operation
  *
- * @function dsuFS
+ * @decorator dsuFS
  *
  * @category Decorators
- * @memberOf filesystem
  */
 export function dsuFS(app: string, derive: boolean = false, mountPath?: string, mountOptions?: DSUIOOptions) {
     return (target: any, propertyKey: string) => {
@@ -112,10 +111,9 @@ export function dsuFS(app: string, derive: boolean = false, mountPath?: string, 
  * @param {string} [dsuPath]  defines the path in the dsu where to store the file overriding the property name;
  * @param {string} [options] sets the {@link DSUIOOptions} fot the write operation
  *
- * @function addFileFS
+ * @decorator addFileFS
  *
  * @category Decorators
- * @memberOf filesystem
  */
 export function addFileFS(fsPath: string, dsuPath?: string, options?: DSUIOOptions) {
     return (target: any, propertyKey: string) => {
@@ -152,10 +150,9 @@ export function addFileFS(fsPath: string, dsuPath?: string, options?: DSUIOOptio
  * @param {string} [dsuPath]  defines the path in the dsu where to store the file overriding the property name;
  * @param {string} [options] sets the {@link DSUIOOptions} fot the write operation
  *
- * @function addFolderFS
+ * @decorator addFolderFS
  *
  * @category Decorators
- * @memberOf filesystem
  */
 export function addFolderFS(fsPath?: string, dsuPath?: string, options?: DSUIOOptions) {
     return (target: any, propertyKey: string) => {

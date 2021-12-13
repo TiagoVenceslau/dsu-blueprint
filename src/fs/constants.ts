@@ -1,10 +1,14 @@
 /**
+ * @namespace filesystem.constants
+ * @memberOf filesystem
+ */
+
+/**
  * Reflection Keys for FileSystem
  *
- * @constant
+ * @enum DsuFsKeys
  *
- * @category Constants
- * @memberOf filesystem
+ * @memberOf filesystem.constants
  */
 export const DsuFsKeys = {
     MOUNT_FS: "mountFS",
@@ -12,8 +16,8 @@ export const DsuFsKeys = {
     ADD_FOLDER_FS: 'addFolderFS'
 }
 /**
- * @const
- * @namespace constants
+ * @enum FSOptions
+ * @memberOf filesystem.constants
  */
 export const FSOptions  = {
     // publicSecretsKey: '-$Identity-',

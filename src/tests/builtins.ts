@@ -4,6 +4,11 @@ import {DbDsuBlueprint, dsu, DSUBlueprint, dsuFile, DsuKeys, DSUModel, environme
 import {addFileFS, addFolderFS, dsuFS} from "../fs";
 import {KeySSIType} from "../core/opendsu/apis/keyssi";
 
+/**
+ * @class IdDsuBlueprint
+ *
+ * @category Tests
+ */
 @DSUBlueprint(undefined, KeySSIType.SEED)
 export class IdDsuBlueprint extends DSUModel{
 
@@ -23,6 +28,11 @@ export class IdDsuBlueprint extends DSUModel{
     }
 }
 
+/**
+ * @class TestIdDsuBlueprint
+ *
+ * @category Tests
+ */
 @DSUBlueprint(undefined, KeySSIType.SEED)
 export class TestIdDsuBlueprint extends DSUModel{
 
@@ -46,6 +56,11 @@ export class TestIdDsuBlueprint extends DSUModel{
     }
 }
 
+/**
+ * @class ParticipantDsuBlueprint
+ *
+ * @category Tests
+ */
 @DSUBlueprint(undefined, KeySSIType.ARRAY)
 export class ParticipantDsuBlueprint extends DSUModel{
 
@@ -59,6 +74,11 @@ export class ParticipantDsuBlueprint extends DSUModel{
     }
 }
 
+/**
+ * @class BuildDsuBlueprint
+ *
+ * @category Tests
+ */
 @DSUBlueprint(undefined)
 export class BuildDsuBlueprint extends DSUModel{
 
@@ -80,6 +100,11 @@ export class BuildDsuBlueprint extends DSUModel{
     }
 }
 
+/**
+ * @class SSAppDsuBlueprint
+ *
+ * @category Tests
+ */
 @DSUBlueprint(undefined, KeySSIType.SEED)
 export class SSAppDsuBlueprint extends DSUModel{
 
@@ -105,6 +130,11 @@ export class SSAppDsuBlueprint extends DSUModel{
     }
 }
 
+/**
+ * @class SSAppWebDsuBlueprint
+ *
+ * @category Tests
+ */
 @DSUBlueprint(undefined, KeySSIType.WALLET, undefined, undefined, true, "id.id", "id.name", "id.address", "id.email")
 export class SSAppWebDsuBlueprint extends DSUModel{
 

@@ -1,6 +1,13 @@
 import {KeySSI} from "./keyssi";
 import {Callback} from "@tvenceslau/db-decorators/lib";
 
+/**
+ * Interface representing the OpenDSU 'anchoring' Api Space
+ *
+ * @interface AnchoringApi
+ *
+ * @memberOf core.opendsu.api
+ */
 export interface AnchoringApi {
     createAnchor(dsuKeySSI: KeySSI, callback: Callback): void;
     createNFT(nftKeySSI: KeySSI, callback: Callback): void;
