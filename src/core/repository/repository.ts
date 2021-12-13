@@ -77,8 +77,8 @@ export type DSUEditDecorator = {
  *
  * @typedef T extends DSUModel
  *
- * @class OpenDSURepository<T>
- * @extends AsyncRepositoryImp<T>
+ * @class OpenDSURepository
+ * @extends AsyncRepositoryImp
  *
  * @memberOf core.repository
  */

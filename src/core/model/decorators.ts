@@ -75,9 +75,6 @@ export type DSUClassCreationMetadata = {
  *  - Automatic serialization -> transmission -> deserialization;
  *  - Controlled accesses: Ability easily to add business logic at key points of any CRUD operations
  *
- *  @todo Because everything is declarative, the hash of the {@link DSUModel} class file string literal + the hash of the dsu-blueprint bundle file
- *  @todo can be used stored as DSU metadata and serve as proof of authenticity in theory. I guess if we store this lib.
- *
  * Supported {@link KeySSIType}s:
  *  - {@link KeySSIType.SEED}: Expects:
  *      - keySsiType: {@link KeySSIType.SEED};
@@ -119,6 +116,10 @@ export type DSUClassCreationMetadata = {
  * @decorator DSUBlueprint
  *
  * @category Decorators
+ *
+ * @todo
+ * Because everything is declarative, the hash of the {@link DSUModel} class file string literal + the hash of the dsu-blueprint bundle file
+ * can be used stored as DSU metadata and serve as proof of authenticity in theory. I guess if we store this lib.
  */
 export const DSUBlueprint = (domain: string | undefined = undefined, keySSIType: KeySSIType = KeySSIType.SEED, specificKeyArgs: KeySSISpecificArgs | undefined = undefined, options: DSUAnchoringOptions | undefined = undefined, batchMode: boolean = true, ...props: string[]) => (original: Function) => {
     getRepoRegistry().register(original.name);

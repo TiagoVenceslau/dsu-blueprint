@@ -18,7 +18,7 @@ import {handleKeyDerivation} from "./utils";
  *
  * @decorator fromCache
  *
- * @category decorators
+ * @category Decorators
  */
 export function fromCache<T extends DSUModel>(model: {new(): T}, derive: boolean | number = false, mountPath?: string, mountOptions?: DSUIOOptions) {
     return (target: T, propertyKey: string) => {
@@ -69,7 +69,7 @@ export function fromCache<T extends DSUModel>(model: {new(): T}, derive: boolean
  *
  * @decorator dsuRepository
  *
- * @category decorators
+ * @category Decorators
  */
 export function dsuRepository(...args: any[]){
     return (original: Function) => {

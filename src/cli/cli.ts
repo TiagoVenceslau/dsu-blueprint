@@ -33,6 +33,15 @@ try{
 if (!opendsu)
     throw new CriticalError(`Could not load OpenDSU`);
 
+/**
+ * Stores the resulting Seed File
+ *
+ * @param {string} data the seed in string format
+ * @param {Callback} callback
+ *
+ * @function storeKeySSI
+ * @memberOf cli
+ */
 function storeKeySSI(data: string, callback: Callback){
     fs.writeFile(path.join(config.pathAdaptor, config.seedFile), data, callback)
 }
