@@ -38,7 +38,7 @@ export class WalletDSU extends DSUModel{
      * Placeholder where the wallet code will be mounted.
      * Property name <strong> has to be</strong> {@link ConstantsApi#CODE_FOLDER}
      */
-    @fromWeb('dsu-blueprint', "primary")
+    // @fromWeb('dsu-blueprint', "primary")
     code?: string = undefined;
 }
 

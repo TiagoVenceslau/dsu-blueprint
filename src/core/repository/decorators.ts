@@ -4,7 +4,7 @@ import {repository} from "@tvenceslau/db-decorators/lib/repository/decorators";
 import {DSUEditingHandler} from "./types";
 import {DSUCallback, OpenDSURepository, ReadCallback} from "./repository";
 import {DSUCache} from "./cache";
-import {DSU, DSUIOOptions, KeySSI} from "../opendsu";
+import {DSU, DSUIOOptions} from "../opendsu";
 import {criticalCallback, OperationKeys, warn} from "@tvenceslau/db-decorators/lib";
 import {getDSUOperationsRegistry} from "./registry";
 import {handleKeyDerivation} from "./utils";

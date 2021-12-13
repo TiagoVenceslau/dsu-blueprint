@@ -113,6 +113,10 @@ export class WebServiceImp implements WebService {
         }
     }
 
+    getAppSeedUrl(appName: string, slot: "primary" | "secondary"): string {
+        return this.constructUrlBase(appName) + '/' + (slot === "primary" ? this.options.primaryslot : this.options.secondaryslot);
+    }
+
     /**
      * Gets the seed in the primary slot
      *
@@ -209,10 +213,8 @@ export class WebServiceImp implements WebService {
     }
 }
 
-let activeWebService: WebService;
-
 /**
- * Retrieves the current {@link WebService}
+ * Retrieves a new  {@link WebService}
  *
  * @param {WebServiceOptions} [options]
  * @return WebService
@@ -222,20 +224,5 @@ let activeWebService: WebService;
  * @memberOf core.web
  */
 export function getWebService(options?: WebServiceOptions | {}): WebService {
-    if (!activeWebService)
-            activeWebService = new WebServiceImp(options);
-    return activeWebService;
-}
-
-/**
- * Replaces the current {@link WebService} implementation with the provided one
- *
- * @param {WebService} webService
- *
- * @function
- *
- * @memberOf core.web
- */
-export function setWebService(webService: WebService): void {
-    activeWebService = webService;
+    return new WebServiceImp(options);
 }

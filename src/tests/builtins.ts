@@ -3,7 +3,6 @@ import {email} from "@tvenceslau/decorator-validation/lib";
 import {DbDsuBlueprint, dsu, DSUBlueprint, dsuFile, DSUModel, fromCache, wallet} from "../core";
 import {addFileFS, addFolderFS, dsuFS} from "../fs";
 import {KeySSIType} from "../core/opendsu/apis/keyssi";
-import {fromWeb} from "../core/web/decorators";
 
 @DSUBlueprint(undefined, KeySSIType.SEED)
 export class IdDsuBlueprint extends DSUModel{

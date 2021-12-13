@@ -9,7 +9,6 @@ import {DSUStorage} from "../core/opendsu/apis/storage";
  * @param {DSU} originalDsu
  *
  * @namespace utils
- * @module filesystem
  */
 export function impersonateDSUStorage(originalDsu: DSU): DSUStorage {
     const dsu: DSUStorage = originalDsu as DSUStorage;
@@ -45,8 +44,8 @@ export function impersonateDSUStorage(originalDsu: DSU): DSUStorage {
 /**
  * cache of node's fs object
  *
- * @namespace utils
- * @module filesystem
+ * @namespace filesystem.utils
+ * @memberOF fil
  */
 let  _fileSystem: fs | undefined = undefined;
 
@@ -57,7 +56,6 @@ export type FsOptions = {encoding?: string, flag?: string, withFileTypes?: boole
  *
  * @interface fs
  * @namespace utils
- * @module filesystem
  */
 export interface fs {
     readdir(path: string, options: FsOptions | undefined, callback: Callback): void;
@@ -74,7 +72,6 @@ export interface fs {
  *
  * 
  * @namespace utils
- * @module filesystem
  */
 export function getFS(): fs {
     if (get$$().environmentType !== 'nodejs')

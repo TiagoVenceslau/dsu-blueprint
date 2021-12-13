@@ -1,15 +1,16 @@
 import {
     DSUClassCreationMetadata,
     DSUCreationMetadata,
-    DSUEditMetadata,
+    DSUEditMetadata, dsuFile,
     DsuKeys,
     DSUModel,
     DSUOperation,
     getDSUModelKey,
     mount
 } from "../model";
-import {ConstantsApi, DSU, DSUIOOptions, getKeySSIApi, KeySSI} from "../opendsu";
+import {ConstantsApi, DSU, DSUIOOptions, getConstantsApi, getKeySSIApi, getOpenDSU, KeySSI} from "../opendsu";
 import {
+    all,
     Callback,
     criticalCallback,
     DBOperations,
@@ -18,16 +19,13 @@ import {
     OperationKeys
 } from "@tvenceslau/db-decorators/lib";
 import {
-    DSUCache,
-    DSUCallback,
-    DSUCreationHandler,
-    DSUEditingHandler, DSUPreparationHandler, handleKeyDerivation,
-    OpenDSURepository,
-    ReadCallback
+    DSUCache, DSUCallback, DSUEditingHandler,
+    DSUPreparationHandler, handleKeyDerivation,
+    OpenDSURepository, ReadCallback
 } from "../repository";
 import {getDSUOperationsRegistry} from "../repository/registry";
 import {getWebService} from "./services";
-import {getValidatorRegistry, ValidationKeys} from "@tvenceslau/decorator-validation/lib";
+import {getPropertyDecorators, getValidatorRegistry, ValidationKeys} from "@tvenceslau/decorator-validation/lib";
 import URLValidator from "@tvenceslau/decorator-validation/lib/validation/Validators/URLValidator";
 
 /**
@@ -43,7 +41,65 @@ export type DSUPreparationMetadata = {
     operation: string
     phase: string[],
     prop: string,
-    dsuPath: string,
+    dsuPath?: string,
+}
+
+/**
+ * Performs a Get request to the supplied url with the supplied options and stores the result in the model under the decorated property
+ *
+ * Acts during the {@link DSUOperation.PREPARATION} phase;
+ *
+ * @param {string} url
+ * @param {boolean} [toJson] defaults to false. if true, tries to parse the result to json
+ * @param {{}} [options] options to be passed to the get request
+ *
+ * @function fromURL
+ *
+ * @category Decorators
+ */
+export function fromURL(url: string, toJson: boolean = false, options?: {}){
+    return (target: any, propertyKey: string) => {
+        const metadata: DSUPreparationMetadata = {
+            operation: DSUOperation.PREPARATION,
+            phase: DBOperations.CREATE,
+            prop: propertyKey,
+            url: url,
+            options: options,
+            toJson: toJson
+        }
+
+        Reflect.defineMetadata(
+            getDSUModelKey(DsuKeys.FROM_URL),
+            metadata,
+            target,
+            propertyKey
+        );
+
+        const createHandler: DSUPreparationHandler = function<T extends DSUModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, model: T, decorator: DSUPreparationMetadata, callback: ModelCallback<T>): void {
+            const {prop, url, options, toJson} = decorator;
+
+            const webService = getWebService();
+
+            webService.doGet(url, options, (err: Err, result?: any) => {
+                if (err || !result)
+                    return criticalCallback(err || new Error(`No plausible response received from server`), callback);
+
+                if (toJson)
+                    try {
+                        result = JSON.parse(result);
+                    } catch (e) {
+                        return criticalCallback(e, callback);
+                    }
+
+                // @ts-ignore
+                model[prop] = result;
+                callback(undefined, model as T);
+            });
+        }
+
+        getDSUOperationsRegistry().register(createHandler, DSUOperation.PREPARATION, OperationKeys.CREATE, target, propertyKey);
+
+    }
 }
 
 /**
@@ -63,6 +119,7 @@ export type DSUPreparationMetadata = {
  * @param {boolean| number} [derive] defines how many (if any) times the KeySSI will be Derived before use (only used when {@param triggerMount} is true)
  * @param {string} [mountPath] defines the mount path. defaults to the property key
  * @param {DSUIOOptions} [mountOptions] options to be passed to OpenDSU for the mounting operation
+ * @param {string} [keyOverride] and extension tool, to allow wallet decorator to use this one for himself
  * @param {any[]} [args] Not used in current implementation. Meant for extending decorators
  *
  * @function fromWeb
@@ -70,7 +127,7 @@ export type DSUPreparationMetadata = {
  * @category Decorators
  * @memberOf core.web
  */
-export function fromWeb(appOrUrl: string, slot: "primary" | "secondary" | undefined, triggerMount: boolean = true, derive: boolean | number = false, mountPath?: string, mountOptions?: DSUIOOptions, ...args: any[]) {
+export function fromWeb(appOrUrl: string, slot: "primary" | "secondary" | undefined, triggerMount: boolean = true, derive: boolean | number = false, mountPath?: string, mountOptions?: DSUIOOptions, keyOverride?: string, ...args: any[]) {
     return (target: any, propertyKey: string) => {
         mountPath =  mountPath ? mountPath : propertyKey;
         if (triggerMount)
@@ -85,13 +142,11 @@ export function fromWeb(appOrUrl: string, slot: "primary" | "secondary" | undefi
             derive: derive,
             appName: appOrUrl,
             slot: slot,
-            dsuPath: mountPath,
-            options: mountOptions,
             args: args
         }
 
         Reflect.defineMetadata(
-            getDSUModelKey(DsuKeys.FROM_WEB),
+            getDSUModelKey(keyOverride || DsuKeys.FROM_WEB),
             metadata,
             target,
             propertyKey
@@ -162,6 +217,56 @@ export function fromWeb(appOrUrl: string, slot: "primary" | "secondary" | undefi
  */
 export function wallet(app: string, derive: boolean = true) {
     return (target: any, propertyKey: string) => {
-        fromWeb(app, "primary", false, derive)(target, propertyKey);
+        fromWeb(app, "primary", false, derive, undefined, undefined, DsuKeys.WALLET)(target, propertyKey);
+    }
+}
+
+export function environment(){
+    return (target: any, propertyKey: string) => {
+        const metadata: DSUPreparationMetadata = {
+            operation: DSUOperation.PREPARATION,
+            phase: DBOperations.CREATE,
+            prop: propertyKey
+        }
+
+        Reflect.defineMetadata(
+            getDSUModelKey(DsuKeys.ENVIRONMENT),
+            metadata,
+            target,
+            propertyKey
+        );
+
+        dsuFile(getConstantsApi().ENVIRONMENT_PATH)(target, propertyKey);
+
+        const createHandler: DSUPreparationHandler = function<T extends DSUModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, model: T, decorator: DSUPreparationMetadata, callback: ModelCallback<T>): void {
+            const {prop, app} = decorator;
+
+            let codeProp = getOpenDSU().constants.CODE_FOLDER;
+            codeProp = codeProp.startsWith('/') ? codeProp.substring(1) : codeProp;
+
+            const decorators: {prop: string | symbol, decorators: any[]} | undefined = getPropertyDecorators(DsuKeys.REFLECT, model, codeProp, true);
+            if (!decorators)
+                return criticalCallback(`Could not find wallet decorator`, callback);
+            const walletDec = decorators.decorators.find(d => d.prop === DsuKeys.WALLET);
+            if (!walletDec)
+                return criticalCallback(`Could not find wallet decorator`, callback);
+
+            getWebService().getFile(app, "seed", (err, result?: any) => {
+                if (err || !result)
+                    return criticalCallback(err || new Error(`No plausible response received from server`), callback);
+
+                try {
+                    result = JSON.parse(result);
+                } catch (e) {
+                    return criticalCallback(e, callback);
+                }
+
+                // @ts-ignore
+                model[prop] = result;
+                callback(undefined, model as T);
+            });
+        }
+
+        getDSUOperationsRegistry().register(createHandler, DSUOperation.PREPARATION, OperationKeys.CREATE, target, propertyKey);
     }
 }

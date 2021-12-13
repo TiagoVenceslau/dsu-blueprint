@@ -14,7 +14,6 @@ export const DsuFsKeys = {
 /**
  * @const
  * @namespace constants
- * @module filesystem
  */
 export const FSOptions  = {
     // publicSecretsKey: '-$Identity-',
