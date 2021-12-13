@@ -349,18 +349,7 @@ export function getValueFromValueChain(model: {[indexer: string]: any}, ...chain
 }
 
 /**
- * Inverse of {@link getValueFromValueChain}.
- * given a {@param chain} like 'a.b.c' and an {@param obj} like {} and a value 'value'
- * will output:
- * <pre>
- *     {
- *         a: {
- *             b: {
- *                 c: 'value'
- *             }
- *         }
- *     }
- * </pre>
+ * Inverse of {@link getValueFromValueChain}
  *
  * @param {{}} obj
  * @param {string} chain
@@ -397,6 +386,58 @@ export function createObjectToValueChain(obj: {[indexer: string]: any}, chain: s
 }
 
 /**
+ *
+ * @param {DSUModel} model
+ * @param {DSUEditDecorator[]} decorators
+ *
+ * @return {GroupedDecorators}
+ * @throws CriticalError if decorator properties are missing
+ *
+ * @function groupDecorators
+ *
+ * @memberOf core.repository
+ */
+export function groupDecorators(model: DSUModel, decorators: DSUEditDecorator[]): GroupedDecorators{
+    return decorators.reduce((accum: any, dec: DSUEditDecorator) => {
+        if (!dec.props.grouped){
+            accum.single = accum.single || [];
+            accum.single.push(dec)
+            return accum;
+        }
+        if (!dec.props || !dec.props.key || !dec.props.grouping)
+            throw new CriticalError(`Missing Decorator properties`);
+
+        accum.grouped = accum.grouped || {};
+
+        accum.grouped[dec.props.key] = accum.grouped[dec.props.key] || {};
+
+        if (decorators.filter(d => d.props.grouping === dec.props.grouping).length === 1){
+            accum.grouped[dec.props.key] = dec;
+            return accum;
+        }
+
+        if (accum.grouped[dec.props.key][dec.props.grouping]){
+            const newPropValue: {[indexer: string] : any} = {};
+            newPropValue[dec.prop] = model[dec.prop];
+            Object.assign(accum.grouped[dec.props.key][dec.props.grouping].value, newPropValue);
+        } else {
+            const newPropValue: {[indexer: string] : any} = {};
+            newPropValue[dec.prop] = model[dec.prop];
+            accum.grouped[dec.props.key][dec.props.grouping] = Object.assign({}, dec, {
+                value: newPropValue
+            });
+        }
+        return accum;
+    }, {});
+}
+
+/**
+ * @typedef GroupedDecorators
+ * @memberOf core.repository
+ */
+export type GroupedDecorators = {grouped: {[indexer: string]: any}, single: DSUEditDecorator[]};
+
+/**
  * Handles the {@link DSU} edition operations, as tagged by the attribute decorators
  *
  * @param {DSUCache} dsuCache the current {@link DSUCache}
@@ -420,31 +461,12 @@ export function handleEditingPropertyDecorators<T extends DSUModel>(this: OpenDS
 
     const self : OpenDSURepository<T> = this;
 
-    const splitDecorators: {grouped: {[indexer: string]: any}, single: DSUEditDecorator[]} = decorators.reduce((accum: any, dec: DSUEditDecorator) => {
-        if (!dec.props.grouped){
-            accum.single = accum.single || [];
-            accum.single.push(dec)
-            return accum;
-        }
-        accum.grouped = accum.grouped || {};
-        if (!dec.props || !dec.props.key || !dec.props.grouping)
-            return criticalCallback(new Error(`Missing Decorator properties`), callback);
-
-        accum.grouped[dec.props.key] = accum.grouped[dec.props.key] || {};
-
-        if (accum.grouped[dec.props.key][dec.props.grouping]){
-            const newPropValue: {[indexer: string] : any} = {};
-            newPropValue[dec.prop] = model[dec.prop];
-            Object.assign(accum.grouped[dec.props.key][dec.props.grouping].value, newPropValue);
-        } else {
-            const newPropValue: {[indexer: string] : any} = {};
-            newPropValue[dec.prop] = model[dec.prop];
-            accum.grouped[dec.props.key][dec.props.grouping] = Object.assign({}, dec, {
-                    value: newPropValue
-                });
-        }
-        return accum;
-    }, {});
+    let groupedDecorators: GroupedDecorators;
+    try {
+        groupedDecorators = groupDecorators(model as DSUModel, decorators);
+    } catch(e) {
+        return criticalCallback(e, callback);
+    }
 
     const decoratorIterator = function(decoratorsCopy: any[], newModel: T | {}, callback: Callback){
         const decorator = decoratorsCopy.shift();
@@ -465,16 +487,16 @@ export function handleEditingPropertyDecorators<T extends DSUModel>(this: OpenDS
         });
     }
 
-    const grouped = Object.keys(splitDecorators.grouped || {}).reduce((accum, k) => {
+    const grouped = Object.keys(groupedDecorators.grouped || {}).reduce((accum, k) => {
         // @ts-ignore
-        accum.push(...Object.values(splitDecorators.grouped[k]))
+        accum.push(...Object.values(groupedDecorators.grouped[k]))
         return accum;
     }, []);
 
     decoratorIterator(grouped, model, (err: Err, newModel: T) => {
         if (err)
             return callback(err);
-        decoratorIterator((splitDecorators.single || []).slice(), newModel,(err: Err, newModel: T) => {
+        decoratorIterator((groupedDecorators.single || []).slice(), newModel,(err: Err, newModel: T) => {
             if (err)
                 return callback(err);
             callback(undefined, newModel);
