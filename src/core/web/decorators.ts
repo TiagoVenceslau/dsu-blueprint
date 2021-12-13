@@ -4,7 +4,7 @@ import {
     DSUEditMetadata, dsuFile,
     DsuKeys,
     DSUModel,
-    DSUOperation,
+    DSUOperationPhase,
     getDSUModelKey,
     mount
 } from "../model";
@@ -38,8 +38,8 @@ import URLValidator from "@tvenceslau/decorator-validation/lib/validation/Valida
 export type DSUPreparationMetadata = {
     [indexer: string]: any;
 
-    operation: string
-    phase: string[],
+    operation: string[]
+    phase: string,
     prop: string,
     dsuPath?: string,
 }
@@ -47,7 +47,7 @@ export type DSUPreparationMetadata = {
 /**
  * Performs a Get request to the supplied url with the supplied options and stores the result in the model under the decorated property
  *
- * Acts during the {@link DSUOperation.PREPARATION} phase;
+ * Acts during the {@link DSUOperationPhase.PREPARATION} phase;
  *
  * @param {string} url
  * @param {boolean} [toJson] defaults to false. if true, tries to parse the result to json
@@ -60,8 +60,8 @@ export type DSUPreparationMetadata = {
 export function fromURL(url: string, toJson: boolean = false, options?: {}){
     return (target: any, propertyKey: string) => {
         const metadata: DSUPreparationMetadata = {
-            operation: DSUOperation.PREPARATION,
-            phase: DBOperations.CREATE,
+            phase: DSUOperationPhase.PREPARATION,
+            operation: DBOperations.CREATE,
             prop: propertyKey,
             url: url,
             options: options,
@@ -97,7 +97,7 @@ export function fromURL(url: string, toJson: boolean = false, options?: {}){
             });
         }
 
-        getDSUOperationsRegistry().register(createHandler, DSUOperation.PREPARATION, OperationKeys.CREATE, target, propertyKey);
+        getDSUOperationsRegistry().register(createHandler, OperationKeys.CREATE, DSUOperationPhase.PREPARATION, target, propertyKey);
 
     }
 }
@@ -108,10 +108,10 @@ export function fromURL(url: string, toJson: boolean = false, options?: {}){
  *      - slot 'primary': gets the seed file from the App's 'wallet-patch' folder;
  *      - slot 'secondary' gets the seed file from the App's {@link ConstantsApi#APP_FOLDER}
  **
- * Retrieves the Seed during the {@link DSUOperation.CREATION} operation and {@link DBOperations.CREATE} phases
+ * Retrieves the Seed during the {@link DSUOperationPhase.CREATION} operation and {@link DBOperations.CREATE} phases
  * and stores in the in object under the matching property key
  *
- * calls {@link mount} on this property to mount the seed during the {@link DSUOperation.EDITING} operation;
+ * calls {@link mount} on this property to mount the seed during the {@link DSUOperationPhase.EDITING} operation;
  *
  * @param {string} appOrUrl the app name to look for in ApiHub or the URL to an endpoint to call
  * @param {"primary" | "secondary" | undefined} slot the slot where the seed can be found. 'primary' refers to the 'wallet slot' and secondary to the 'apps slot'. defaults to 'primary' and is mandatory when an App Name is provided. is discarded if a URL is detected in the appName
@@ -134,8 +134,8 @@ export function fromWeb(appOrUrl: string, slot: "primary" | "secondary" | undefi
 
         const name = target.constructor.name;
         const metadata: DSUPreparationMetadata = {
-            operation: DSUOperation.PREPARATION,
-            phase: DBOperations.CREATE,
+            phase: DSUOperationPhase.PREPARATION,
+            operation: DBOperations.CREATE,
             dsu: name,
             prop: propertyKey,
             derive: derive,
@@ -191,7 +191,7 @@ export function fromWeb(appOrUrl: string, slot: "primary" | "secondary" | undefi
             });
         }
 
-        getDSUOperationsRegistry().register(createHandler, DSUOperation.PREPARATION, OperationKeys.CREATE, target, propertyKey);
+        getDSUOperationsRegistry().register(createHandler,  OperationKeys.CREATE, DSUOperationPhase.PREPARATION,target, propertyKey);
     }
 }
 
@@ -232,8 +232,8 @@ export function environment(fileName: string = "environment.js"){
     return (target: any, propertyKey: string) => {
         const name = target.constructor.name;
         const metadata: DSUPreparationMetadata = {
-            operation: DSUOperation.PREPARATION,
-            phase: DBOperations.CREATE,
+            phase: DSUOperationPhase.PREPARATION,
+            operation: DBOperations.CREATE,
             dsu: name,
             fileName: fileName,
             prop: propertyKey,
@@ -279,6 +279,6 @@ export function environment(fileName: string = "environment.js"){
             });
         }
 
-        getDSUOperationsRegistry().register(createHandler, DSUOperation.PREPARATION, OperationKeys.CREATE, target, propertyKey);
+        getDSUOperationsRegistry().register(createHandler, OperationKeys.CREATE, DSUOperationPhase.PREPARATION, target, propertyKey);
     }
 }

@@ -72,11 +72,11 @@ export enum DsuKeys {
  *              - {@link mount}: mounts a predefined KeySSI
  *              - also {@link FileSystem} related ones, {@link addFileFS}, etc...
  *       - DSU: the {@link DSU} object
- * @enum DSUOperation
+ * @enum DSUOperationPhase
  *
  * @memberOf core.model
  */
-export enum DSUOperation {
+export enum DSUOperationPhase {
     PREPARATION = 'preparation',
     CREATION = "creation",
     CLASS = 'class',

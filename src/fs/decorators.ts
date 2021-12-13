@@ -1,4 +1,4 @@
-import {DSUEditMetadata, DsuKeys, DSUOperation} from "../core/model";
+import {DSUEditMetadata, DsuKeys, DSUOperationPhase} from "../core/model";
 import {DSU, DSUIOOptions, getKeySSIApi} from "../core/opendsu";
 import {getFS, getPath} from "./utils";
 import {Callback, criticalCallback, DBOperations, Err, OperationKeys} from "@tvenceslau/db-decorators/lib";
@@ -42,8 +42,8 @@ export function dsuFS(app: string, derive: boolean = false, mountPath?: string, 
         Reflect.defineMetadata(
             getFsKey(DsuFsKeys.MOUNT_FS),
             {
-                operation: DSUOperation.EDITING,
-                phase: DBOperations.CREATE,
+                phase: DSUOperationPhase.EDITING,
+                operation: DBOperations.CREATE,
                 app: app,
                 derive: derive,
                 options: mountOptions,
@@ -102,7 +102,7 @@ export function dsuFS(app: string, derive: boolean = false, mountPath?: string, 
             });
         }
 
-        getDSUOperationsRegistry().register(handler, DSUOperation.EDITING, OperationKeys.CREATE, target, propertyKey);
+        getDSUOperationsRegistry().register(handler, OperationKeys.CREATE, DSUOperationPhase.EDITING, target, propertyKey);
     }
 }
 
@@ -120,8 +120,8 @@ export function addFileFS(fsPath: string, dsuPath?: string, options?: DSUIOOptio
         Reflect.defineMetadata(
             getFsKey(DsuFsKeys.ADD_FILE_FS),
             {
-                operation: DSUOperation.EDITING,
-                phase: DBOperations.CREATE,
+                phase: DSUOperationPhase.EDITING,
+                operation: DBOperations.CREATE,
                 fsPath: fsPath,
                 dsuPath: dsuPath ? dsuPath : propertyKey,
                 options: options
@@ -141,7 +141,7 @@ export function addFileFS(fsPath: string, dsuPath?: string, options?: DSUIOOptio
             });
         }
 
-        getDSUOperationsRegistry().register(handler, DSUOperation.EDITING, OperationKeys.CREATE, target, propertyKey);
+        getDSUOperationsRegistry().register(handler, OperationKeys.CREATE, DSUOperationPhase.EDITING, target, propertyKey);
     }
 }
 
@@ -159,8 +159,8 @@ export function addFolderFS(fsPath?: string, dsuPath?: string, options?: DSUIOOp
         Reflect.defineMetadata(
             getFsKey(DsuFsKeys.ADD_FOLDER_FS),
             {
-                operation: DSUOperation.EDITING,
-                phase: DBOperations.CREATE,
+                phase: DSUOperationPhase.EDITING,
+                operation: DBOperations.CREATE,
                 fsPath: fsPath ? fsPath : propertyKey,
                 dsuPath: dsuPath ? dsuPath : propertyKey,
                 options: options
@@ -180,6 +180,6 @@ export function addFolderFS(fsPath?: string, dsuPath?: string, options?: DSUIOOp
             });
         }
 
-        getDSUOperationsRegistry().register(handler, DSUOperation.EDITING, OperationKeys.CREATE, target, propertyKey);
+        getDSUOperationsRegistry().register(handler, OperationKeys.CREATE, DSUOperationPhase.EDITING, target, propertyKey);
     }
 }

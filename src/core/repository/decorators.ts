@@ -1,4 +1,4 @@
-import {DsuKeys, DSUOperation} from "../model/constants";
+import {DsuKeys, DSUOperationPhase} from "../model/constants";
 import {DSUEditMetadata, DSUModel, getDSUModelKey} from "../model";
 import {repository} from "@tvenceslau/db-decorators/lib/repository/decorators";
 import {DSUEditingHandler} from "./types";
@@ -23,8 +23,8 @@ import {handleKeyDerivation} from "./utils";
 export function fromCache<T extends DSUModel>(model: {new(): T}, derive: boolean | number = false, mountPath?: string, mountOptions?: DSUIOOptions) {
     return (target: T, propertyKey: string) => {
         const metadata: DSUEditMetadata = {
-            operation: DSUOperation.EDITING,
-            phase: [OperationKeys.CREATE, OperationKeys.READ],
+            phase: DSUOperationPhase.EDITING,
+            operation: [OperationKeys.CREATE, OperationKeys.READ],
             derive: derive,
             options: mountOptions,
             dsuPath: mountPath ? mountPath : propertyKey,
@@ -60,7 +60,7 @@ export function fromCache<T extends DSUModel>(model: {new(): T}, derive: boolean
             });
         }
 
-        getDSUOperationsRegistry().register(createHandler, DSUOperation.EDITING, OperationKeys.CREATE, target, propertyKey);
+        getDSUOperationsRegistry().register(createHandler, OperationKeys.CREATE, DSUOperationPhase.EDITING, target, propertyKey);
     }
 }
 

@@ -6,7 +6,7 @@ import {
     DSUMultipleCallback,
     OpenDSURepository
 } from "./repository";
-import {DsuKeys, DSUModel, DSUOperation} from "../model";
+import {DsuKeys, DSUModel, DSUOperationPhase} from "../model";
 import {
     DSU,
     getKeySSIApi
@@ -165,9 +165,9 @@ export function handleDSUClassDecorators<T extends DSUModel>(this: OpenDSUReposi
     if (!decorator)
         return criticalCallback(new Error(`No DSUBlueprint decorator Found on Model`), callback);
 
-    const handler: DSUClassCreationHandler = getDSUOperationsRegistry().get(model.constructor.name, DsuKeys.CONSTRUCTOR, DSUOperation.CLASS, OperationKeys.CREATE) as DSUClassCreationHandler;
+    const handler: DSUClassCreationHandler = getDSUOperationsRegistry().get(model.constructor.name, DsuKeys.CONSTRUCTOR, OperationKeys.CREATE, DSUOperationPhase.CLASS) as DSUClassCreationHandler;
     if (!handler)
-        return criticalCallback(`No handler found for ${decorator.props.dsu} - ${decorator.key} - ${decorator.props.dsu.operation}`, callback);
+        return criticalCallback(`No handler found for ${decorator.props.dsu} - ${DsuKeys.CONSTRUCTOR} - ${decorator.key} - ${decorator.props.dsu.phase}`, callback);
 
     const {batchMode, props} = decorator.props.dsu;
 
@@ -190,7 +190,7 @@ export function handleDSUClassDecorators<T extends DSUModel>(this: OpenDSUReposi
 export type DSUDecoratorByPhase = {creation?: DSUCreationDecorator[], editing?: DSUEditDecorator[], preparation?: DSUCreationDecorator[]}
 
 /**
- * Splits the Attribute decorators between their matching {@link DSUOperation}
+ * Splits the Attribute decorators between their matching {@link DSUOperationPhase}
  * @param {T} model
  * @param {string} [phase]
  * @return {{creation: DSUCreationDecorator[], editing: DSUEditDecorator[]}} split decorators
@@ -205,7 +205,7 @@ export function splitDSUDecorators<T extends DSUModel>(model: T, phase: string =
     if (!propDecorators)
         return;
     return Object.keys(propDecorators).reduce((accum: DSUDecoratorByPhase | undefined, key) => {
-        const decorators: DSUDecorator[] = propDecorators[key].filter(dec => dec.key !== ModelKeys.TYPE && dec.props.phase && dec.props.phase.indexOf(phase) !== -1);
+        const decorators: DSUDecorator[] = propDecorators[key].filter(dec => dec.key !== ModelKeys.TYPE && dec.props.operation && dec.props.operation.indexOf(phase) !== -1);
         if (!decorators || ! decorators.length)
             return accum;
         const addToAccum = function(decorator: DSUDecorator){
@@ -214,16 +214,16 @@ export function splitDSUDecorators<T extends DSUModel>(model: T, phase: string =
 
             decorator = Object.assign({}, decorator, {prop: key});
 
-            switch(decorator.props.operation){
-                case DSUOperation.CREATION:
+            switch(decorator.props.phase){
+                case DSUOperationPhase.CREATION:
                     accum.creation = accum.creation || [];
                     accum.creation.push(decorator as DSUCreationDecorator);
                     break;
-                case DSUOperation.EDITING:
+                case DSUOperationPhase.EDITING:
                     accum.editing = accum.editing || [];
                     accum.editing.push(decorator as DSUEditDecorator);
                     break;
-                case DSUOperation.PREPARATION:
+                case DSUOperationPhase.PREPARATION:
                     accum.preparation = accum.preparation || [];
                     accum.preparation.push(decorator as DSUCreationDecorator);
                     break;
@@ -279,7 +279,7 @@ export function handleCreationPropertyDecorators<T extends DSUModel>(this: OpenD
         let handler: DSUCreationHandler | undefined = dsuOperationsRegistry.get(decorator.props.dsu, decorator.prop, decorator.props.operation, decorator.props.phase) as DSUCreationHandler;
 
         if (!handler)
-            return criticalCallback(`No handler found for ${decorator.props.dsu} - ${decorator.prop} - ${decorator.props.operation}`, callback);
+            return criticalCallback(`No handler found for ${decorator.props.dsu} - ${decorator.prop} - ${decorator.props.phase} - ${decorator.props.operation}`, callback);
 
         const {modelArgs, args} = decorator.props;
 
@@ -399,7 +399,7 @@ export function createObjectToValueChain(obj: {[indexer: string]: any}, chain: s
  */
 export function groupDecorators(model: DSUModel, decorators: DSUEditDecorator[]): GroupedDecorators{
     return decorators.reduce((accum: any, dec: DSUEditDecorator) => {
-        if (!dec.props || !dec.props.key)
+        if (!dec.props)
             throw new CriticalError(`Missing Decorator properties`);
 
         if (!dec.props.grouping){
@@ -407,6 +407,9 @@ export function groupDecorators(model: DSUModel, decorators: DSUEditDecorator[])
             accum.single.push(dec)
             return accum;
         }
+
+        if (!dec.props.key)
+            throw new CriticalError(`Missing Key Identifier in Decorator properties. mandatory for groupable decorators`);
 
         accum.grouped = accum.grouped || {};
 
@@ -448,7 +451,7 @@ export type GroupedDecorators = {grouped: {[indexer: string]: any}, single: DSUE
  * @param {T | {}} model {@link DSUBlueprint} decorated {@link DSUModel} or an object for {@link OperationKeys.READ} operations
  * @param {DSU} dsu teh {@link DSU} object
  * @param {any} decorators
- * @param {string} [phase] defaults to {@link OperationKeys.CREATE}
+ * @param {string} [operation] defaults to {@link OperationKeys.CREATE}
  * @param {any[]} [args]
  *       The last arg will be considered to be the {@link DSUCallback<T>};
  *
@@ -456,7 +459,7 @@ export type GroupedDecorators = {grouped: {[indexer: string]: any}, single: DSUE
  *
  * @memberOf core.repository
  */
-export function handleEditingPropertyDecorators<T extends DSUModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, model: T | {[indexer: string]: any}, dsu: DSU, decorators: DSUEditDecorator[], phase: string = OperationKeys.CREATE, ...args: (any | DSUCallback<T>)[]){
+export function handleEditingPropertyDecorators<T extends DSUModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, model: T | {[indexer: string]: any}, dsu: DSU, decorators: DSUEditDecorator[], operation: string = OperationKeys.CREATE, ...args: (any | DSUCallback<T>)[]){
     const callback: DSUCallback<T> = args.pop();
     if (!callback)
         throw new CriticalError(`Missing callback`);
@@ -477,10 +480,10 @@ export function handleEditingPropertyDecorators<T extends DSUModel>(this: OpenDS
         if (!decorator)
             return callback(undefined, newModel);
 
-        let handler: DSUEditingHandler | undefined = dsuOperationsRegistry.get(newModel.constructor.name, decorator.prop, decorator.props.operation, phase) as DSUEditingHandler;
+        let handler: DSUEditingHandler | undefined = dsuOperationsRegistry.get(newModel.constructor.name, decorator.prop, operation, decorator.props.phase) as DSUEditingHandler;
 
         if (!handler)
-            return criticalCallback(new Error(`No handler found for ${newModel.constructor.name} - ${decorator.prop} - ${decorator.props.operation}`), callback);
+            return criticalCallback(new Error(`No handler found for ${newModel.constructor.name} - ${decorator.prop} - ${decorator.props.phase}`), callback);
 
         all(`[{0}] - calling DSU Property Editing Handler for model {1}'s {2} property;`, self.constructor.name, model, decorator.prop);
         handler.call(self, dsuCache, newModel, dsu, decorator, (err: Err, newModel?: DSUModel) => {
