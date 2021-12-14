@@ -1,7 +1,20 @@
-import {ConstantsApi, DSU, DSUCallback, DSUModel, getConstantsApi, OpenDSURepository} from "../core";
-import {criticalCallback, Err} from "@tvenceslau/db-decorators/lib";
+import {
+    ConstantsApi,
+    DSU,
+    DSUCallback,
+    DSUModel,
+    ErrCallback,
+    getConstantsApi,
+    getResolverApi,
+    OpenDSURepository, safeParseKeySSI
+} from "../core";
+import {Callback, criticalCallback, debug, Err} from "@tvenceslau/db-decorators/lib";
 import {CliOptions} from "./types";
 import {KeySSI} from "../core/opendsu/apis/keyssi";
+import fs, {NoParamCallback} from "fs";
+import path from "path";
+import {getFS, getPath} from "../fs";
+import {Key} from "readline";
 
 /**
  * @namespace cli.toolkit
@@ -45,15 +58,18 @@ export const defaultOptions = {
  *
  * @memberOf cli.toolkit
  */
-export function argParser(defaultOpts: {[indexer: string]: any}, args: string[]){
+export function argParser(defaultOpts: CliOptions, args: string[]){
     let config = JSON.parse(JSON.stringify(defaultOpts));
     if (!args)
         return config;
     args = args.slice(2);
     const recognized = Object.keys(config);
     const notation = recognized.map(r => '--' + r);
+
+    const regex = /^--\w+=.*$/gm;
+
     args.forEach(arg => {
-        if (arg.includes('=')){
+        if (arg.match(regex)){
             let splits = arg.split('=');
             if (notation.indexOf(splits[0]) !== -1) {
                 let result
@@ -64,6 +80,9 @@ export function argParser(defaultOpts: {[indexer: string]: any}, args: string[])
                 }
                 config[splits[0].substring(2)] = result;
             }
+        } else {
+            config.extraArgs = config.extraArgs || [];
+            config.extraArgs.push(arg);
         }
     });
     return config;
@@ -88,15 +107,44 @@ export function mergeWithOpenDSUOptions(options: CliOptions){
 }
 
 /**
- * Builds a DSU from a transpiled {@link DSUBlueprint} file or Updates it
- * @param {CliOptions} config the cli options
- * @param {DSUCallback<DSUModel>} callback
+ * Stores the resulting Seed File
  *
- * @function buildOrUpdate
- * 
- * @emberOf cli.toolkit
+ * @param {CliOptions} config
+ * @param {string} data the seed in string format
+ * @param {Callback} callback
+ *
+ * @function storeKeySSI
+ * @memberOf cli.toolkit
  */
-export function buildOrUpdate(config: CliOptions, callback: DSUCallback<DSUModel>): void{
+export function storeKeySSI(config: CliOptions, data: string, callback: Callback){
+    getFS().writeFile(getPath().join(config.pathAdaptor, config.seedFile), data, undefined, callback)
+}
+
+/**
+ * Tries to get the Seed File
+ *
+ * @param {CliOptions} config
+ * @param {Callback} callback
+ *
+ * @function getCurrentKeySSI
+ * @memberOf cli.toolkit
+ */
+export function getCurrentKeySSI(config: CliOptions, callback: Callback){
+    getFS().readFile(getPath().join(config.pathAdaptor, config.seedFile),  undefined, (err, data) => err
+        ? callback(err)
+        : callback(undefined, data.toString()));
+}
+
+/**
+ * Retrieves the {@link DSUBlueprint} from the path defined the the config
+ *
+ * @param {CliOptions} config
+ * @param {Callback} callback
+ *
+ * @function getBlueprint
+ * @memberOf cli.toolkit
+ */
+export function getBlueprint(config: CliOptions, callback: Callback){
     let blueprintFile;
     try {
         blueprintFile = require(config.blueprint);
@@ -106,14 +154,95 @@ export function buildOrUpdate(config: CliOptions, callback: DSUCallback<DSUModel
     const BLUEPRINT = blueprintFile.default;
     if (!BLUEPRINT)
         return criticalCallback(`Could not find BLUEPRINT export`, callback);
+    callback(undefined, BLUEPRINT);
+}
 
-    const blueprint: DSUModel = new BLUEPRINT();
+/**
+ * If there is already a seed file, deletes and rebuilds that {@link DSU},
+ * otherwise creates a new one
+ *
+ * @param {CliOptions} config
+ * @param {Callback} callback
+ *
+ * @function buildOrUpdate
+ * @memberOf cli.toolkit
+ */
+export function buildOrUpdate(config: CliOptions, callback: DSUCallback<DSUModel>): void{
+    getCurrentKeySSI(config, (err: Err, ssi?: string) => {
+        if (err || !ssi){
+            debug(err ? err.toString() : 'Could not read SSI from file. Creating new instance of {0}', config.walletPath);
+            return buildDSU(config, callback);
+        }
 
-    const repo = new OpenDSURepository(BLUEPRINT, config.domain, config.pathAdaptor || './');
+        safeParseKeySSI(ssi, (err, keySSI?: KeySSI) => {
+            if (err || !keySSI){
+                debug(err ? err.toString() : 'Could not parse SSI from file contents {0}. Creating new instance of {1}', config.walletPath, ssi);
+                return buildDSU(config, callback);
+            }
+            getResolverApi().loadDSU(keySSI, (err, dsu) => {
+                if (err || !dsu)
+                    return criticalCallback(`Could not load DSU from KeySSI ${ssi}. Aborting the creation of ${config.walletPath}`, callback);
+                dsu.delete('/', (err) => {
+                    if (err)
+                        return criticalCallback(`Could not delete ${config.walletPath} current DSU. Aborting`, callback);
 
-    repo.create(blueprint, (err: Err, newModel: DSUModel, dsu: DSU, keySSI: KeySSI) => {
+                });
+            });
+        });
+    });
+}
+
+/**
+ * Builds a DSU from a transpiled {@link DSUBlueprint} file or Updates it
+ * @param {CliOptions} config the cli options
+ * @param {DSUCallback<DSUModel>} callback
+ *
+ * @function buildDSU
+ * 
+ * @emberOf cli.toolkit
+ */
+export function buildDSU(config: CliOptions, callback: DSUCallback<DSUModel>): void{
+    getBlueprint(config, (err, Blueprint) => {
         if (err)
-            return callback(err);
-        callback(undefined, newModel, dsu, keySSI);
+            return criticalCallback(err, callback);
+
+        const model = config.dsumodel || {};
+        const blueprint: DSUModel = new Blueprint(model);
+        const keyGenArgs = config.extraArgs || [];
+
+        const repo = new OpenDSURepository(Blueprint, config.domain, config.pathAdaptor || './');
+        repo.create(blueprint, ...keyGenArgs, (err: Err, newModel: DSUModel, dsu: DSU, keySSI: KeySSI) => {
+            if (err)
+                return callback(err);
+            callback(undefined, newModel, dsu, keySSI);
+        });
+    });
+}
+
+/**
+ * Builds a DSU from a transpiled {@link DSUBlueprint} file or Updates it
+ * @param {CliOptions} config the cli options
+ * @param {KeySSI} keySSI the {@link KeySSI} of the {@link DSU} to update
+ * @param {DSUCallback<DSUModel>} callback
+ *
+ * @function updateDSU
+ *
+ * @emberOf cli.toolkit
+ */
+export function updateDSU(config: CliOptions, keySSI: KeySSI, callback: DSUCallback<DSUModel>): void{
+    getBlueprint(config, (err, Blueprint) => {
+        if (err)
+            return criticalCallback(err, callback);
+
+        const model = config.dsumodel || {};
+        const blueprint: DSUModel = new Blueprint(model);
+        const keyGenArgs = config.extraArgs || [];
+
+        const repo = new OpenDSURepository(Blueprint, config.domain, config.pathAdaptor || './');
+        repo.update(keySSI, blueprint, ...keyGenArgs, (err: Err, newModel: DSUModel, dsu: DSU, keySSI: KeySSI) => {
+            if (err)
+                return callback(err);
+            callback(undefined, newModel, dsu, keySSI);
+        });
     });
 }

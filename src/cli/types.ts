@@ -1,5 +1,5 @@
-import {ConstantsApi} from "../core";
-
+import {ConstantsApi, DSUModel} from "../core";
+import {LOGGER_LEVELS} from "@tvenceslau/db-decorators/lib";
 /**
  * Accepted params to the cli interface
  *
@@ -51,7 +51,6 @@ export type CliOptions = {
      * defaults to '../../../../../../privatesky/psknode/bundles/openDSU.js' (when it's ran from 'node_modules/@tvenceslau/dsu-blueprint/lib/cli')
      */
     pathToOpenDSU: string,
-
     /**
      * The Base path the SSApp will run on. defaults to ""
      */
@@ -61,7 +60,7 @@ export type CliOptions = {
      */
     stripBasePathOnInstall?: boolean,
     /**
-     * Path to wallet seed? defaults to ''
+     * Path to wallet, eg: dsu-explorer
      */
     walletPath?: string,
     /**
@@ -89,12 +88,6 @@ export type CliOptions = {
      */
     codeFolderName?: string,
     /**
-     * placeholder for the environment
-     *
-     * if passed as string will be parsed into json
-     */
-    environment?: {} | string,
-    /**
      * Primary Slot path defaults to 'wallet-patch'
      */
     primaryslot?: string,
@@ -102,6 +95,20 @@ export type CliOptions = {
      * Secondary Slot path defaults to 'apps-patch'
      */
     secondaryslot?: string
+    /**
+     * when one want to pass a model for more complex instantiations
+     *
+     * when in string, will be parsed to JSON
+     */
+    dsumodel?: string | DSUModel;
+    /**
+     * Non recognized arguments in the command will be treated as arguments for the command. eg: extra {@link KeySSI} generation arguments
+     */
+    extraArgs?: string[];
+    /**
+     * Desired level of logging. defaults to {@link LOGGER_LEVELS#INFO}
+     */
+    loggerLevel: number;
 }
 
 /**
@@ -117,5 +124,5 @@ export enum CliActions {
      * (will delete the contents of the DSU beforehand)
      */
     BUILD = 'build',
-    UPDATE = 'update'
+    INSTANTIATE = 'instantiate'
 }
