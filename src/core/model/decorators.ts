@@ -42,7 +42,7 @@ import {
  *
  * @return {string} the full key
  *
- * @memberOf core.model
+ * @memberOf dsu-blueprint.core.model
  */
 export const getDSUModelKey = (key: string) => DsuKeys.REFLECT + key;
 
@@ -50,7 +50,7 @@ export const getDSUModelKey = (key: string) => DsuKeys.REFLECT + key;
  * Metadata passed to {@link DSUClassCreationHandler}s
  *
  * @typedef DSUClassCreationMetadata
- * @memberOf core.model
+ * @memberOf dsu-blueprint.core.model
  */
 export type DSUClassCreationMetadata = {
     [indexer: string]: any;
@@ -190,7 +190,7 @@ export const DSUBlueprint = (domain: string | undefined = undefined, keySSIType:
  * Metadata passed to {@link DSUCreationHandler}s
  *
  * @typedef DSUCreationMetadata
- * @memberOf core.model
+ * @memberOf dsu-blueprint.core.model
  */
 export type DSUCreationMetadata = {
     [indexer: string]: any;
@@ -340,7 +340,7 @@ export function dsu<T extends DSUModel>(dsu: {new(): T}, derive: boolean | numbe
  * Metadata passed to {@link DSUEditingHandler}s
  *
  * @typedef DSUEditMetadata
- * @memberOf core.model
+ * @memberOf dsu-blueprint.core.model
  */
 export type DSUEditMetadata = {
     [indexer: string]: any;

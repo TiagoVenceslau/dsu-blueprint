@@ -5,8 +5,8 @@ import {IRegistry} from "@tvenceslau/decorator-validation/lib/utils/registry";
 import {all, CriticalError, debug} from "@tvenceslau/db-decorators/lib";
 
 /**
- * @namespace core.repository.registry
- * @memberOf core.repository
+ * @namespace dsu-blueprint.core.repository.registry
+ * @memberOf dsu-blueprint.core.repository
  */
 
 /**
@@ -16,7 +16,7 @@ import {all, CriticalError, debug} from "@tvenceslau/db-decorators/lib";
  *
  * @implements {IRegistry<DSUOperationHandler>}
  *
- * @memberOf core.repository.registry
+ * @memberOf dsu-blueprint.core.repository.registry
  */
 export class DSUOperationRegistry implements IRegistry<DSUOperationHandler>{
     private cache: { [indexer: string]: any } = {};
@@ -51,7 +51,7 @@ export class DSUOperationRegistry implements IRegistry<DSUOperationHandler>{
      * @param {any} target
      * @param {string} propKey
      *
-     * @memberOf DSUOperationRegistry
+     * @memberOf .DSUOperationRegistry
      */
     register<DSUOperationHandler>(handler: DSUOperationHandler, operation: string, phase: string, target: { [indexer: string]: any }, propKey: string | symbol): void {
         const name = target.constructor.name;
@@ -79,7 +79,7 @@ let actingDSUOperationsRegistry: IRegistry<DSUOperationHandler>;
  *
  * @function getDSUOperationSRegistry
  *
- * @memberOf core.repository.registry
+ * @memberOf dsu-blueprint.core.repository.registry
  */
 export function getDSUOperationsRegistry(): IRegistry<DSUOperationHandler> {
     if (!actingDSUOperationsRegistry)
@@ -94,7 +94,7 @@ export function getDSUOperationsRegistry(): IRegistry<DSUOperationHandler> {
  *
  * @function setDSUOperationsRegistry
  *
- * @memberOf core.repository.registry
+ * @memberOf dsu-blueprint.core.repository.registry
  */
 export function setDSUOperationsRegistry(operationsRegistry: IRegistry<DSUOperationHandler>){
     actingDSUOperationsRegistry = operationsRegistry;
@@ -102,12 +102,12 @@ export function setDSUOperationsRegistry(operationsRegistry: IRegistry<DSUOperat
 
 /**
  * @typedef OpenDSURepo
- * @memberOf core.repository.registry
+ * @memberOf dsu-blueprint.core.repository.registry
  */
 export type OpenDSURepo = OpenDSURepository<DSUModel>;
 /**
  * @typedef OpenDSURepoFactory
- * @memberOf core.repository.registry
+ * @memberOf dsu-blueprint.core.repository.registry
  */
 export type OpenDSURepoFactory = {new(): OpenDSURepo}
 
@@ -116,7 +116,7 @@ export type OpenDSURepoFactory = {new(): OpenDSURepo}
  *
  * @implements IRegistry
  *
- * @memberOf core.repository.registry
+ * @memberOf dsu-blueprint.core.repository.registry
  */
 export class RepositoryRegistry implements IRegistry<OpenDSURepo>{
     private cache: { [indexer: string]: any } = {};
@@ -189,7 +189,7 @@ let actingRepoRegistry: RepositoryRegistry;
  *
  * @function getRepoRegistry
  *
- * @memberOf core.repository.registry
+ * @memberOf dsu-blueprint.core.repository.registry
  */
 export function getRepoRegistry(): RepositoryRegistry {
     if (!actingRepoRegistry)
@@ -204,7 +204,7 @@ export function getRepoRegistry(): RepositoryRegistry {
  *
  * @function setRepoRegistry
  *
- * @memberOf core.repository.registry
+ * @memberOf dsu-blueprint.core.repository.registry
  */
 export function setRepoRegistry(repoRegistry: RepositoryRegistry){
     actingRepoRegistry = repoRegistry;

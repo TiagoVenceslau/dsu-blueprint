@@ -4,14 +4,14 @@ import {DSUDid} from "./w3cdid";
 import {KeySSI} from "./keyssi";
 
 /**
- * @namespace core.opendsu.api.sc
- * @memberOf core.opendsu.api
+ * @namespace dsu-blueprint.core.opendsu.api.sc
+ * @memberOf dsu-blueprint.core.opendsu.api
  */
 
 /**
  * @interface DSUSecurityContext
  *
- * @memberOf core.opendsu.api.sc
+ * @memberOf dsu-blueprint.core.opendsu.api.sc
  */
 export interface DSUSecurityContext {
     registerDID(didDocument: DSUDid, callback: Callback): void
@@ -34,7 +34,7 @@ export interface DSUSecurityContext {
  *
  * @interface SecurityContextApi
  *
- * @memberOf core.opendsu.api
+ * @memberOf dsu-blueprint.core.opendsu.api
  */
 export interface SecurityContextApi{
     getMainDSU(mainDSU: DSU): void,

@@ -1,5 +1,5 @@
 /**
- * @namespace core.web
+ * @namespace dsu-blueprint.core.web
  */
 
 export * from './services';

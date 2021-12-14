@@ -1,14 +1,14 @@
 import {DSU, DSUModel} from "../core";
 import {CriticalError, Err, error, getLogger, info, LOGGER_LEVELS} from "@tvenceslau/db-decorators/lib";
 import {CliActions, CliOptions} from "./types";
-import {argParser, buildDSU, buildOrUpdate, mergeWithOpenDSUOptions, storeKeySSI,} from "./toolkit";
+import {argParser, buildOrUpdate, mergeWithOpenDSUOptions, storeKeySSI} from "./toolkit";
 import {KeySSI} from "../core/opendsu/apis/keyssi";
 
 /**
  * Defaults options for the CLI interface
  *
  * @constant defaultOptions
- * @memberOf cli
+ * @memberOf dsu-blueprint.cli
  */
 const defaultOptions: CliOptions = {
     action: CliActions.BUILD,
@@ -38,6 +38,16 @@ try{
 if (!opendsu)
     throw new CriticalError(`Could not load OpenDSU`);
 
+/**
+ *
+ * @param {Err} err
+ * @param {DSUModel} model
+ * @param {DSU} dsu
+ * @param {KeySSI} keySSI
+ *
+ * @function resultCallback
+ * @memberOf dsu-blueprint.cli
+ */
 function resultCallback(err: Err, model?: DSUModel, dsu?: DSU, keySSI?: KeySSI){
     if (err || !model || !dsu || !keySSI)
         throw err || new Error("Missing Results");

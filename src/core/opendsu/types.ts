@@ -25,27 +25,27 @@ import {ConstantsApi} from "./apis";
 
 /**
  * @typedef ObjectCallback
- * @memberOf core.opendsu
+ * @memberOf dsu-blueprint.core.opendsu
  */
 export type ObjectCallback = (err?: Err, object?: any) => void;
 /**
  * @typedef ErrCallback
- * @memberOf core.opendsu
+ * @memberOf dsu-blueprint.core.opendsu
  */
 export type ErrCallback = (err?: Err) => void;
 /**
  * @typedef GenericCallback
- * @memberOf core.opendsu
+ * @memberOf dsu-blueprint.core.opendsu
  */
 export type GenericCallback<T> = (err?: Err, result?: T, ...args: any[]) => void;
 /**
  * @typedef SimpleDSUCallback
- * @memberOf core.opendsu
+ * @memberOf dsu-blueprint.core.opendsu
  */
 export type SimpleDSUCallback = GenericCallback<DSU>;
 /**
  * @typedef DSUIOOptions
- * @memberOf core.opendsu
+ * @memberOf dsu-blueprint.core.opendsu
  */
 export type DSUIOOptions = {
     embedded?: boolean,
@@ -56,7 +56,7 @@ export type DSUIOOptions = {
 
 /**
  * @typedef DSUAnchoringOptions
- * @memberOf core.opendsu
+ * @memberOf dsu-blueprint.core.opendsu
  */
 export type DSUAnchoringOptions = {
     dsuTypeSSI?: string
@@ -64,7 +64,7 @@ export type DSUAnchoringOptions = {
 
 /**
  * @constant
- * @memberOf core.opendsu
+ * @memberOf dsu-blueprint.core.opendsu
  */
 export const DefaultIOOptions: DSUIOOptions = {
     embedded: false,
@@ -75,12 +75,12 @@ export const DefaultIOOptions: DSUIOOptions = {
 
 /**
  * @interface
- * @memberOf core.opendsu
+ * @memberOf dsu-blueprint.core.opendsu
  */
 export interface DSUHandler{}
 /**
  * @interface
- * @memberOf core.opendsu
+ * @memberOf dsu-blueprint.core.opendsu
  */
 export interface DSUFactory{
     create(keySSI: KeySSI, options: DSUIOOptions, callback: SimpleDSUCallback): void;
@@ -88,32 +88,32 @@ export interface DSUFactory{
 }
 /**
  * @typedef IoOptionsOrCallback
- * @memberOf core.opendsu
+ * @memberOf dsu-blueprint.core.opendsu
  */
 export type IoOptionsOrCallback<T> = DSUIOOptions | GenericCallback<T>;
 /**
  * @typedef IoOptionsOrErrCallback
- * @memberOf core.opendsu
+ * @memberOf dsu-blueprint.core.opendsu
  */
 export type IoOptionsOrErrCallback = DSUIOOptions | ErrCallback;
 /**
  * @typedef IoOptionsOrDSUCallback
- * @memberOf core.opendsu
+ * @memberOf dsu-blueprint.core.opendsu
  */
 export type IoOptionsOrDSUCallback = DSUIOOptions | SimpleDSUCallback;
 /**
  * @typedef AnchoringOptsOrCallback
- * @memberOf core.opendsu
+ * @memberOf dsu-blueprint.core.opendsu
  */
 export type AnchoringOptsOrCallback<T> = DSUAnchoringOptions | GenericCallback<T>;
 /**
  * @typedef AnchoringOptsOrErrCallback
- * @memberOf core.opendsu
+ * @memberOf dsu-blueprint.core.opendsu
  */
 export type AnchoringOptsOrErrCallback = DSUAnchoringOptions | ErrCallback;
 /**
  * @typedef AnchoringOptsOrDSUCallback
- * @memberOf core.opendsu
+ * @memberOf dsu-blueprint.core.opendsu
  */
 export type AnchoringOptsOrDSUCallback = DSUAnchoringOptions | SimpleDSUCallback;
 
@@ -122,11 +122,11 @@ export type AnchoringOptsOrDSUCallback = DSUAnchoringOptions | SimpleDSUCallback
  * Exposes an interface with the OpenDSU Archive APi
  *
  * @interface
- * @memberOf core.opendsu
+ * @memberOf dsu-blueprint.core.opendsu
  */
 export interface DSU {
     /**
-     * @memberOf DSU
+     * @memberOf dsu-blueprint.DSU
      */
     directAccessEnabled: boolean;
 
@@ -134,7 +134,7 @@ export interface DSU {
      *
      * @param {ErrCallback} callback
      *
-     * @memberOf DSU
+     * @memberOf dsu-blueprint.DSU
      */
     enableDirectAccess(callback: ErrCallback): void;
 
@@ -143,7 +143,7 @@ export interface DSU {
      *
      * @param {boolean} plain
      *
-     * @memberOf DSU
+     * @memberOf dsu-blueprint.DSU
      */
     getCreationSSI(plain?: boolean): string;
 
@@ -152,7 +152,7 @@ export interface DSU {
      * @param {string | KeySSICallback} [keySSIType]
      * @param {KeySSICallback} callback
      *
-     * @memberOf DSU
+     * @memberOf dsu-blueprint.DSU
      */
     getKeySSIAsObject(keySSIType?: string | KeySSICallback, callback?: KeySSICallback): void;
 
@@ -161,7 +161,7 @@ export interface DSU {
      * @param {string | GenericCallback<string>} [keySSIType]
      * @param {GenericCallback<string>} callback
      *
-     * @memberOf DSU
+     * @memberOf dsu-blueprint.DSU
      */
     getKeySSIAsString(keySSIType?: string | GenericCallback<string>, callback?: GenericCallback<string>): void;
 
@@ -172,7 +172,7 @@ export interface DSU {
      * @param {string} mountPoint
      * @param {GenericCallback<string>} callback
      *
-     * @memberOf DSU
+     * @memberOf dsu-blueprint.DSU
      */
     getSSIForMount(mountPoint: string, callback: GenericCallback<string>): void;
 
@@ -181,7 +181,7 @@ export interface DSU {
      * @param {string} mountPoint
      * @param {GenericCallback<{path: string, identifier: string[]}>} callback
      *
-     * @memberOf DSU
+     * @memberOf dsu-blueprint.DSU
      */
     listMountedDSUs(mountPoint: string, callback: GenericCallback<{path: string, identifier: string}[]>): void;
 
@@ -192,7 +192,7 @@ export interface DSU {
      * @param {IoOptionsOrErrCallback} [options]
      * @param {ErrCallback} callback
      *
-     * @memberOf DSU
+     * @memberOf dsu-blueprint.DSU
      */
     mount(mountingPoint: string, archiveSSI: string, options?: IoOptionsOrErrCallback, callback?: ErrCallback): void;
 
@@ -201,7 +201,7 @@ export interface DSU {
      * @param {string} mountPoint
      * @param {ErrCallback} callback
      *
-     * @memberOf DSU
+     * @memberOf dsu-blueprint.DSU
      */
     unmount(mountPoint: string, callback: ErrCallback): void;
 
@@ -211,7 +211,7 @@ export interface DSU {
      * @param {string} dsuPath
      * @param {Callback} callback
      *
-     * @memberOf DSU
+     * @memberOf dsu-blueprint.DSU
      */
     getArchiveForPath(dsuPath: string, callback: Callback): void;
 
@@ -221,7 +221,7 @@ export interface DSU {
      * @param {IoOptionsOrCallback<string[]>} [options]
      * @param {GenericCallback<string[]>} callback
      *
-     * @memberOf DSU
+     * @memberOf dsu-blueprint.DSU
      */
     listFiles(dsuPath: string, options?: IoOptionsOrCallback<string[]>, callback?: GenericCallback<string[]>): void;
 
@@ -231,7 +231,7 @@ export interface DSU {
      * @param {IoOptionsOrCallback<string[]>} [options]
      * @param {GenericCallback<string[]>} callback
      *
-     * @memberOf DSU
+     * @memberOf dsu-blueprint.DSU
      */
     listFolders(dsuPath: string, options?: IoOptionsOrCallback<string[]>, callback?: GenericCallback<string[]>): void;
 
@@ -241,7 +241,7 @@ export interface DSU {
      * @param {IoOptionsOrCallback<{}>} [options]
      * @param {GenericCallback<{}>} callback
      *
-     * @memberOf DSU
+     * @memberOf dsu-blueprint.DSU
      */
     readDir(dsuPath: string, options?: IoOptionsOrCallback<{}>, callback?: GenericCallback<{}>): void;
 
@@ -252,7 +252,7 @@ export interface DSU {
      * @param {IoOptionsOrErrCallback} [options]
      * @param {ErrCallback} callback
      *
-     * @memberOf DSU
+     * @memberOf dsu-blueprint.DSU
      */
     cloneFolder(srcPath: string, destPath: string, options?: IoOptionsOrErrCallback, callback?: ErrCallback): void;
 
@@ -262,7 +262,7 @@ export interface DSU {
      * @param {IoOptionsOrErrCallback} [options]
      * @param {ErrCallback} callback
      *
-     * @memberOf DSU
+     * @memberOf dsu-blueprint.DSU
      */
     createFolder(dsuPath: string, options?: IoOptionsOrErrCallback, callback?: ErrCallback): void;
 
@@ -272,7 +272,7 @@ export interface DSU {
      * @param {IoOptionsOrErrCallback} [options]
      * @param {ErrCallback} callback
      *
-     * @memberOf DSU
+     * @memberOf dsu-blueprint.DSU
      */
     delete(dsuPath: string, options?: IoOptionsOrErrCallback, callback?: ErrCallback): void;
 
@@ -283,7 +283,7 @@ export interface DSU {
      * @param {IoOptionsOrErrCallback} [options]
      * @param {ErrCallback} callback
      *
-     * @memberOf DSU
+     * @memberOf dsu-blueprint.DSU
      */
     rename(srcPath: string, destPath: string, options?: IoOptionsOrErrCallback, callback?: ErrCallback): void;
 
@@ -294,7 +294,7 @@ export interface DSU {
      * @param {IoOptionsOrErrCallback} [options]
      * @param {ErrCallback} callback
      *
-     * @memberOf DSU
+     * @memberOf dsu-blueprint.DSU
      */
     appendToFile(dsuPath: string, data: any, options?: IoOptionsOrErrCallback, callback?: ErrCallback): void;
 
@@ -304,7 +304,7 @@ export interface DSU {
      * @param {IoOptionsOrCallback<any>} [options]
      * @param {GenericCallback<any>} callback
      *
-     * @memberOf DSU
+     * @memberOf dsu-blueprint.DSU
      */
     createReadStream(dsuPath: string, options?: IoOptionsOrCallback<any>, callback?: GenericCallback<any>): void;
 
@@ -313,7 +313,7 @@ export interface DSU {
      * @param {string} message
      * @param {ErrCallback} callback
      *
-     * @memberOf DSU
+     * @memberOf dsu-blueprint.DSU
      */
     dsuLog(message: string, callback: ErrCallback): void;
 
@@ -323,7 +323,7 @@ export interface DSU {
      * @param {IoOptionsOrCallback<any>} [options]
      * @param {GenericCallback<any>} callback
      *
-     * @memberOf DSU
+     * @memberOf dsu-blueprint.DSU
      */
     readFile(path: string, options?: IoOptionsOrCallback<any>, callback?: GenericCallback<any>): void;
 
@@ -334,7 +334,7 @@ export interface DSU {
      * @param {IoOptionsOrErrCallback} [options]
      * @param {ErrCallback} callback
      *
-     * @memberOf DSU
+     * @memberOf dsu-blueprint.DSU
      */
     writeFile(path: string, data: any, options?: IoOptionsOrErrCallback, callback?: ErrCallback): void;
 
@@ -344,19 +344,19 @@ export interface DSU {
      * @param {function(): any} batchFn
      * @param {ErrCallback} callback
      *
-     * @memberOf DSU
+     * @memberOf dsu-blueprint.DSU
      */
     batch(batchFn: () => any, callback: ErrCallback): void;
 
     /**
      * @return {boolean}
      *
-     * @memberOf DSU
+     * @memberOf dsu-blueprint.DSU
      */
     batchInProgress(): boolean;
 
     /**
-     * @memberOf DSU
+     * @memberOf dsu-blueprint.DSU
      */
     beginBatch(): void;
 
@@ -364,7 +364,7 @@ export interface DSU {
      *
      * @param {ErrCallback} callback
      *
-     * @memberOf DSU
+     * @memberOf dsu-blueprint.DSU
      */
     cancelBatch(callback: ErrCallback): void;
 
@@ -373,7 +373,7 @@ export interface DSU {
      * @param {function(): any | ErrCallback} [onConflict]
      * @param {ErrCallback} callback
      *
-     * @memberOf DSU
+     * @memberOf dsu-blueprint.DSU
      */
     commitBatch(onConflict?: () => any | ErrCallback, callback?: ErrCallback): void;
 
@@ -385,7 +385,7 @@ export interface DSU {
      * @param {IoOptionsOrErrCallback} [options]
      * @param {ErrCallback} callback
      *
-     * @memberOf DSU
+     * @memberOf dsu-blueprint.DSU
      */
     addFile(fsPath: string, dsuPath: string, options?: IoOptionsOrErrCallback, callback?: ErrCallback): void;
 
@@ -396,7 +396,7 @@ export interface DSU {
      * @param {IoOptionsOrErrCallback} [options]
      * @param {ErrCallback} callback
      *
-     * @memberOf DSU
+     * @memberOf dsu-blueprint.DSU
      */
     addFiles(fsPath: string[], dsuPath: string, options?: IoOptionsOrErrCallback, callback?: ErrCallback): void;
 
@@ -407,7 +407,7 @@ export interface DSU {
      * @param {IoOptionsOrErrCallback} [options]
      * @param {ErrCallback} callback
      *
-     * @memberOf DSU
+     * @memberOf dsu-blueprint.DSU
      */
     addFolder(fsPath: string, dsuPath: string, options?: IoOptionsOrErrCallback, callback?: ErrCallback): void;
 
@@ -418,7 +418,7 @@ export interface DSU {
      * @param {IoOptionsOrErrCallback} [options]
      * @param {ErrCallback} callback
      *
-     * @memberOf DSU
+     * @memberOf dsu-blueprint.DSU
      */
     extractFile(fsPath: string, dsuPath: string, options?: IoOptionsOrErrCallback, callback?: ErrCallback): void;
 
@@ -437,13 +437,13 @@ export interface DSU {
  *
  * @interface WalletDsu
  *
- * @memberOf core.opendsu
+ * @memberOf dsu-blueprint.core.opendsu
  */
 export interface WalletDsu extends DSU {
     /**
      * @return {DSU}
      *
-     * @memberOf WalletDsu
+     * @memberOf dsu-blueprint.WalletDsu
      */
     getWritableDSU(): DSU;
 }
@@ -453,12 +453,12 @@ export interface WalletDsu extends DSU {
  * Exposes an interface with the OpenDSU APi
  *
  * @interface OpenDSU
- * @memberOf core.opendsu
+ * @memberOf dsu-blueprint.core.opendsu
  */
 export interface OpenDSU {
     /**
      * Constants Property
-     * @memberOf OpenDSU
+     * @memberOf dsu-blueprint.OpenDSU
      */
     constants: ConstantsApi;
 
@@ -467,7 +467,7 @@ export interface OpenDSU {
      * @param {string} api
      * @return {OpenDSUApi}
      *
-     * @memberOf OpenDSU
+     * @memberOf dsu-blueprint.OpenDSU
      */
     loadApi(api: string): OpenDSUApi;
 }
@@ -476,6 +476,6 @@ export interface OpenDSU {
  * Exposes an Union Type will all mapped OpenDSU Apis
  *
  * @typedef OpenDSUApi
- * @memberOf core.opendsu
+ * @memberOf dsu-blueprint.core.opendsu
  */
 export type OpenDSUApi = StorageApi | M2DsuApi | MessageQueueApi | NotificationsApi | OAuthApi | OpenDSUWorkersApi | OpenDSUUtilsApi | AnchoringApi | ErrorApi | ResolverApi | KeyssiApi | SystemApi | HttpApi | SecurityContextApi | W3cDIDApi | DBApi | EnclaveApi | BdnsApi | ConfigApi | CacheApi | ContractsApi | CrypoApi;

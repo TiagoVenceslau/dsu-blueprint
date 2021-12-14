@@ -1,13 +1,13 @@
 
 /**
- * @namespace core.opendsu.api.workers
- * @memberOf core.opendsu.api
+ * @namespace dsu-blueprint.core.opendsu.api.workers
+ * @memberOf dsu-blueprint.core.opendsu.api
  */
 
 /**
  * @interface WorkerPool
  *
- * @memberOf core.opendsu.api.workers
+ * @memberOf dsu-blueprint.core.opendsu.api.workers
  */
 export interface WorkerPool {
     environment: string;
@@ -21,7 +21,7 @@ export interface WorkerPool {
  *
  * @interface OpenDSUWorkersApi
  *
- * @memberOf core.opendsu.api
+ * @memberOf dsu-blueprint.core.opendsu.api
  */
 export interface OpenDSUWorkersApi {
     createPool(options?: {}): WorkerPool;

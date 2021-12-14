@@ -6,7 +6,7 @@ import {Callback} from "@tvenceslau/db-decorators/lib";
  *
  * @interface AnchoringApi
  *
- * @memberOf core.opendsu.api
+ * @memberOf dsu-blueprint.core.opendsu.api
  */
 export interface AnchoringApi {
     createAnchor(dsuKeySSI: KeySSI, callback: Callback): void;

@@ -1,6 +1,6 @@
 /**
- * @namespace core.opendsu.api
- * @memberOf core.opendsu
+ * @namespace dsu-blueprint.core.opendsu.api
+ * @memberOf dsu-blueprint.core.opendsu
  */
 
 export * from './anchoring';

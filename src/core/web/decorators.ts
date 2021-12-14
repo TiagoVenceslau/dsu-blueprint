@@ -32,7 +32,7 @@ import URLValidator from "@tvenceslau/decorator-validation/lib/validation/Valida
  * Metadata passed to {@link DSUPreparationHandler}s
  *
  * @typedef DSUEditMetadata
- * @memberOf core.web
+ * @memberOf dsu-blueprint.core.web
  */
 
 export type DSUPreparationMetadata = {

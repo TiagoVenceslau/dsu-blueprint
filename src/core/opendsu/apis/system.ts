@@ -4,7 +4,7 @@
  *
  * @interface SystemApi
  *
- * @memberOf core.opendsu.api
+ * @memberOf dsu-blueprint.core.opendsu.api
  */
 export interface SystemApi {
     getEnvironmentVariable(name: string): any,

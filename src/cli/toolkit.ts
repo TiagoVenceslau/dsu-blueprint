@@ -3,7 +3,6 @@ import {
     DSU,
     DSUCallback,
     DSUModel,
-    ErrCallback,
     getConstantsApi,
     getResolverApi,
     OpenDSURepository, safeParseKeySSI
@@ -11,19 +10,17 @@ import {
 import {Callback, criticalCallback, debug, Err} from "@tvenceslau/db-decorators/lib";
 import {CliOptions} from "./types";
 import {KeySSI} from "../core/opendsu/apis/keyssi";
-import fs, {NoParamCallback} from "fs";
-import path from "path";
 import {getFS, getPath} from "../fs";
-import {Key} from "readline";
+
 
 /**
- * @namespace cli.toolkit
- * @memberOf cli
+ * @namespace dsu-blueprint.cli.toolkit
+ * @memberOf dsu-blueprint.cli
  */
 
 /**
  * @enum defaultOptions
- * @memberOf cli.toolkit
+ * @memberOf dsu-blueprint.cli.toolkit
  */
 export const defaultOptions = {
     anchoring: "default",
@@ -56,7 +53,7 @@ export const defaultOptions = {
  *
  * @function argParser
  *
- * @memberOf cli.toolkit
+ * @memberOf dsu-blueprint.cli.toolkit
  */
 export function argParser(defaultOpts: CliOptions, args: string[]){
     let config = JSON.parse(JSON.stringify(defaultOpts));
@@ -94,7 +91,7 @@ export function argParser(defaultOpts: CliOptions, args: string[]){
  *
  * @function mergeWithOpenDSUOptions
  *
- * @memberOf cli.toolkit
+ * @memberOf dsu-blueprint.cli.toolkit
  */
 export function mergeWithOpenDSUOptions(options: CliOptions){
     const constants: ConstantsApi = getConstantsApi();
@@ -114,7 +111,7 @@ export function mergeWithOpenDSUOptions(options: CliOptions){
  * @param {Callback} callback
  *
  * @function storeKeySSI
- * @memberOf cli.toolkit
+ * @memberOf dsu-blueprint.cli.toolkit
  */
 export function storeKeySSI(config: CliOptions, data: string, callback: Callback){
     getFS().writeFile(getPath().join(config.pathAdaptor, config.seedFile), data, undefined, callback)
@@ -127,7 +124,7 @@ export function storeKeySSI(config: CliOptions, data: string, callback: Callback
  * @param {Callback} callback
  *
  * @function getCurrentKeySSI
- * @memberOf cli.toolkit
+ * @memberOf dsu-blueprint.cli.toolkit
  */
 export function getCurrentKeySSI(config: CliOptions, callback: Callback){
     getFS().readFile(getPath().join(config.pathAdaptor, config.seedFile),  undefined, (err, data) => err
@@ -142,7 +139,7 @@ export function getCurrentKeySSI(config: CliOptions, callback: Callback){
  * @param {Callback} callback
  *
  * @function getBlueprint
- * @memberOf cli.toolkit
+ * @memberOf dsu-blueprint.cli.toolkit
  */
 export function getBlueprint(config: CliOptions, callback: Callback){
     let blueprintFile;
@@ -165,7 +162,7 @@ export function getBlueprint(config: CliOptions, callback: Callback){
  * @param {Callback} callback
  *
  * @function buildOrUpdate
- * @memberOf cli.toolkit
+ * @memberOf dsu-blueprint.cli.toolkit
  */
 export function buildOrUpdate(config: CliOptions, callback: DSUCallback<DSUModel>): void{
     getCurrentKeySSI(config, (err: Err, ssi?: string) => {

@@ -3,7 +3,7 @@ import {IRegistry} from "@tvenceslau/decorator-validation/lib/utils/registry";
 
 /**
  * @typedef DSUModelFactory
- * @memberOf core.model
+ * @memberOf dsu-blueprint.core.model
  */
 export type DSUModelFactory = {new(): DSUModel}
 
@@ -11,7 +11,7 @@ export type DSUModelFactory = {new(): DSUModel}
  * @class DSUModelRegistryImp
  * @implements IRegistry<DSUModelFactory>
  *
- * @memberOf core.model
+ * @memberOf dsu-blueprint.core.model
  */
 export class DSUModelRegistryImp implements IRegistry<DSUModelFactory>{
     private cache: {[indexer: string]: DSUModelFactory} = {};
@@ -22,7 +22,7 @@ export class DSUModelRegistryImp implements IRegistry<DSUModelFactory>{
      * @param {any[]} args
      * @return {DSUModelFactory | undefined}
      *
-     * @memberOf DSUModelRegistryImp
+     * @memberOf dsu-blueprint.DSUModelRegistryImp
      */
     get<DSUModelFactory>(key: any, ...args: any[]): DSUModelFactory | undefined {
         if (!(key in this.cache))
@@ -35,7 +35,7 @@ export class DSUModelRegistryImp implements IRegistry<DSUModelFactory>{
      *
      * @param {DSUModelFactory} obj
      *
-     * @memberOf DSUModelRegistryImp
+     * @memberOf dsu-blueprint.DSUModelRegistryImp
      */
     register<DSUModelFactory>(obj: DSUModelFactory): void {
         // @ts-ignore
@@ -51,7 +51,7 @@ let activeDSUModelRegistry: IRegistry<DSUModelFactory>;
 /**
  * @function getDSUModelRegistry
  *
- * @memberOf core.model
+ * @memberOf dsu-blueprint.core.model
  */
 export function getDSUModelRegistry(){
     if (!activeDSUModelRegistry)
@@ -65,7 +65,7 @@ export function getDSUModelRegistry(){
  *
  * @function setDSUModelRegistry
  *
- * @memberOf core.model
+ * @memberOf dsu-blueprint.core.model
  */
 export function setDSUModelRegistry(dsuModelRegistry: IRegistry<DSUModelFactory>){
     activeDSUModelRegistry = dsuModelRegistry;

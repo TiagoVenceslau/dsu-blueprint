@@ -4,19 +4,19 @@ import {DSUDid} from "./w3cdid";
 import {KeySSI, SeedSSI, sReadSSI} from "./keyssi";
 
 /**
- * @namespace core.opendsu.api.crypto
- * @memberOf core.opendsu.api
+ * @namespace dsu-blueprint.core.opendsu.api.crypto
+ * @memberOf dsu-blueprint.core.opendsu.api
  */
 
 /**
  * @interface AuthToken
- * @memberOf core.opendsu.api.crypto
+ * @memberOf dsu-blueprint.core.opendsu.api.crypto
  */
 export interface AuthToken {}
 
 /**
  * @interface JWT
- * @memberOf core.opendsu.api.crypto
+ * @memberOf dsu-blueprint.core.opendsu.api.crypto
  */
 export interface JWT {
 
@@ -24,12 +24,12 @@ export interface JWT {
 
 /**
  * @typedef DIDCallback
- * @memberOf core.opendsu.api.crypto
+ * @memberOf dsu-blueprint.core.opendsu.api.crypto
  */
 export type DIDCallback = GenericCallback<DSUDid>;
 /**
  * @typedef TokenCallback
- * @memberOf core.opendsu.api.crypto
+ * @memberOf dsu-blueprint.core.opendsu.api.crypto
  */
 export type TokenCallback = GenericCallback<AuthToken>;
 
@@ -38,7 +38,7 @@ export type TokenCallback = GenericCallback<AuthToken>;
  *
  * @interface CryptoApi
  *
- * @memberOf core.opendsu.api
+ * @memberOf dsu-blueprint.core.opendsu.api
  */
 export interface CrypoApi {
     getCryptoFunctionForKeySSI(keySSI: KeySSI, crytoFunctionTime: any): void;

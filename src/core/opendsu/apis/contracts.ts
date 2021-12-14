@@ -5,7 +5,7 @@ import {Callback} from "@tvenceslau/db-decorators/lib";
  *
  * @interface ContractsApi
  *
- * @memberOf core.opendsu.api
+ * @memberOf dsu-blueprint.core.opendsu.api
  */
 export interface ContractsApi {
     generateSafeCommand(domain: string, contractName: string, methodName: string, params: any, timestamp: any, callback: Callback): void;

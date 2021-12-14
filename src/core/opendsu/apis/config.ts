@@ -4,7 +4,7 @@ import {Callback} from "@tvenceslau/db-decorators/lib";
  * Interface representing the OpenDSU 'config' Api Space
  *
  * @interface ConfigApi
- * @memberOf core.opendsu.api
+ * @memberOf dsu-blueprint.core.opendsu.api
  */
 export interface ConfigApi {
     /**

@@ -5,7 +5,7 @@ import {parseEnvJS} from "../../fs";
 /**
  * @typedef WebServiceOptions
  *
- * @memberOf core.web
+ * @memberOf dsu-blueprint.core.web
  */
 export type WebServiceOptions = {
     /**
@@ -35,7 +35,7 @@ export type WebServiceOptions = {
  * Reference interface for a {@link WebService}
  *
  * @interface WebService
- * @memberOf core.web
+ * @memberOf dsu-blueprint.core.web
  */
 export interface WebService {
     options: WebServiceOptions;
@@ -55,7 +55,7 @@ export interface WebService {
  *
  * @function mergeWebServiceOptions
  *
- * @memberOf core.web
+ * @memberOf dsu-blueprint.core.web
  */
 export function mergeWebServiceOptions(options?: WebServiceOptions | {}): WebServiceOptions {
     return Object.assign({},
@@ -73,7 +73,7 @@ export function mergeWebServiceOptions(options?: WebServiceOptions | {}): WebSer
  *
  * @class WebServiceImp
  *
- * @memberOf core.web
+ * @memberOf dsu-blueprint.core.web
  */
 export class WebServiceImp implements WebService {
     readonly options: WebServiceOptions;
@@ -269,7 +269,7 @@ export class WebServiceImp implements WebService {
  *
  * @function getWebService
  *
- * @memberOf core.web
+ * @memberOf dsu-blueprint.core.web
  */
 export function getWebService(options?: WebServiceOptions | {}): WebService {
     return new WebServiceImp(options);

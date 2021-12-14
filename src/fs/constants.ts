@@ -1,6 +1,6 @@
 /**
  * @namespace dsu-blueprint.filesystem.constants
- * @memberOfdsu-blueprint. filesystem
+ * @memberOf dsu-blueprint.filesystem
  */
 
 /**

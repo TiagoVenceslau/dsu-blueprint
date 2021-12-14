@@ -14,7 +14,7 @@ import {ConstantsApi} from "../opendsu";
  *
  * @class SeedDSU
  *
- * @memberOf core.model
+ * @memberOf dsu-blueprint.core.model
  */
 @DSUBlueprint(undefined, KeySSIType.SEED)
 export class SeedDSU extends DSUModel{
@@ -30,7 +30,7 @@ export class SeedDSU extends DSUModel{
  *
  * @class WalletDSU
  *
- * @memberOf core.model
+ * @memberOf dsu-blueprint.core.model
  */
 @DSUBlueprint(undefined, KeySSIType.WALLET)
 export class WalletDSU extends DSUModel{
@@ -51,7 +51,7 @@ export class WalletDSU extends DSUModel{
  *
  * @class ArrayDSU
  *
- * @memberOf core.model
+ * @memberOf dsu-blueprint.core.model
  */
 @DSUBlueprint(undefined, KeySSIType.ARRAY)
 export class ArrayDSU extends DSUModel{
@@ -67,7 +67,7 @@ export class ArrayDSU extends DSUModel{
  *
  * @class DbDsuBlueprint
  *
- * @memberOf core.model
+ * @memberOf dsu-blueprint.core.model
  */
 @DSUBlueprint(undefined, KeySSIType.SEED)
 export class DbDsuBlueprint extends DSUModel{

@@ -7,7 +7,7 @@ import {Callback} from "@tvenceslau/db-decorators/lib";
  *
  * @interface NotificationsApi
  *
- * @memberOf core.opendsu.api
+ * @memberOf dsu-blueprint.core.opendsu.api
  */
 export interface NotificationsApi {
     publish(keySSI: KeySSI, message: string, timeout: number, callback: Callback): void;

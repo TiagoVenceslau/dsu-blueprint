@@ -5,7 +5,7 @@ import {Callback} from "@tvenceslau/db-decorators/lib";
  *
  * @interface BdnsApi
  *
- * @memberOf core.opendsu.api
+ * @memberOf dsu-blueprint.core.opendsu.api
  */
 export interface BdnsApi {
     getRawInfo(dlDomain: string, callback: Callback): void;

@@ -6,7 +6,7 @@ import {LOGGER_LEVELS} from "@tvenceslau/db-decorators/lib";
  * all of them can be overwritten in the cli, for eg:
  *
  * @typedef CliOptions
- * @memberOf cli
+ * @memberOf dsu-blueprint.cli
  *
  * @example
  * NodeJS:
@@ -116,7 +116,7 @@ export type CliOptions = {
  *
  * @enum CliActions
  *
- * @memberOf cli
+ * @memberOf dsu-blueprint.cli
  */
 export enum CliActions {
     /**

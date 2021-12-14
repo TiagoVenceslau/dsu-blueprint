@@ -4,13 +4,13 @@ import {KeySSI, KeySSICallback} from "./keyssi";
 import {DIDCallback} from "./crypto";
 
 /**
- * @namespace core.opendsu.api.enclave
- * @memberOf core.opendsu.api
+ * @namespace dsu-blueprint.core.opendsu.api.enclave
+ * @memberOf dsu-blueprint.core.opendsu.api
  */
 
 /**
  * @interface DSUEnclave
- * @memberOf core.opendsu.api.enclave
+ * @memberOf dsu-blueprint.core.opendsu.api.enclave
  */
 export interface DSUEnclave {
     /**
@@ -18,12 +18,12 @@ export interface DSUEnclave {
      * @param forDID
      * @param callback
      *
-     * @memberOf DSUEnclave
+     * @methodOf DSUEnclave
      */
     getKeySSI(forDID: DSUDid, callback: KeySSICallback): void;
 
     /**
-     * @memberOf DSUEnclave
+     * @methodOf DSUEnclave
      */
     isInitialized(): boolean;
 
@@ -39,7 +39,7 @@ export type EnclaveCallback = GenericCallback<DSUEnclave>;
 /**
  * @interface HighSecurityProxy
  *
- * @memberOf core.opendsu.api.enclave
+ * @memberOf dsu-blueprint.core.opendsu.api.enclave
  */
 export interface HighSecurityProxy{
     getDID(callback: DIDCallback): void;
@@ -47,7 +47,7 @@ export interface HighSecurityProxy{
 /**
  * @interface ApiHubSecurityProxy
  *
- * @memberOf core.opendsu.api.enclave
+ * @memberOf dsu-blueprint.core.opendsu.api.enclave
  */
 export interface ApiHubSecurityProxy{
     getDID(callback: DIDCallback): void;
@@ -59,7 +59,7 @@ export interface ApiHubSecurityProxy{
  *
  * @interface EnclaveApi
  *
- * @memberOf core.opendsu.api
+ * @memberOf dsu-blueprint.core.opendsu.api
  */
 export interface EnclaveApi {
     /**
@@ -69,13 +69,13 @@ export interface EnclaveApi {
      *
      * @return DSUEnclave
      *
-     * @memberOf EnclaveApi
+     * @methodOf EnclaveApi
      */
     initialiseWalletDBEnclave(keySSI: KeySSI, did: DSUDid): DSUEnclave;
     /**
      * @return DSUEnclave
      *
-     * @memberOf EnclaveApi
+     * @methodOf EnclaveApi
      */
     initialiseMemoryEnclave(): DSUEnclave;
     /**
@@ -85,7 +85,7 @@ export interface EnclaveApi {
      *
      * @return ApiHubSecurityProxy
      *
-     * @memberOf EnclaveApi
+     * @methodOf EnclaveApi
      */
     initialiseAPIHUBProxy(domain: string, did: DSUDid): ApiHubSecurityProxy;
     /**
@@ -95,7 +95,7 @@ export interface EnclaveApi {
      *
      * @return HighSecurityProxy
      *
-     * @memberOf EnclaveApi
+     * @methodOf EnclaveApi
      */
     initialiseHighSecurityProxy(domain: string, did: DSUDid): HighSecurityProxy;
     // /**
@@ -109,7 +109,7 @@ export interface EnclaveApi {
      *
      * @return DSUEnclave
      *
-     * @memberOf EnclaveApi
+     * @methodOf EnclaveApi
      */
     createEnclave(enclaveType: string, ...args: any[]): DSUEnclave;
     /**
@@ -117,7 +117,7 @@ export interface EnclaveApi {
      * @param {string} enclaveType
      * @param {{new: DSUEnclave}} enclaveConstructor
      *
-     * @memberOf EnclaveApi
+     * @methodOf EnclaveApi
      */
     registerEnclave(enclaveType: string, enclaveConstructor: {new(): DSUEnclave}): void;
 }

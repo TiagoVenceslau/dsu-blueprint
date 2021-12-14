@@ -1,5 +1,5 @@
 /**
- * @namespace filesystem
+ * @namespace dsu-blueprint.filesystem
  * @memberOf dsu-blueprint
  */
 

@@ -5,7 +5,7 @@ import {Callback} from "@tvenceslau/db-decorators/lib";
  *
  * @interface HttpApi
  *
- * @memberOf core.opendsu.api
+ * @memberOf dsu-blueprint.core.opendsu.api
  */
 export interface HttpApi {
     fetch(url: string, options?: {}): Promise<any>;

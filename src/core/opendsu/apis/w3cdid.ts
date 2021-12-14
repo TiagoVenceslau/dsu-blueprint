@@ -1,14 +1,14 @@
 import {Callback} from "@tvenceslau/db-decorators/lib";
 
 /**
- * @namespace core.opendsu.api.w3cdid
- * @memberOf core.opendsu.api
+ * @namespace dsu-blueprint.core.opendsu.api.w3cdid
+ * @memberOf dsu-blueprint.core.opendsu.api
  */
 
 /**
  * @interface DSUDid
  *
- * @memberOf core.opendsu.api.w3cdid
+ * @memberOf dsu-blueprint.core.opendsu.api.w3cdid
  */
 export interface DSUDid{
 
@@ -16,7 +16,7 @@ export interface DSUDid{
 /**
  * @interface CryptographicSkillsApi
  *
- * @memberOf core.opendsu.api.w3cdid
+ * @memberOf dsu-blueprint.core.opendsu.api.w3cdid
  */
 export interface CryptographicSkillsApi {
     registerSkills(didMethod: string, skills: any): void;
@@ -29,7 +29,7 @@ export interface CryptographicSkillsApi {
  *
  * @interface W3cDIDApi
  *
- * @memberOf core.opendsu.api
+ * @memberOf dsu-blueprint.core.opendsu.api
  */
 export interface W3cDIDApi{
     createIdentity(didMethod: string, ...args: any[]): any;

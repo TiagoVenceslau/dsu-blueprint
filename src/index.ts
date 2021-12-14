@@ -4,7 +4,6 @@
  * A decorator based approach to OpenDSU creation and management
  *
  * @module dsu-blueprint
- *
  */
 
 

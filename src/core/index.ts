@@ -1,12 +1,8 @@
 /**
- * @module Core
- */
-
-/**
  * Web interaction Api to enable interaction with web related services (including the ApiHub)
  *
- * @namespace core
- * @memberOf Core
+ * @namespace dsu-blueprint.core
+ * @memberOf dsu-blueprint
  */
 
 export * from './opendsu';

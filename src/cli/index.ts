@@ -5,16 +5,11 @@
  *
  * Available options: {@link CliOptions} eg for option 'action':
  *
- * @module Cli
+ * @namespace dsu-blueprint.cli
+ * @memberOf dsu-blueprint
  *
  * @example
  * node ./node_modules/@tvenceslau/dsu-blueprint/lib/cli --action=build
- *
- */
-
-/**
- * @namespace cli
- * @memberOf Cli
  */
 
 export * from './cli';

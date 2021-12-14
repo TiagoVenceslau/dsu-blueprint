@@ -1,6 +1,6 @@
 /**
- * @namespace core.opendsu
- * @memberOf core
+ * @namespace dsu-blueprint.core.opendsu
+ * @memberOf dsu-blueprint.core
  */
 
 export * from './opendsu';
