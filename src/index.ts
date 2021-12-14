@@ -19,7 +19,7 @@
  *      sequenceDiagram
  *          System->>Repository:create(DSUModel, ...keyArgs, callback)
  *          Repository->>RepositoryLoop:onCreate(DSUModel, callback)
- *          RepositoryLoop->>RepositoryUtils.createFromDecorators(DSUModel)
+ *          RepositoryLoop->>RepositoryUtils:createFromDecorators(DSUModel)
  *          RepositoryUtils->>DSUPhaseLoop:handleCreationDecorators(DSUModel, decorators, callback)
  *          loop CreationDecorators
  *              DSUPhaseLoop->>Repository:create(DSUModel, ...keyArgs, callback)
