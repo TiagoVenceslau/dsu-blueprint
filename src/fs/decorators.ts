@@ -15,14 +15,19 @@ import DBModel from "@tvenceslau/db-decorators/lib/model/DBModel";
 import {DsuFsKeys, FSOptions} from "./constants";
 
 /**
+ * @namespace dsu-blueprint.fs.decorators
+ * @memberOf dsu-blueprint.fs
+ */
+
+/**
  * Returns the complete Reflection FS Key
  *
  * @param {string} key
  * @return string
  *
- * @decorator getFsKey
+ * @function getFsKey
  *
- * @category Decorators
+ * @memberOf dsu-blueprint.fs.decorators
  */
 const getFsKey = (key: string) => DsuKeys.REFLECT + key;
 

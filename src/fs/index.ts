@@ -1,6 +1,6 @@
 /**
  * @namespace filesystem
- * @memberOf FileSystem
+ * @memberOf dsu-blueprint
  */
 
 export * from './utils';

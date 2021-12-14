@@ -4,8 +4,8 @@ import {ConstantsApi, get$$} from "../core/opendsu";
 import {DSUStorage} from "../core/opendsu/apis/storage";
 
 /**
- * @namespace filesystem.utils
- * @memberOf filesystem
+ * @namespace dsu-blueprint.filesystem.utils
+ * @memberOf dsu-blueprint.filesystem
  */
 
 /**
@@ -15,7 +15,7 @@ import {DSUStorage} from "../core/opendsu/apis/storage";
  *
  * @function impersonateDSUStorage
  *
- * @memberOf filesystem.utils
+ * @memberOf dsu-blueprint.filesystem.utils
  */
 export function impersonateDSUStorage(originalDsu: DSU): DSUStorage {
     const dsu: DSUStorage = originalDsu as DSUStorage;
@@ -51,7 +51,7 @@ export function impersonateDSUStorage(originalDsu: DSU): DSUStorage {
 /**
  * cache of node's fs object
  *
- * @memberOf filesystem.utils
+ * @memberOf dsu-blueprint.filesystem.utils
  */
 let  _fileSystem: fs | undefined = undefined;
 
@@ -65,7 +65,7 @@ export type FsOptions = {encoding?: string, flag?: string, withFileTypes?: boole
  * Interface with the used node fs methods
  *
  * @interface fs
- * @memberOf filesystem.utils
+ * @memberOf dsu-blueprint.filesystem.utils
  */
 export interface fs {
     readdir(path: string, options: FsOptions | undefined, callback: Callback): void;
@@ -82,7 +82,7 @@ export interface fs {
  *
  * @function getFS
  *
- * @memberOf filesystem.utils
+ * @memberOf dsu-blueprint.filesystem.utils
  */
 export function getFS(): fs {
     if (get$$().environmentType !== 'nodejs')
@@ -96,7 +96,7 @@ export function getFS(): fs {
  *
  * @interface path
  *
- * @memberOf filesystem.utils
+ * @memberOf dsu-blueprint.filesystem.utils
  */
 export interface path {
     sep: string;
@@ -116,7 +116,7 @@ let  _path: path | undefined = undefined;
  *
  * @function getPath
  *
- * @memberOf filesystem.utils
+ * @memberOf dsu-blueprint.filesystem.utils
  */
 export function getPath(): path {
     if (get$$().environmentType !== 'nodejs')
@@ -132,7 +132,7 @@ export function getPath(): path {
  *
  * @function parseEnvJS
  *
- * @memberOf filesystem.utils
+ * @memberOf dsu-blueprint.filesystem.utils
  */
 export function parseEnvJS(strEnv: string): {} {
     return JSON.parse(strEnv.replace(/^export\sdefault\s/, ''));
@@ -147,7 +147,7 @@ export function parseEnvJS(strEnv: string): {} {
  *
  * @function parseEnvJS
  *
- * @memberOf filesystem.utils
+ * @memberOf dsu-blueprint.filesystem.utils
  */
 export function getEnvJs(app: string, pathToApps: string, callback: ObjectCallback){
     const appPath = getPath().join(process.cwd(), pathToApps, "trust-loader-config", app, "loader", "environment.js");
