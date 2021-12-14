@@ -3,7 +3,7 @@
  *
  * @interface EnvironmentTypes
  *
- * @memberOf core.opendsu.api.constants
+ * @memberOf dsu-blueprint.core.opendsu.api.constants
  */
 export interface EnvironmentTypes {
     /**
@@ -40,7 +40,7 @@ export interface EnvironmentTypes {
  * Interface representing the OpenDSU Constants
  *
  * @interface ConstantsApi
- * @memberOf core.opendsu.api.constants
+ * @memberOf dsu-blueprint.core.opendsu.api.constants
  */
 export interface ConstantsApi {
     /**

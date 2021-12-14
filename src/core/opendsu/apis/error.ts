@@ -4,7 +4,7 @@ import {Callback, Err} from "@tvenceslau/db-decorators/lib";
  *
  * @interface ErrorApi
  *
- * @memberOf core.opendsu.api
+ * @memberOf dsu-blueprint.core.opendsu.api
  */
 export interface ErrorApi {
     createOpenDSUErrorWrapper(message: string, err: Err, otherErrors?: []): void;

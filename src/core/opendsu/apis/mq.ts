@@ -2,14 +2,14 @@ import {DSUDid} from "./w3cdid";
 import {KeySSI} from "./keyssi";
 import {Callback} from "@tvenceslau/db-decorators/lib";
 /**
- * @namespace core.opendsu.api.mq
- * @memberOf core.opendsu.api
+ * @namespace dsu-blueprint.core.opendsu.api.mq
+ * @memberOf dsu-blueprint.core.opendsu.api
  */
 
 /**
  * @interface DSUObservable
  *
- * @memberOf core.opendsu.api.mq
+ * @memberOf dsu-blueprint.core.opendsu.api.mq
  */
 export interface DSUObservable {
 
@@ -20,7 +20,7 @@ export interface DSUObservable {
  *
  * @interface MessageQueueApi
  *
- * @memberOf core.opendsu.api
+ * @memberOf dsu-blueprint.core.opendsu.api
  */
 export interface MessageQueueApi {
     send(keySSI: KeySSI, message: any, callback: Callback): void;

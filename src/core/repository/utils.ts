@@ -39,7 +39,7 @@ import {KeySSI} from "../opendsu/apis/keyssi";
  *
  * @function batchCallback
  * 
- * @memberOf core.repository
+ * @memberOf dsu-blueprint.core.repository
  */
 export function batchCallback(err: Err, dsu: DSU, ...args: any[]){
     const callback: Callback = args.pop();
@@ -67,7 +67,7 @@ export function batchCallback(err: Err, dsu: DSU, ...args: any[]){
  *
  * @function safeParseKeySSI
  *
- * @memberOf core.repository
+ * @memberOf dsu-blueprint.core.repository
  */
 export function safeParseKeySSI(keySSI: string, callback: Callback){
     let key: KeySSI;
@@ -89,7 +89,7 @@ export function safeParseKeySSI(keySSI: string, callback: Callback){
  *
  * @function createFromDecorators
  *
- * @memberOf core.repository
+ * @memberOf dsu-blueprint.core.repository
  */
 export function createFromDecorators<T extends DSUModel>(this: OpenDSURepository<T>, model: T, dsuCache: DSUCache<T> | undefined, ...keyGenArgs: (any | DSUCallback<T>)[]){
     const callback: DSUCallback<T> = keyGenArgs.pop();
@@ -153,7 +153,7 @@ export function createFromDecorators<T extends DSUModel>(this: OpenDSURepository
  *
  * @function handleDSUClassDecorators
  *
- * @memberOf core.repository
+ * @memberOf dsu-blueprint.core.repository
  */
 export function handleDSUClassDecorators<T extends DSUModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, model: T, operation: string = OperationKeys.CREATE, ...args: (any | DSUCallback<T>)[]){
     const callback: DSUCallback<T> = args.pop();
@@ -185,7 +185,7 @@ export function handleDSUClassDecorators<T extends DSUModel>(this: OpenDSUReposi
 
 /**
  * @typedef DSUDecoratorByPhase
- * @memberOf core.repository
+ * @memberOf dsu-blueprint.core.repository
  */
 export type DSUDecoratorByPhase = {creation?: DSUCreationDecorator[], editing?: DSUEditDecorator[], preparation?: DSUCreationDecorator[]}
 
@@ -198,7 +198,7 @@ export type DSUDecoratorByPhase = {creation?: DSUCreationDecorator[], editing?: 
  *
  * @function splitDSUDecorators
  *
- * @memberOf core.repository
+ * @memberOf dsu-blueprint.core.repository
  */
 export function splitDSUDecorators<T extends DSUModel>(model: T, phase: string = OperationKeys.CREATE) : DSUDecoratorByPhase | undefined{
     const propDecorators: {[indexer: string]: any[]} | undefined = getAllPropertyDecorators<T>(model as T, DsuKeys.REFLECT);
@@ -241,7 +241,7 @@ export function splitDSUDecorators<T extends DSUModel>(model: T, phase: string =
  * Util type to describe the results of DSU creation operations
  *
  * @typedef DSUCreationResults
- * @memberOf core.repository
+ * @memberOf dsu-blueprint.core.repository
  */
 export type DSUCreationResults = {[indexer: string]: {model: DSUModel, dsu: DSU, keySSI: KeySSI}[]};
 
@@ -258,7 +258,7 @@ export type DSUCreationResults = {[indexer: string]: {model: DSUModel, dsu: DSU,
  *
  * @function handleDSUCreationPropertyDecorators
  *
- * @memberOf core.repository
+ * @memberOf dsu-blueprint.core.repository
  */
 export function handleCreationPropertyDecorators<T extends DSUModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, model: T, decorators: DSUDecorator[], isPreparation: boolean = false, ...args: (any | DSUMultipleCallback<T>)[]){
     const callback: DSUMultipleCallback<DSUModel> = args.pop();
@@ -308,8 +308,6 @@ export function handleCreationPropertyDecorators<T extends DSUModel>(this: OpenD
 
 /**
  *
- * this method will return "value"
- *
  * @param {{}} model
  * @param {string[]} chains
  *
@@ -318,7 +316,7 @@ export function handleCreationPropertyDecorators<T extends DSUModel>(this: OpenD
  *
  * @function getValueFromValueChain
  *
- * @memberOf core.repository
+ * @memberOf dsu-blueprint.core.repository
  *
  * @example
  * given a chain like 'a.b.c', and a model:
@@ -329,6 +327,7 @@ export function handleCreationPropertyDecorators<T extends DSUModel>(this: OpenD
  *             }
  *         }
  *     }
+ * this method will return "value"
  */
 export function getValueFromValueChain(model: {[indexer: string]: any}, ...chains: string[]): any[]{
     return chains.map(c => {
@@ -357,7 +356,7 @@ export function getValueFromValueChain(model: {[indexer: string]: any}, ...chain
  *
  * @function createObjectToValueChain
  *
- * @memberOf core.repository
+ * @memberOf dsu-blueprint.core.repository
  *
  * @example
  * given a {@param chain} like 'a.b.c' and an {@param obj} like {} and a value 'value'
@@ -395,7 +394,7 @@ export function createObjectToValueChain(obj: {[indexer: string]: any}, chain: s
  *
  * @function groupDecorators
  *
- * @memberOf core.repository
+ * @memberOf dsu-blueprint.core.repository
  */
 export function groupDecorators(model: DSUModel, decorators: DSUEditDecorator[]): GroupedDecorators{
     return decorators.reduce((accum: any, dec: DSUEditDecorator) => {
@@ -440,7 +439,7 @@ export function groupDecorators(model: DSUModel, decorators: DSUEditDecorator[])
 
 /**
  * @typedef GroupedDecorators
- * @memberOf core.repository
+ * @memberOf dsu-blueprint.core.repository
  */
 export type GroupedDecorators = {grouped: {[indexer: string]: any}, single: DSUEditDecorator[]};
 
@@ -457,7 +456,7 @@ export type GroupedDecorators = {grouped: {[indexer: string]: any}, single: DSUE
  *
  * @function handleEditingPropertyDecorators
  *
- * @memberOf core.repository
+ * @memberOf dsu-blueprint.core.repository
  */
 export function handleEditingPropertyDecorators<T extends DSUModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, model: T | {[indexer: string]: any}, dsu: DSU, decorators: DSUEditDecorator[], operation: string = OperationKeys.CREATE, ...args: (any | DSUCallback<T>)[]){
     const callback: DSUCallback<T> = args.pop();
@@ -472,7 +471,7 @@ export function handleEditingPropertyDecorators<T extends DSUModel>(this: OpenDS
     try {
         groupedDecorators = groupDecorators(model as DSUModel, decorators);
     } catch(e) {
-        return criticalCallback(e, callback);
+        return criticalCallback(e as Error, callback);
     }
 
     const decoratorIterator = function(decoratorsCopy: any[], newModel: T | {}, callback: Callback){
@@ -524,7 +523,7 @@ export function handleEditingPropertyDecorators<T extends DSUModel>(this: OpenDS
  *
  * @function handleUpdateCreationPropertyDecorator
  *
- * @memberOf core.repository
+ * @memberOf dsu-blueprint.core.repository
  */
 export function handleUpdateCreationPropertyDecorator<T extends DSUModel>(this: OpenDSURepository<T>, dsuCache: DSUCache<T>, model: T, oldModel: T, dsu: DSU, decorators: DSUDecorator[], ...args: (any | DSUMultipleCallback<T>)[]){
     const callback: DSUMultipleCallback<DSUModel> = args.pop();
@@ -579,7 +578,7 @@ export function handleUpdateCreationPropertyDecorator<T extends DSUModel>(this: 
  *
  * @function readFromDecorators
  *
- * @memberOf core.repository
+ * @memberOf dsu-blueprint.core.repository
  */
 export function readFromDecorators<T extends DSUModel>(this: OpenDSURepository<T>, dsu: DSU, ...args: (any | DSUCallback<T>)[]){
     const callback: DSUCallback<T> = args.pop();
@@ -623,7 +622,7 @@ export function readFromDecorators<T extends DSUModel>(this: OpenDSURepository<T
  *
  * @function updateFromDecorators
  *
- * @memberOf core.repository
+ * @memberOf dsu-blueprint.core.repository
  */
 export function updateFromDecorators<T extends DSUModel>(this: OpenDSURepository<T>, model: T, oldModel: T, dsu: DSU, dsuCache: DSUCache<T>, ...args: (any | DSUCallback<T>)[]){
     const callback: DSUCallback<T> = args.pop();
@@ -668,7 +667,7 @@ export function updateFromDecorators<T extends DSUModel>(this: OpenDSURepository
  *
  * @function handleKeyDerivation
  *
- * @memberOf core.repository
+ * @memberOf dsu-blueprint.core.repository
  */
 export function handleKeyDerivation(keySSI: string | KeySSI, derive: boolean | number = false){
     if (typeof keySSI === 'string')

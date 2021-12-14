@@ -5,7 +5,7 @@ import {Callback} from "@tvenceslau/db-decorators/lib";
  *
  * @interface BrickingApi
  *
- * @memberOf core.opendsu.api
+ * @memberOf dsu-blueprint.core.opendsu.api
  */
 export interface BrickingApi {
     getBrick(hashLinkSSI: any, authToken: string, callback: Callback): void;

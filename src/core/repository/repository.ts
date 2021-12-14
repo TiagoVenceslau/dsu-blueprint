@@ -18,38 +18,38 @@ import {KeySSI} from "../opendsu/apis/keyssi";
 
 /**
  * @typedef DSUKey
- * @memberOf core.repository
+ * @memberOf dsu-blueprint.core.repository
  */
 export type DSUKey = string | KeySSI;
 
 /**
  * @typedef T extends DBModel
  * @typedef DSUCallback<T>
- * @memberOf core.repository
+ * @memberOf dsu-blueprint.core.repository
  */
 export type DSUCallback<T extends DBModel> = (err?: Err, model?: T, dsu?: DSU, ...args: any[]) => void;
 
 /**
  * @typedef ReadCallback
- * @memberOf core.repository
+ * @memberOf dsu-blueprint.core.repository
  */
 export type ReadCallback = (err?: Err, model?: {[indexer: string]: any}, dsu?: DSU, keySSI?: KeySSI, ...args: any[]) => void;
 
 /**
  * @typedef DSUMultipleCallback
- * @memberOf core.repository
+ * @memberOf dsu-blueprint.core.repository
  */
 export type DSUMultipleCallback<T extends DBModel> = (err?: Err, model?: T[], dsu?: DSU[], keySSI?: KeySSI[], ...args: any[]) => void;
 
 /**
  * @typedef DSUDecorator Union of {@link DSUCreationDecorator} with {@link DSUEditDecorator}
- * @memberOf core.repository
+ * @memberOf dsu-blueprint.core.repository
  */
 export type DSUDecorator = DSUCreationDecorator | DSUEditDecorator;
 
 /**
  * @typedef DSUCreationDecorator
- * @memberOf core.repository
+ * @memberOf dsu-blueprint.core.repository
  */
 export type DSUCreationDecorator = {
     key: string,
@@ -59,7 +59,7 @@ export type DSUCreationDecorator = {
 
 /**
  * @typedef DSUEditDecorator
- * @memberOf core.repository
+ * @memberOf dsu-blueprint.core.repository
  */
 export type DSUEditDecorator = {
     key: string,
@@ -80,7 +80,7 @@ export type DSUEditDecorator = {
  * @class OpenDSURepository
  * @extends AsyncRepositoryImp
  *
- * @memberOf core.repository
+ * @memberOf dsu-blueprint.core.repository
  */
 export class OpenDSURepository<T extends DSUModel> extends AsyncRepositoryImp<T>{
     protected fallbackDomain: string;

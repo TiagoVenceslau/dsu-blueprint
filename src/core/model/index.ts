@@ -1,5 +1,5 @@
 /**
- * @namespace core.model
+ * @namespace dsu-blueprint.core.model
  */
 
 export * from './decorators';

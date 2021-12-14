@@ -1,14 +1,14 @@
 import {Err} from "@tvenceslau/db-decorators/lib";
 
 /**
- * @namespace core.opendsu.api.oauth
- * @memberOf core.opendsu.api
+ * @namespace dsu-blueprint.core.opendsu.api.oauth
+ * @memberOf dsu-blueprint.core.opendsu.api
  */
 
 /**
  * @interface OAuthStorage
  *
- * @memberOf core.opendsu.api.oauth
+ * @memberOf dsu-blueprint.core.opendsu.api.oauth
  */
 export interface OAuthStorage {
     get(key: string): any;
@@ -21,7 +21,7 @@ export interface OAuthStorage {
 /**
  * @interface DecodedToken
  *
- * @memberOf core.opendsu.api.oauth
+ * @memberOf dsu-blueprint.core.opendsu.api.oauth
  */
 export interface DecodedToken {
     header: string,
@@ -32,7 +32,7 @@ export interface DecodedToken {
 /**
  * @interface OIDC
  *
- * @memberOf core.opendsu.api.oauth
+ * @memberOf dsu-blueprint.core.opendsu.api.oauth
  */
 export interface OIDC {
     setPeriodicRefreshTimeout(): void;
@@ -64,7 +64,7 @@ export interface OIDC {
  *
  * @interface OAuthApi
  *
- * @memberOf core.opendsu.api
+ * @memberOf dsu-blueprint.core.opendsu.api
  */
 export interface OAuthApi {
     createOIDC(options: {}): OIDC;

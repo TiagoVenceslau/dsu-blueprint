@@ -1,6 +1,6 @@
 /**
- * @namespace core.repository
- * @memberOf core
+ * @namespace dsu-blueprint.core.repository
+ * @memberOf dsu-blueprint.core
  */
 
 

@@ -6,31 +6,31 @@ import {KeySSI} from "./keyssi";
 import {EnclaveCallback} from "./enclave";
 
 /**
- * @namespace core.opendsu.api.db
- * @memberOf core.opendsu.api
+ * @namespace dsu-blueprint.core.opendsu.api.db
+ * @memberOf dsu-blueprint.core.opendsu.api
  */
 
 /**
  * @typedef DSUDbRecord
- * @memberOf core.opendsu.api.db
+ * @memberOf dsu-blueprint.core.opendsu.api.db
  */
 export type DSUDbRecord = {[indexer: string]: any};
 
 /**
  * @typedef RecordCallback
- * @memberOf core.opendsu.api.db
+ * @memberOf dsu-blueprint.core.opendsu.api.db
  */
 export type RecordCallback = GenericCallback<DSUDbRecord>;
 
 /**
  * @typedef MultipleRecordCallback
- * @memberOf core.opendsu.api.db
+ * @memberOf dsu-blueprint.core.opendsu.api.db
  */
 export type MultipleRecordCallback = GenericCallback<DSUDbRecord[]>;
 
 /**
  * @interface DSUDatabase
- * @memberOf core.opendsu.api.db
+ * @memberOf dsu-blueprint.core.opendsu.api.db
  */
 export interface DSUDatabase {
     /**
@@ -38,7 +38,7 @@ export interface DSUDatabase {
      * @param {string} tableName
      * @param {MultipleRecordCallback} callback
      *
-     * @memberOf DSUDatabase
+     * @methodOf DSUDatabase
      */
     getAllRecords(tableName: string, callback: MultipleRecordCallback): void;
 
@@ -47,7 +47,7 @@ export interface DSUDatabase {
      * @param {string} tableName
      * @param {RecordCallback} callback
      *
-     * @memberOf DSUDatabase
+     * @methodOf DSUDatabase
      */
     addIndex(tableName: string, callback: Callback): void;
 
@@ -59,7 +59,7 @@ export interface DSUDatabase {
      * @param {string | undefined} limit
      * @param {MultipleRecordCallback} callback
      *
-     * @memberOf DSUDatabase
+     * @methodOf DSUDatabase
      */
     filter(tableName: string, query: string[], sort: string | undefined, limit: number | undefined, callback: MultipleRecordCallback): void;
 
@@ -71,7 +71,7 @@ export interface DSUDatabase {
      * @param {string | undefined} limit
      * @param {MultipleRecordCallback} callback
      *
-     * @memberOf DSUDatabase
+     * @methodOf DSUDatabase
      */
     query(tableName: string, query: string[], sort: string | undefined, limit: number | undefined, callback: MultipleRecordCallback): void;
 
@@ -82,7 +82,7 @@ export interface DSUDatabase {
      * @param {DSUDbRecord} record
      * @param {RecordCallback} callback
      *
-     * @memberOf DSUDatabase
+     * @methodOf DSUDatabase
      */
     insertRecord(tableName: string, key: string | number, record: {}, callback: RecordCallback): void;
 
@@ -93,7 +93,7 @@ export interface DSUDatabase {
      * @param {DSUDbRecord} record
      * @param {RecordCallback} callback
      *
-     * @memberOf DSUDatabase
+     * @methodOf DSUDatabase
      */
     updateRecord(tableName: string, key: string | number, record: {}, callback: RecordCallback): void;
     /**
@@ -102,7 +102,7 @@ export interface DSUDatabase {
      * @param {string | number} key
      * @param {RecordCallback} callback
      *
-     * @memberOf DSUDatabase
+     * @methodOf DSUDatabase
      */
     getRecord(tableName: string, key: string | number, callback: RecordCallback): void;
 
@@ -112,7 +112,7 @@ export interface DSUDatabase {
      * @param {string | number} key
      * @param {RecordCallback} callback
      *
-     * @memberOf DSUDatabase
+     * @methodOf DSUDatabase
      */
     deleteRecord(tableName: string, key: string | number, callback: RecordCallback): void;
 
@@ -122,7 +122,7 @@ export interface DSUDatabase {
      * @param {string | number} key
      * @param {Callback} callback
      *
-     * @memberOf DSUDatabase
+     * @methodOf DSUDatabase
      */
     getHistory(tableName: string, key: string | number, callback: Callback): void;
 
@@ -130,7 +130,7 @@ export interface DSUDatabase {
      *
      * @param {DSUDbRecord} record
      *
-     * @memberOf DSUDatabase
+     * @methodOf DSUDatabase
      */
     getRecordedVersions(record: DSUDbRecord): any[];
 
@@ -139,7 +139,7 @@ export interface DSUDatabase {
      * @param {string} tableName
      * @param {Callback} callback
      *
-     * @memberOf DSUDatabase
+     * @methodOf DSUDatabase
      */
     getIndexedFields(tableName: string, callback: Callback): void;
 
@@ -150,7 +150,7 @@ export interface DSUDatabase {
      * @param {any} value
      * @param {ErrCallback} callback
      *
-     * @memberOf DSUDatabase
+     * @methodOf DSUDatabase
      */
     writeKey(key: string | number, value: any, callback: ErrCallback): void;
 
@@ -159,20 +159,20 @@ export interface DSUDatabase {
      * @param {string | number} key
      * @param {Callback} callback
      *
-     * @memberOf DSUDatabase
+     * @methodOf DSUDatabase
      */
     readKey(key: string | number, callback: Callback): void;
 
     // Batch Methods
     /**
-     * @memberOf DSUDatabase
+     * @methodOf DSUDatabase
      */
     beginBatch(): void;
 
     /**
      *
      * @param {ErrCallback} callback
-     * @memberOf DSUDatabase
+     * @methodOf DSUDatabase
      *
      */
     cancelBatch(callback: ErrCallback): void;
@@ -182,14 +182,14 @@ export interface DSUDatabase {
      * @param {function(): any} onConflict
      * @param {ErrCallback} callback
      *
-     * @memberOf DSUDatabase
+     * @methodOf DSUDatabase
      */
     commitBatch(onConflict?: () => any | ErrCallback, callback?: ErrCallback): void;
 }
 
 /**
  * @typedef DBCallback
- * @memberOf core.opendsu.api.db
+ * @memberOf dsu-blueprint.core.opendsu.api.db
  */
 export type DBCallback = GenericCallback<DSUDatabase>;
 
@@ -198,7 +198,7 @@ export type DBCallback = GenericCallback<DSUDatabase>;
  *
  * @interface DBApi
  *
- * @memberOf core.opendsu.api
+ * @memberOf dsu-blueprint.core.opendsu.api
  */
 export interface DBApi {
     getBasicDB(storageStrategy?: any, conflictSolvingStrategy?: any): DSUDatabase;

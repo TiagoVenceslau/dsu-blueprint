@@ -57,7 +57,7 @@ let  _fileSystem: fs | undefined = undefined;
 
 /**
  * @typedef FsOptions
- * @memberOf filesystem.utils
+ * @memberOf dsu-blueprint.filesystem.utils
  */
 export type FsOptions = {encoding?: string, flag?: string, withFileTypes?: boolean};
 

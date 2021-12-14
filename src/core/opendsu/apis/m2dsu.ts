@@ -2,14 +2,14 @@ import {DSU} from "../types";
 import {Callback} from "@tvenceslau/db-decorators/lib";
 
 /**
- * @namespace core.opendsu.api.m2dsu
- * @memberOf core.opendsu.api
+ * @namespace dsu-blueprint.core.opendsu.api.m2dsu
+ * @memberOf dsu-blueprint.core.opendsu.api
  */
 
 /**
  * @interface MappingEngine
  *
- * @memberOf core.opendsu.api.m2dsu
+ * @memberOf dsu-blueprint.core.opendsu.api.m2dsu
  */
 export interface MappingEngine{
     digestMessages(messages: any): any;
@@ -18,7 +18,7 @@ export interface MappingEngine{
 /**
  * @interface MessagePipe
  *
- * @memberOf core.opendsu.api.m2dsu
+ * @memberOf dsu-blueprint.core.opendsu.api.m2dsu
  */
 export interface MessagePipe {
     queue: [];
@@ -30,7 +30,7 @@ export interface MessagePipe {
 /**
  * @interface ErrMap
  *
- * @memberOf core.opendsu.api.m2dsu
+ * @memberOf dsu-blueprint.core.opendsu.api.m2dsu
  */
 export interface ErrMap {
     errorTypes: {};
@@ -46,7 +46,7 @@ export interface ErrMap {
  *
  * @interface M2DsuApi
  *
- * @memberOf core.opendsu.api
+ * @memberOf dsu-blueprint.core.opendsu.api
  */
 export interface M2DsuApi {
     getMappingEngine(persistenceDSU: DSU, options: {}): MappingEngine;

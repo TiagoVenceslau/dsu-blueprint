@@ -4,8 +4,8 @@ import {createObjectToValueChain, getValueFromValueChain} from "./utils";
 import {KeySSI} from "../opendsu/apis/keyssi";
 
 /**
- * @namespace core.repository.cache
- * @memberOf core.repository
+ * @namespace dsu-blueprint.core.repository.cache
+ * @memberOf dsu-blueprint.core.repository
  */
 
 /**
@@ -13,7 +13,7 @@ import {KeySSI} from "../opendsu/apis/keyssi";
  *
  * @class DSUCache
  *
- * @memberOf core.repository.cache
+ * @memberOf dsu-blueprint.core.repository.cache
  */
 export class DSUCache<T extends DSUModel>{
     private _cache: {[indexer: string]: {[indexer: string]: {dsu: DSU, keySSI: KeySSI}[]}} = {};
@@ -71,7 +71,7 @@ export class DSUCache<T extends DSUModel>{
      * @param {string} propKey
      * @return a {@link isDSUCache} validatable {@link DSUCache} bound to the {@param parentModel}s name and {@prop propKey} to enable recursive storage
      *
-     * @memberOf DSUCache
+     * @memberOf .DSUCache
      */
     bindToParent(parentModel: T, propKey: string): DSUCache<T> {
         const self: DSUCache<T> = this;
@@ -94,7 +94,7 @@ export class DSUCache<T extends DSUModel>{
  *
  * @function isDSUCache
  *
- * @memberOf core.repository.cache
+ * @memberOf dsu-blueprint.core.repository.cache
  */
 export function isDSUCache(obj: any){
     return obj && obj.get && obj.bindToParent && obj.cache;

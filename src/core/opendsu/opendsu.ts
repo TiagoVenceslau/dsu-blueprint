@@ -16,7 +16,7 @@ let openDSU: OpenDSU;
  *
  * @function getOpenDSU
  *
- * @memberOf core.opendsu
+ * @memberOf dsu-blueprint.core.opendsu
  */
 export function getOpenDSU(): OpenDSU {
     if (!openDSU){
@@ -39,7 +39,7 @@ let resolver: ResolverApi;
  *
  * @function geResolverApi
  *
- * @memberOf core.opendsu
+ * @memberOf dsu-blueprint.core.opendsu
  */
 export function getResolverApi(): ResolverApi{
     if (!resolver)
@@ -60,7 +60,7 @@ let keyssi: KeyssiApi;
  *
  * @function getKeySSIApi
  *
- * @memberOf core.opendsu
+ * @memberOf dsu-blueprint.core.opendsu
  */
 export function getKeySSIApi(): KeyssiApi{
     if (!keyssi)
@@ -81,7 +81,7 @@ let $$Cache: any = undefined;
  *
  * @function get$$
  *
- * @memberOf core.opendsu
+ * @memberOf dsu-blueprint.core.opendsu
  */
 export function get$$(){
     if (!$$Cache)
@@ -103,7 +103,7 @@ let httpApi: HttpApi;
  *
  * @function getHttpApi
  *
- * @memberOf core.opendsu
+ * @memberOf dsu-blueprint.core.opendsu
  */
 export function getHttpApi(): HttpApi{
     if (!httpApi)
@@ -124,7 +124,7 @@ let scApi: SecurityContextApi;
  *
  * @function getSCApi
  *
- * @memberOf core.opendsu
+ * @memberOf dsu-blueprint.core.opendsu
  */
 export function getSCApi(): SecurityContextApi{
     if (!scApi)
@@ -145,7 +145,7 @@ let systemApi: SystemApi;
  *
  * @function getSystemApi
  *
- * @memberOf core.opendsu
+ * @memberOf dsu-blueprint.core.opendsu
  */
 export function getSystemApi(): SystemApi {
     if (!systemApi)
@@ -166,7 +166,7 @@ let constantsApi: ConstantsApi;
  *
  * @function getConstantsApi
  *
- * @memberOf core.opendsu
+ * @memberOf dsu-blueprint.core.opendsu
  */
 export function getConstantsApi(): ConstantsApi {
     if (!constantsApi)
@@ -187,7 +187,7 @@ let BDNSApi: BdnsApi;
  *
  * @function getBdnsApi
  *
- * @memberOf core.opendsu
+ * @memberOf dsu-blueprint.core.opendsu
  */
 export function getBdnsApi(): BdnsApi {
     if (!BDNSApi)
@@ -208,7 +208,7 @@ let configApi: ConfigApi;
  *
  * @function getConfigApi
  *
- * @memberOf core.opendsu
+ * @memberOf dsu-blueprint.core.opendsu
  */
 export function getConfigApi(): ConfigApi {
     if (!configApi)
@@ -229,7 +229,7 @@ let dbApi: DBApi;
  *
  * @function getDBApi
  *
- * @memberOf core.opendsu
+ * @memberOf dsu-blueprint.core.opendsu
  */
 export function getDBApi(): DBApi {
     if (!dbApi)
@@ -250,7 +250,7 @@ let enclaveApi: EnclaveApi;
  *
  * @function getEnclaveApi
  *
- * @memberOf core.opendsu
+ * @memberOf dsu-blueprint.core.opendsu
  */
 export function getEnclaveApi(): EnclaveApi {
     if (!enclaveApi)
@@ -271,7 +271,7 @@ let cryptoApi: CrypoApi;
  *
  * @function getCryptoApi
  *
- * @memberOf core.opendsu
+ * @memberOf dsu-blueprint.core.opendsu
  */
 export function getCrypoApi(): CrypoApi {
     if (!cryptoApi)

@@ -6,7 +6,7 @@ import {KeySSI} from "./keyssi";
  *
  * @interface ResolverApi
  *
- * @memberOf core.opendsu.api
+ * @memberOf dsu-blueprint.core.opendsu.api
  */
 export interface ResolverApi {
     createDSU(keySSI: KeySSI, options?: AnchoringOptsOrDSUCallback, callback?: SimpleDSUCallback): void;

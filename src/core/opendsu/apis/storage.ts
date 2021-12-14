@@ -1,14 +1,14 @@
 import {DSU, ErrCallback, ObjectCallback} from "../types";
 
 /**
- * @namespace core.opendsu.api.storage
- * @memberOf core.opendsu.api
+ * @namespace dsu-blueprint.core.opendsu.api.storage
+ * @memberOf dsu-blueprint.core.opendsu.api
  */
 
 /**
  * @interface DSUStorage
  *
- * @memberOf core.opendsu.api.storage
+ * @memberOf dsu-blueprint.core.opendsu.api.storage
  */
 export interface DSUStorage extends DSU {
     getObject(path: string, callback: ObjectCallback): void;
@@ -27,7 +27,7 @@ export interface DSUStorage extends DSU {
  *
  * @interface StorageApi
  *
- * @memberOf core.opendsu.api
+ * @memberOf dsu-blueprint.core.opendsu.api
  */
 export interface StorageApi {
     getStorage: () => DSUStorage;

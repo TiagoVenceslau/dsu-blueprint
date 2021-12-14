@@ -3,7 +3,7 @@
  *
  * @interface OpenDSUUtilsApi
  *
- * @memberOf core.opendsu.api
+ * @memberOf dsu-blueprint.core.opendsu.api
  */
 export interface OpenDSUUtilsApi {
     bindAutoPendingFunctions(obj: any, exceptionList: []): void;

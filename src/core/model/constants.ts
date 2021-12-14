@@ -3,7 +3,7 @@
  *
  * @enum DsuKeys
  *
- * @memberOf core.model
+ * @memberOf dsu-blueprint.core.model
  */
 export enum DsuKeys {
     REFLECT = 'opendsu.blueprint.',
@@ -32,7 +32,7 @@ export enum DsuKeys {
  *
  * @enum DSUOperationPhase
  *
- * @memberOf core.model
+ * @memberOf dsu-blueprint.core.model
  *
  * Note:
  *  - RepositoryLoop: Set of hooks one can use to attach functionality ('on'/'after' based decorators):
