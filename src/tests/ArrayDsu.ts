@@ -1,5 +1,5 @@
-import {constructFromObject, DBOperations, onUpdate, readonly, timestamp} from "@tvenceslau/db-decorators/lib";
-import {maxlength, minlength, required} from "@tvenceslau/decorator-validation/lib";
+import {DBOperations, readonly, timestamp} from "@tvenceslau/db-decorators/lib";
+import {constructFromObject, maxlength, minlength, required} from "@tvenceslau/decorator-validation/lib";
 import {DSUBlueprint, DSUModel} from "../core";
 import {KeySSIType} from "../core/opendsu/apis/keyssi";
 

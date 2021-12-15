@@ -3,15 +3,13 @@ import {
     AsyncRepositoryImp, criticalCallback, CriticalError, debug,
     Err,
     errorCallback,
-    LoggedError,
-    ModelCallback
+    LoggedError
 } from "@tvenceslau/db-decorators/lib";
 import {DSU} from "../opendsu/types";
 import {createFromDecorators, readFromDecorators, safeParseKeySSI, updateFromDecorators} from "./utils";
 import DBModel from "@tvenceslau/db-decorators/lib/model/DBModel";
 import {getResolverApi} from "../opendsu";
-import ModelErrorDefinition from "@tvenceslau/decorator-validation/lib/Model/ModelErrorDefinition";
-import {getModelRegistry} from "@tvenceslau/decorator-validation/lib";
+import {getModelRegistry, ModelErrorDefinition} from "@tvenceslau/decorator-validation/lib";
 import {DSUCache, isDSUCache} from "./cache";
 import {KeySSI} from "../opendsu/apis/keyssi";
 

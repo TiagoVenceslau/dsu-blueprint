@@ -21,7 +21,7 @@ const defaultOptions: CliOptions = {
     loggerLevel: LOGGER_LEVELS.INFO
 }
 
-const config: CliOptions = mergeWithOpenDSUOptions(argParser(defaultOptions, process.argv));
+let config: CliOptions = argParser(defaultOptions, process.argv);
 
 getLogger().setLevel(config.loggerLevel || LOGGER_LEVELS.INFO);
 
@@ -37,6 +37,8 @@ try{
 
 if (!opendsu)
     throw new CriticalError(`Could not load OpenDSU`);
+
+config = mergeWithOpenDSUOptions(config);
 
 /**
  *

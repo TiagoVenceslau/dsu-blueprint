@@ -1,5 +1,5 @@
-import {constructFromObject, DBOperations, readonly, timestamp} from "@tvenceslau/db-decorators/lib";
-import {maxlength, minlength, required} from "@tvenceslau/decorator-validation/lib";
+import {DBOperations, readonly, timestamp} from "@tvenceslau/db-decorators/lib";
+import {constructFromObject, maxlength, minlength, required} from "@tvenceslau/decorator-validation/lib";
 import {DSUBlueprint, DSUModel} from "../core";
 
 /**

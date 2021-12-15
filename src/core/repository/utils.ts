@@ -15,7 +15,6 @@ import {
     all,
     Callback, criticalCallback, CriticalError, Err,
     getAllPropertyDecorators,
-    getClassDecorators,
     LoggedError, OperationKeys
 } from "@tvenceslau/db-decorators/lib";
 import {
@@ -25,7 +24,7 @@ import {
     DSUEditingHandler,
 } from "./types";
 import {getDSUOperationsRegistry} from "./registry";
-import {ModelKeys} from "@tvenceslau/decorator-validation/lib";
+import {getClassDecorators, ModelKeys} from "@tvenceslau/decorator-validation/lib";
 import {DSUCache} from "./cache";
 import {KeySSI} from "../opendsu/apis/keyssi";
 

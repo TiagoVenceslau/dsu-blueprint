@@ -1,9 +1,8 @@
 import {DSUModel} from "./DSUModel";
 import {dsu, DSUBlueprint} from "./decorators";
-import {constructFromObject} from "@tvenceslau/db-decorators/lib";
 import {KeySSIType} from "../opendsu/apis/keyssi";
-import {fromWeb} from "../web";
 import {ConstantsApi} from "../opendsu";
+import {constructFromObject} from "@tvenceslau/decorator-validation/lib";
 
 /**
  * Built In {@link DSUBlueprint} for the Base KeySSI type {@link SeedSSI}

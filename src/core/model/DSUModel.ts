@@ -1,5 +1,5 @@
 import DBModel from "@tvenceslau/db-decorators/lib/model/DBModel";
-import {constructFromObject} from "@tvenceslau/db-decorators/lib";
+import {constructFromObject} from "@tvenceslau/decorator-validation/lib";
 
 /**
  * Base implementation for a DSU Model
