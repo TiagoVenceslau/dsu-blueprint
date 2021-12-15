@@ -2,7 +2,7 @@ import {
     DSU
 } from "../opendsu/types";
 import {DSUClassCreationMetadata, DSUCreationMetadata, DSUEditMetadata, DSUModel} from "../model";
-import {DSUCallback, DSUEditDecorator, OpenDSURepository, ReadCallback} from "./repository";
+import {DSUCallback, OpenDSURepository, ReadCallback} from "./repository";
 import {DSUCache} from "./cache";
 import {ModelCallback} from "@tvenceslau/db-decorators/lib";
 import {DSUPreparationMetadata} from "../web";

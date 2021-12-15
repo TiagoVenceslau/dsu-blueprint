@@ -54,8 +54,6 @@ export type KeySSIFactoryCallback = GenericCallback<KeySSIFactoryResponse>;
  *
  * @abstract
  * @implements IRegistry<any>
- *
- * @memberOf dsu-blueprint.core.opendsu.factory
  */
 export abstract class FactoryRegistry<T> implements IRegistry<T>{
     protected supportedTypes: string[] = [];
@@ -65,8 +63,7 @@ export abstract class FactoryRegistry<T> implements IRegistry<T>{
      *
      * @param {string} keySSIType
      * @param {any[]} args
-     *
-     * @methodOf FactoryRegistry
+     * @return boolean
      */
     isTypeAvailable(keySSIType: string, ...args: any[]): boolean {
         return this.supportedTypes.indexOf(keySSIType) !== -1;
@@ -75,7 +72,7 @@ export abstract class FactoryRegistry<T> implements IRegistry<T>{
     /**
      *
      * @param {any[]} args
-     * @methodOf FactoryRegistry
+     * @return {string}
      */
     getAvailableTypes(...args: any[]): string[] {
         return this.supportedTypes;
@@ -88,7 +85,6 @@ export abstract class FactoryRegistry<T> implements IRegistry<T>{
      * @param {any[]} [args] for extensions purposes. not used in this implementation
      * @return {T | undefined}
      *
-     * @methodOf FactoryRegistry
      */
     get(keySSIType: string, ...args: any[]): T | undefined {
         return this.factories[keySSIType];
@@ -102,8 +98,6 @@ export abstract class FactoryRegistry<T> implements IRegistry<T>{
      * @param {any[]} [args] for extensions purposes. not used in this implementation
      *
      * @throws CriticalError if a factory had previously been registered for that keySSiType
-     *
-     * @methodOf FactoryRegistry
      */
     register(factory: T, keySSIType: string, ...args: any[]): void {
         if (this.isTypeAvailable(keySSIType))
@@ -117,7 +111,6 @@ export abstract class FactoryRegistry<T> implements IRegistry<T>{
  * Registry class to hold the various KeySSI factory methods and properly apply validation to the received arguments
  *
  * @class KeySSIFactoryRegistry
- * @memberOf dsu-blueprint.core.opendsu.factory
  */
 export class KeySSIFactoryRegistry extends FactoryRegistry<KeySSIFactory>{
     /**
@@ -130,8 +123,6 @@ export class KeySSIFactoryRegistry extends FactoryRegistry<KeySSIFactory>{
      * @param {string[] | undefined} specificKeyArgs
      * @param {string[]} keyGenArgs
      * @param {GenericCallback<KeySSIFactoryResponse>} callback
-     *
-     * @methodOf KeySSIFactoryRegistry
      */
     build(repository: OpenDSURepository<DSUModel>, model: DSUModel, keySSIType: string, domain: string, specificKeyArgs: string[] | undefined, keyGenArgs: string[], callback: KeySSIFactoryCallback): void {
         const factory: KeySSIFactory | undefined = this.get(keySSIType);
@@ -145,8 +136,6 @@ export class KeySSIFactoryRegistry extends FactoryRegistry<KeySSIFactory>{
      *
      * @see FactoryRegistry#get
      * @override
-     *
-     * @methodOf KeySSIFactoryRegistry
      */
     get(keySSIType: string): KeySSIFactory | undefined {
         return super.get(keySSIType);
@@ -162,8 +151,6 @@ export class KeySSIFactoryRegistry extends FactoryRegistry<KeySSIFactory>{
      *
      * @see FactoryRegistry#register
      * @override
-     *
-     * @methodOf KeySSIFactoryRegistry
      */
     register(factory: KeySSIFactory, keySSIType: string, dsuFactory: DSUFactoryMethod | undefined, dsuPostProcess?: DSUPostProcess) {
         super.register(factory, keySSIType);
@@ -191,8 +178,6 @@ export function getKeySSIFactoryRegistry(): KeySSIFactoryRegistry {
  * @class DSUFactoryRegistry
  *
  * @extends FactoryRegistry
- *
- * @memberOf dsu-blueprint.core.opendsu.factory
  */
 export class DSUFactoryRegistry extends FactoryRegistry<DSUFactoryMethod>{
     private postProcesses: {[indexer: string]: DSUPostProcess} = {};
@@ -202,8 +187,7 @@ export class DSUFactoryRegistry extends FactoryRegistry<DSUFactoryMethod>{
      *
      * @param {string} keySSIType
      * @param {boolean} [postProcess] defaults to false
-     *
-     * @methodOf DSUFactoryRegistry
+     * @return {boolean}
      */
     isTypeAvailable(keySSIType: string, postProcess: boolean = false): boolean {
         const typeAvailable = super.isTypeAvailable(keySSIType);
@@ -214,7 +198,7 @@ export class DSUFactoryRegistry extends FactoryRegistry<DSUFactoryMethod>{
      *
      * @param {boolean} [postProcess] defaults to false
      *
-     * @methodOf DSUFactoryRegistry
+     * @return {string[]}
      */
     getAvailableTypes(postProcess: boolean = false): string[] {
         return postProcess ? super.getAvailableTypes().filter(type => !!this.postProcesses[type]) : super.getAvailableTypes();
@@ -225,10 +209,10 @@ export class DSUFactoryRegistry extends FactoryRegistry<DSUFactoryMethod>{
      * @param {string} keySSIType
      * @param {boolean} [postProcess] defaults to false
      *
+     * @return {DSUFactoryMethod | DSUPostProcess | undefined}
+     *
      * @see FactoryRegistry#get
      * @override
-     *
-     * @methodOf DSUFactoryRegistry
      */
     // @ts-ignore
     get(keySSIType: string, postProcess: boolean = false): DSUFactoryMethod | DSUPostProcess | undefined {
@@ -241,8 +225,6 @@ export class DSUFactoryRegistry extends FactoryRegistry<DSUFactoryMethod>{
      * @param {KeySSI} keySSI
      * @param {DSUAnchoringOptions} options
      * @param {SimpleDSUCallback} callback
-     *
-     * @methodOf DSUFactoryRegistry
      */
     build(keySSI: KeySSI, options: DSUAnchoringOptions, callback: SimpleDSUCallback): void {
         const keySSIType = keySSI.getTypeName();
@@ -260,8 +242,6 @@ export class DSUFactoryRegistry extends FactoryRegistry<DSUFactoryMethod>{
      *
      * @see FactoryRegistry#register
      * @override
-     *
-     * @methodOf DSUFactoryRegistry
      */
     register(factory: DSUFactoryMethod, keySSIType: string, postProcess?: DSUPostProcess) {
         super.register(factory, keySSIType);
@@ -431,7 +411,7 @@ export function getDSUPostProcess(keySSIType: KeySSIType): DSUPostProcess | unde
 /**
  * @enum DefaultSupportedKeySSIFactories
  *
- * @memberOf dsu-blueprint.core.opendsu.factory
+ * @category Constants
  */
 export const DefaultSupportedKeySSIFactories = {
     ARRAY: KeySSIType.ARRAY,

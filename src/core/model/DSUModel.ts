@@ -7,8 +7,6 @@ import {constructFromObject} from "@tvenceslau/decorator-validation/lib";
  * @extends DBModel
  *
  * @class DSUModel
- *
- * @memberOf dsu-blueprint.core.model
  */
 export class DSUModel extends DBModel{
     constructor(dsuModel?: DSUModel | {}) {

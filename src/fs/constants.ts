@@ -8,7 +8,7 @@
  *
  * @enum DsuFsKeys
  *
- * @memberOf dsu-blueprint.filesystem.constants
+ * @category Constants
  */
 export const DsuFsKeys = {
     MOUNT_FS: "mountFS",
@@ -17,7 +17,7 @@ export const DsuFsKeys = {
 }
 /**
  * @enum FSOptions
- * @memberOf dsu-blueprint.filesystem.constants
+ * @category Constants
  */
 export const FSOptions  = {
     // publicSecretsKey: '-$Identity-',

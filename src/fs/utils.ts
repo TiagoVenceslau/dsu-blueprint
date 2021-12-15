@@ -65,7 +65,6 @@ export type FsOptions = {encoding?: string, flag?: string, withFileTypes?: boole
  * Interface with the used node fs methods
  *
  * @interface fs
- * @memberOf dsu-blueprint.filesystem.utils
  */
 export interface fs {
     readdir(path: string, options: FsOptions | undefined, callback: Callback): void;
@@ -96,7 +95,6 @@ export function getFS(): fs {
  *
  * @interface path
  *
- * @memberOf dsu-blueprint.filesystem.utils
  */
 export interface path {
     sep: string;

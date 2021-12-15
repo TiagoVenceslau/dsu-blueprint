@@ -1,6 +1,4 @@
 import {
-    DSUClassCreationMetadata,
-    DSUCreationMetadata,
     DSUEditMetadata, dsuFile,
     DsuKeys,
     DSUModel,
@@ -8,7 +6,7 @@ import {
     getDSUModelKey,
     mount
 } from "../model";
-import {ConstantsApi, DSU, DSUIOOptions, getConstantsApi, getKeySSIApi, getOpenDSU, KeySSI} from "../opendsu";
+import {ConstantsApi, DSUIOOptions, getConstantsApi, getKeySSIApi, getOpenDSU, KeySSI} from "../opendsu";
 import {
     all,
     Callback,
@@ -208,8 +206,10 @@ export function fromWeb(appOrUrl: string, slot: "primary" | "secondary" | undefi
  * @category Decorators
  *
  * @mermaid
- *  sequenceDiagram
- *      wallet->>fromWeb(app, "primary", false)
+ * sequenceDiagram
+ *   participant wallet
+ *   participant fromWeb
+ *   wallet->>fromWeb(app, "primary", false)
  */
 export function wallet(app: string, derive: boolean = true) {
     return (target: any, propertyKey: string) => {

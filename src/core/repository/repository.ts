@@ -78,14 +78,12 @@ export type DSUEditDecorator = {
  * @class OpenDSURepository
  * @extends AsyncRepositoryImp
  *
- * @memberOf dsu-blueprint.core.repository
  */
 export class OpenDSURepository<T extends DSUModel> extends AsyncRepositoryImp<T>{
     protected fallbackDomain: string;
     protected pathAdaptor: string;
 
     /**
-     * @constructor
      * @param {{new: T}} clazz the class the repository will instantiate
      * @param {string} domain the anchoring domain
      * @param {string} [pathAdaptor] only required for Filesystem operations and is meant to handle the relative path differences when necessary. Must point to the folder where './privatesky' is available
@@ -103,7 +101,6 @@ export class OpenDSURepository<T extends DSUModel> extends AsyncRepositoryImp<T>
      * @param {DSUCache} [dsuCache] if building during a nested transaction, the dsuCache needs to be passed along
      * @param {any[]} [args]
      *
-     * @methodOf OpenDSURepository
      */
     // @ts-ignore
     create(model?: T, dsuCache?: DSUCache<T> | any, ...args: any[]): void {
@@ -138,7 +135,6 @@ export class OpenDSURepository<T extends DSUModel> extends AsyncRepositoryImp<T>
      * @see AsyncRepositoryImp#createPrefix
      * @override
      *
-     * @methodOf OpenDSURepository
      */
     createPrefix(model?: T, ...args: any[]){
         super.createPrefix(undefined, model, ...args);
@@ -150,7 +146,6 @@ export class OpenDSURepository<T extends DSUModel> extends AsyncRepositoryImp<T>
      * @param {DSUKey} key
      * @param {any[]} args
      *
-     * @methodOf OpenDSURepository
      */
     delete(key?: DSUKey, ...args: any[]): void {
         const callback: DSUCallback<T> = args.pop();
@@ -170,7 +165,6 @@ export class OpenDSURepository<T extends DSUModel> extends AsyncRepositoryImp<T>
      * @param {DSUKey} key
      * @param {any[]} args
      *
-     * @methodOf OpenDSURepository
      */
     read(key?: DSUKey, ...args: any[]): void {
         const callback: DSUCallback<T> = args.pop();
@@ -206,7 +200,6 @@ export class OpenDSURepository<T extends DSUModel> extends AsyncRepositoryImp<T>
      * @param {DSUCache} [dsuCache] if building during a nested transaction, the dsuCache needs to be passed along
      * @param {any[]} [args]
      *
-     * @methodOf OpenDSURepository
      */
     update(key?: DSUKey, model?: T, dsuCache?: DSUCache<T> | any, ...args: any[]): void {
         if (!isDSUCache(dsuCache)){

@@ -12,8 +12,6 @@ import {constructFromObject} from "@tvenceslau/decorator-validation/lib";
  *  - keySSIType: {@link KeySSIType.SEED}
  *
  * @class SeedDSU
- *
- * @memberOf dsu-blueprint.core.model
  */
 @DSUBlueprint(undefined, KeySSIType.SEED)
 export class SeedDSU extends DSUModel{
@@ -28,8 +26,6 @@ export class SeedDSU extends DSUModel{
  *  - keySSIType: {@link KeySSIType.Wallet}
  *
  * @class WalletDSU
- *
- * @memberOf dsu-blueprint.core.model
  */
 @DSUBlueprint(undefined, KeySSIType.WALLET)
 export class WalletDSU extends DSUModel{
@@ -49,8 +45,6 @@ export class WalletDSU extends DSUModel{
  *  - keySSIType: {@link KeySSIType.ARRAY}
  *
  * @class ArrayDSU
- *
- * @memberOf dsu-blueprint.core.model
  */
 @DSUBlueprint(undefined, KeySSIType.ARRAY)
 export class ArrayDSU extends DSUModel{
@@ -65,8 +59,6 @@ export class ArrayDSU extends DSUModel{
  *  - keySSIType: {@link KeySSIType.SEED}
  *
  * @class DbDsuBlueprint
- *
- * @memberOf dsu-blueprint.core.model
  */
 @DSUBlueprint(undefined, KeySSIType.SEED)
 export class DbDsuBlueprint extends DSUModel{

@@ -35,7 +35,6 @@ export type WebServiceOptions = {
  * Reference interface for a {@link WebService}
  *
  * @interface WebService
- * @memberOf dsu-blueprint.core.web
  */
 export interface WebService {
     options: WebServiceOptions;
@@ -55,7 +54,6 @@ export interface WebService {
  *
  * @function mergeWebServiceOptions
  *
- * @memberOf dsu-blueprint.core.web
  */
 export function mergeWebServiceOptions(options?: WebServiceOptions | {}): WebServiceOptions {
     return Object.assign({},
@@ -73,7 +71,6 @@ export function mergeWebServiceOptions(options?: WebServiceOptions | {}): WebSer
  *
  * @class WebServiceImp
  *
- * @memberOf dsu-blueprint.core.web
  */
 export class WebServiceImp implements WebService {
     readonly options: WebServiceOptions;
@@ -82,8 +79,6 @@ export class WebServiceImp implements WebService {
     /**
      *
      * @param {WebServiceOptions} [options]
-     *
-     * @constructor
      */
     constructor(options?: WebServiceOptions | {}){
         this.options = mergeWebServiceOptions(options);
@@ -94,9 +89,7 @@ export class WebServiceImp implements WebService {
      *
      * @param prefix
      * @private
-     *
-     * @memberOf WebServiceImp
-     */
+     **/
     private constructUrlBase(prefix?: string){
         let url, protocol, host;
         prefix = prefix || "";
@@ -127,7 +120,6 @@ export class WebServiceImp implements WebService {
      * @param {string} envFileName
      * @param {Callback} callback
      *
-     * @memberOf WebServiceImp
      */
     getEnvironmentFile(envFileName?: string | Callback, callback?: Callback): void {
         if (!callback){
@@ -158,7 +150,6 @@ export class WebServiceImp implements WebService {
      *
      * @param {Callback} callback
      *
-     * @memberOf WebServiceImp
      */
     getWalletSeed(callback: Callback){
         this.getAppSeed(this.options.primaryslot, callback);
@@ -170,7 +161,6 @@ export class WebServiceImp implements WebService {
      * @param {string} appName
      * @param {Callback} callback
      *
-     * @memberOf WebServiceImp
      */
     getAppSeed(appName: string, callback: Callback){
         const self = this;
@@ -188,7 +178,6 @@ export class WebServiceImp implements WebService {
      * @param {{} | undefined} options
      * @param {Callback} callback
      *
-     * @memberOf WebServiceImp
      */
     doGet(url: string, options: {} | undefined, callback: Callback){
         getHttpApi().fetch(url, {
@@ -209,7 +198,6 @@ export class WebServiceImp implements WebService {
      * @param {string} fileName
      * @param {function(err, Uint8Array)} callback
      *
-     * @memberOf WebServiceImp
      */
     getFile(appName: string, fileName: string, callback: Callback){
         const suffix = `${appName}/${fileName}`;
@@ -228,7 +216,6 @@ export class WebServiceImp implements WebService {
      * @param {string} innerFolder
      * @param {Callback} callback
      *
-     * @memberOf WebServiceImp
      */
     getFolderContentAsJSON(innerFolder: string, callback: Callback){
         const url = this.constructUrlBase("directory-summary/") + (innerFolder ? `/${innerFolder}` : '') ;
@@ -245,7 +232,6 @@ export class WebServiceImp implements WebService {
      * @param {Uint8Array} array
      * @param {function(err, string)} callback
      *
-     * @memberOf WebServiceImp
      */
     private Utf8ArrayToStr(array: Uint8Array, callback: Callback) {
         if (!this.isBrowser)

@@ -10,8 +10,6 @@ export type DSUModelFactory = {new(): DSUModel}
 /**
  * @class DSUModelRegistryImp
  * @implements IRegistry<DSUModelFactory>
- *
- * @memberOf dsu-blueprint.core.model
  */
 export class DSUModelRegistryImp implements IRegistry<DSUModelFactory>{
     private cache: {[indexer: string]: DSUModelFactory} = {};
@@ -21,8 +19,6 @@ export class DSUModelRegistryImp implements IRegistry<DSUModelFactory>{
      * @param {string} key
      * @param {any[]} args
      * @return {DSUModelFactory | undefined}
-     *
-     * @memberOf dsu-blueprint.DSUModelRegistryImp
      */
     get<DSUModelFactory>(key: any, ...args: any[]): DSUModelFactory | undefined {
         if (!(key in this.cache))
@@ -34,8 +30,6 @@ export class DSUModelRegistryImp implements IRegistry<DSUModelFactory>{
     /**
      *
      * @param {DSUModelFactory} obj
-     *
-     * @memberOf dsu-blueprint.DSUModelRegistryImp
      */
     register<DSUModelFactory>(obj: DSUModelFactory): void {
         // @ts-ignore
