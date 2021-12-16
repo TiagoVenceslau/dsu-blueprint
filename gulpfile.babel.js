@@ -14,7 +14,7 @@ const tsOptions = {
 };
 
 function exportModules() {
-    const tsProject = ts.createProject('tsconfig.json', tsOptions);
+    const tsProject = ts.createProject('tsconfig.json', Object.assign({}, tsOptions, {module: "umd"}));
     return src('src/!tests/**/*.ts')
         .pipe(sourcemaps.init())
         .pipe(tsProject())
@@ -30,7 +30,7 @@ function exportModules() {
 }
 
 function exportCoreModules() {
-    const tsProject = ts.createProject('tsconfig.json', tsOptions);
+    const tsProject = ts.createProject('tsconfig.json', Object.assign({}, tsOptions, {module: "umd"}));
     return src('src/core/**/*.ts')
         .pipe(sourcemaps.init())
         .pipe(tsProject())
@@ -70,7 +70,7 @@ function exportCoreDefault() {
 }
 
 function exportModulesBundles() {
-    const tsProject = ts.createProject('tsconfig.json', tsOptions);
+    const tsProject = ts.createProject('tsconfig.json', Object.assign({}, tsOptions, {module: "umd"}));
     return src('src/!tests/**/*.ts')
         .pipe(sourcemaps.init())
         .pipe(tsProject())
@@ -87,7 +87,7 @@ function exportModulesBundles() {
 }
 
 function exportCoreModulesBundles() {
-    const tsProject = ts.createProject('tsconfig.json', tsOptions);
+    const tsProject = ts.createProject('tsconfig.json', Object.assign({}, tsOptions, {module: "umd"}));
     return src('src/core/**/*.ts')
         .pipe(sourcemaps.init())
         .pipe(tsProject())
