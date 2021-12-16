@@ -1,0 +1,563 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Declarative OpenDSU creation and management API core/opendsu/factory.ts</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+             
+                <a href="index.html">
+                    <h1 class="navbar-item">OpenDSU Blueprint</h1>
+                </a>
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    API Documentation
+                </a>
+                
+                 
+                    
+                        <a
+                            class="link user-link "
+                            href="https://github.com/TiagoVenceslau/dsu-blueprint#readme"
+                        >
+                            Github Repository
+                        </a>
+                    
+                        <a
+                            class="link user-link "
+                            href="https://github.com/TiagoVenceslau"
+                        >
+                            Github Profile
+                        </a>
+                    
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+                <div class="search-wrapper">
+                    <input id="search" type="text" placeholder="Search docs..." class="input">
+                </div>
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-dsu-blueprint.html">dsu-blueprint</a></li></ul><h3>Namespaces</h3><ul><li><a href="dsu-blueprint.cli.html">cli</a></li><li><a href="dsu-blueprint.cli.toolkit.html">toolkit</a></li><li><a href="dsu-blueprint.core.html">core</a></li><li><a href="dsu-blueprint.core.model.html">model</a></li><li><a href="dsu-blueprint.core.opendsu.html">opendsu</a></li><li><a href="dsu-blueprint.core.opendsu.api.html">api</a></li><li><a href="dsu-blueprint.core.repository.html">repository</a></li><li><a href="dsu-blueprint.core.repository.cache.html">cache</a></li><li><a href="dsu-blueprint.core.repository.registry.html">registry</a></li><li><a href="dsu-blueprint.core.web.html">web</a></li><li><a href="dsu-blueprint.filesystem.html">filesystem</a></li><li><a href="dsu-blueprint.filesystem.constants.html">constants</a></li><li><a href="dsu-blueprint.filesystem.decorators.html">decorators</a></li><li><a href="dsu-blueprint.filesystem.utils.html">utils</a></li></ul><h3>Classes</h3><ul><li><a href="ArrayDSU.html">ArrayDSU</a></li><li><a href="DbDsuBlueprint.html">DbDsuBlueprint</a></li><li><a href="DSUCache.html">DSUCache</a></li><li><a href="DSUFactoryRegistry.html">DSUFactoryRegistry</a></li><li><a href="DSUModel.html">DSUModel</a></li><li><a href="DSUModelRegistryImp.html">DSUModelRegistryImp</a></li><li><a href="DSUOperationRegistry.html">DSUOperationRegistry</a></li><li><a href="FactoryRegistryImp.html">FactoryRegistryImp</a></li><li><a href="KeySSIFactoryRegistry.html">KeySSIFactoryRegistry</a></li><li><a href="OpenDSURepository.html">OpenDSURepository</a></li><li><a href="OpenDSURepository_OpenDSURepository.html">OpenDSURepository</a></li><li><a href="RepositoryRegistry.html">RepositoryRegistry</a></li><li><a href="SeedDSU.html">SeedDSU</a></li><li><a href="WalletDSU.html">WalletDSU</a></li><li><a href="WebServiceImp.html">WebServiceImp</a></li><li><a href="WebServiceImp_WebServiceImp.html">WebServiceImp</a></li></ul><h3>Interfaces</h3><ul><li><a href="DSU.html">DSU</a></li><li><a href="dsu-blueprint.core.opendsu.api.AnchoringApi.html">AnchoringApi</a></li><li><a href="dsu-blueprint.core.opendsu.api.AuthToken.html">AuthToken</a></li><li><a href="dsu-blueprint.core.opendsu.api.BdnsApi.html">BdnsApi</a></li><li><a href="dsu-blueprint.core.opendsu.api.BrickingApi.html">BrickingApi</a></li><li><a href="dsu-blueprint.core.opendsu.api.CacheApi.html">CacheApi</a></li><li><a href="dsu-blueprint.core.opendsu.api.ConfigApi.html">ConfigApi</a></li><li><a href="dsu-blueprint.core.opendsu.api.constants.ConstantsApi.html">ConstantsApi</a></li><li><a href="dsu-blueprint.core.opendsu.api.constants.EnvironmentTypes.html">EnvironmentTypes</a></li><li><a href="dsu-blueprint.core.opendsu.api.ContractsApi.html">ContractsApi</a></li><li><a href="dsu-blueprint.core.opendsu.api.CrypoApi.html">CrypoApi</a></li><li><a href="dsu-blueprint.core.opendsu.api.crypto.JWT.html">JWT</a></li><li><a href="dsu-blueprint.core.opendsu.api.db.DSUDatabase.html">DSUDatabase</a></li><li><a href="dsu-blueprint.core.opendsu.api.DBApi.html">DBApi</a></li><li><a href="dsu-blueprint.core.opendsu.api.DSUDid.html">DSUDid</a></li><li><a href="dsu-blueprint.core.opendsu.api.DSUEnclave.html">DSUEnclave</a></li><li><a href="dsu-blueprint.core.opendsu.api.DSUObservable.html">DSUObservable</a></li><li><a href="dsu-blueprint.core.opendsu.api.DSUSecurityContext.html">DSUSecurityContext</a></li><li><a href="dsu-blueprint.core.opendsu.api.DSUStorage.html">DSUStorage</a></li><li><a href="dsu-blueprint.core.opendsu.api.enclave.ApiHubSecurityProxy.html">ApiHubSecurityProxy</a></li><li><a href="dsu-blueprint.core.opendsu.api.enclave.HighSecurityProxy.html">HighSecurityProxy</a></li><li><a href="dsu-blueprint.core.opendsu.api.EnclaveApi.html">EnclaveApi</a></li><li><a href="dsu-blueprint.core.opendsu.api.ErrorApi.html">ErrorApi</a></li><li><a href="dsu-blueprint.core.opendsu.api.HttpApi.html">HttpApi</a></li><li><a href="dsu-blueprint.core.opendsu.api.KeySSI.html">KeySSI</a></li><li><a href="dsu-blueprint.core.opendsu.api.keyssi.ArraySSI.html">ArraySSI</a></li><li><a href="dsu-blueprint.core.opendsu.api.keyssi.ConstSSI.html">ConstSSI</a></li><li><a href="dsu-blueprint.core.opendsu.api.keyssi.SeedSSI.html">SeedSSI</a></li><li><a href="dsu-blueprint.core.opendsu.api.keyssi.sReadSSI.html">sReadSSI</a></li><li><a href="dsu-blueprint.core.opendsu.api.keyssi.WalletSSI.html">WalletSSI</a></li><li><a href="dsu-blueprint.core.opendsu.api.KeyssiApi.html">KeyssiApi</a></li><li><a href="dsu-blueprint.core.opendsu.api.m2dsu.ErrMap.html">ErrMap</a></li><li><a href="dsu-blueprint.core.opendsu.api.m2dsu.MessagePipe.html">MessagePipe</a></li><li><a href="dsu-blueprint.core.opendsu.api.M2DsuApi.html">M2DsuApi</a></li><li><a href="dsu-blueprint.core.opendsu.api.MappingEngine.html">MappingEngine</a></li><li><a href="dsu-blueprint.core.opendsu.api.MessageQueueApi.html">MessageQueueApi</a></li><li><a href="dsu-blueprint.core.opendsu.api.NotificationsApi.html">NotificationsApi</a></li><li><a href="dsu-blueprint.core.opendsu.api.oauth.DecodedToken.html">DecodedToken</a></li><li><a href="dsu-blueprint.core.opendsu.api.oauth.OIDC.html">OIDC</a></li><li><a href="dsu-blueprint.core.opendsu.api.OAuthApi.html">OAuthApi</a></li><li><a href="dsu-blueprint.core.opendsu.api.OAuthStorage.html">OAuthStorage</a></li><li><a href="dsu-blueprint.core.opendsu.api.OpenDSUCache.html">OpenDSUCache</a></li><li><a href="dsu-blueprint.core.opendsu.api.OpenDSUUtilsApi.html">OpenDSUUtilsApi</a></li><li><a href="dsu-blueprint.core.opendsu.api.OpenDSUWorkersApi.html">OpenDSUWorkersApi</a></li><li><a href="dsu-blueprint.core.opendsu.api.ResolverApi.html">ResolverApi</a></li><li><a href="dsu-blueprint.core.opendsu.api.SecurityContextApi.html">SecurityContextApi</a></li><li><a href="dsu-blueprint.core.opendsu.api.StorageApi.html">StorageApi</a></li><li><a href="dsu-blueprint.core.opendsu.api.SystemApi.html">SystemApi</a></li><li><a href="dsu-blueprint.core.opendsu.api.w3cdid.CryptographicSkillsApi.html">CryptographicSkillsApi</a></li><li><a href="dsu-blueprint.core.opendsu.api.W3cDIDApi.html">W3cDIDApi</a></li><li><a href="dsu-blueprint.core.opendsu.api.WorkerPool.html">WorkerPool</a></li><li><a href="dsu-blueprint.core.opendsu.DSUHandler.html">DSUHandler</a></li><li><a href="DSUFactory.html">DSUFactory</a></li><li><a href="fs.html">fs</a></li><li><a href="OpenDSU.html">OpenDSU</a></li><li><a href="path.html">path</a></li><li><a href="WalletDsu_.html">WalletDsu</a></li><li><a href="WebService.html">WebService</a></li></ul><h3>Global</h3><ul><li><a href="global.html#buildDSU">buildDSU</a></li><li><a href="global.html#mergeWebServiceOptions">mergeWebServiceOptions</a></li><li><a href="global.html#updateDSU">updateDSU</a></li></ul></div><div class="category"><h2>Constants</h2><h3>Global</h3><ul><li><a href="global.html#DefaultSupportedKeySSIFactories">DefaultSupportedKeySSIFactories</a></li><li><a href="global.html#DsuFsKeys">DsuFsKeys</a></li><li><a href="global.html#DsuKeys">DsuKeys</a></li><li><a href="global.html#DSUOperationPhase">DSUOperationPhase</a></li><li><a href="global.html#FSOptions">FSOptions</a></li></ul></div><div class="category"><h2>Decorators</h2><h3>Global</h3><ul><li><a href="global.html#addFileFS">addFileFS</a></li><li><a href="global.html#addFolderFS">addFolderFS</a></li><li><a href="global.html#DSUBlueprint">DSUBlueprint</a></li><li><a href="global.html#dsuFile">dsuFile</a></li><li><a href="global.html#dsuFS">dsuFS</a></li><li><a href="global.html#dsuRepository">dsuRepository</a></li><li><a href="global.html#environment">environment</a></li><li><a href="global.html#fromURL">fromURL</a></li><li><a href="global.html#fromWeb">fromWeb</a></li><li><a href="global.html#mount">mount</a></li><li><a href="global.html#wallet">wallet</a></li></ul></div><div class="category"><h2>Tests</h2><h3>Classes</h3><ul><li><a href="ArrayDSUModel.html">ArrayDSUModel</a></li><li><a href="BuildDsuBlueprint.html">BuildDsuBlueprint</a></li><li><a href="FSDSUModel.html">FSDSUModel</a></li><li><a href="IdDsuBlueprint.html">IdDsuBlueprint</a></li><li><a href="ParticipantDsuBlueprint.html">ParticipantDsuBlueprint</a></li><li><a href="SeedDSUBlueprint.html">SeedDSUBlueprint</a></li><li><a href="SSAppDsuBlueprint.html">SSAppDsuBlueprint</a></li><li><a href="SSAppWebDsuBlueprint.html">SSAppWebDsuBlueprint</a></li><li><a href="TestIdDsuBlueprint.html">TestIdDsuBlueprint</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Source</p>
+                    <h1>core/opendsu/factory.ts</h1>
+                </header>
+                
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import {IRegistry} from "@tvenceslau/decorator-validation/lib/utils/registry";
+import {criticalCallback, CriticalError, debug, LoggedError,} from "@tvenceslau/db-decorators/lib";
+import {OpenDSURepository} from "../repository";
+import {DSUModel} from "../model";
+import {
+    AnchoringOptsOrDSUCallback,
+    DSU,
+    DSUAnchoringOptions,
+    GenericCallback,
+    SimpleDSUCallback,
+    WalletDsu
+} from "./types";
+import {ArraySSI, KeySSI, KeySSIType, SeedSSI, WalletSSI} from "./apis";
+import {getKeySSIApi, getOpenDSU, getResolverApi} from "./opendsu";
+
+/**
+ * @namespace dsu-blueprint.core.opendsu.factory
+ * @memberOf dsu-blueprint.core.opendsu
+ */
+
+/**
+ * @typedef KeySSIFactory
+ * @memberOf dsu-blueprint.core.opendsu.factory
+ */
+export type KeySSIFactory = (this: OpenDSURepository&lt;DSUModel>, model: DSUModel, domain: string, specificKeyArgs: string[] | undefined, keyGenArgs: string[], callback: KeySSIFactoryCallback) => void;
+/**
+ * @typedef DSUFactoryMethod
+ * @memberOf dsu-blueprint.core.opendsu.factory
+ */
+export type DSUFactoryMethod = (keySSI: KeySSI, options: AnchoringOptsOrDSUCallback | undefined, callback?: SimpleDSUCallback) => void;
+/**
+ * @typedef DSUPostProcess
+ * @memberOf dsu-blueprint.core.opendsu.factory
+ */
+export type DSUPostProcess = (dsu: DSU, callback: SimpleDSUCallback) => void;
+/**
+ * @typedef KeySSIFactoryResponse
+ * @memberOf dsu-blueprint.core.opendsu.factory
+ */
+export type KeySSIFactoryResponse = {
+    options: DSUAnchoringOptions | undefined,
+    keySSI: KeySSI
+}
+/**
+ * @typedef KeySSIFactoryCallback
+ * @memberOf dsu-blueprint.core.opendsu.factory
+ */
+export type KeySSIFactoryCallback = GenericCallback&lt;KeySSIFactoryResponse>;
+
+/**
+ * Provides the base implementation for Factory Registries
+ *
+ * @class FactoryRegistryImp
+ *
+ * @abstract
+ * @implements IRegistry&lt;any>
+ */
+export abstract class FactoryRegistry&lt;T> implements IRegistry&lt;T>{
+    protected supportedTypes: string[] = [];
+    protected factories: {[indexer: string]: T} = {};
+
+    /**
+     *
+     * @param {string} keySSIType
+     * @param {any[]} args
+     * @return boolean
+     */
+    isTypeAvailable(keySSIType: string, ...args: any[]): boolean {
+        return this.supportedTypes.indexOf(keySSIType) !== -1;
+    }
+
+    /**
+     *
+     * @param {any[]} args
+     * @return {string}
+     */
+    getAvailableTypes(...args: any[]): string[] {
+        return this.supportedTypes;
+    }
+
+    /**
+     * Returns a registered KeySSI factory
+     *
+     * @param {string} keySSIType
+     * @param {any[]} [args] for extensions purposes. not used in this implementation
+     * @return {T | undefined}
+     *
+     */
+    get(keySSIType: string, ...args: any[]): T | undefined {
+        return this.factories[keySSIType];
+    }
+
+    /**
+     * Registers a factory associated with the {@param keySSIType};
+     *
+     * @param {T} factory
+     * @param {string} keySSIType
+     * @param {any[]} [args] for extensions purposes. not used in this implementation
+     *
+     * @throws CriticalError if a factory had previously been registered for that keySSiType
+     */
+    register(factory: T, keySSIType: string, ...args: any[]): void {
+        if (this.isTypeAvailable(keySSIType))
+            throw new CriticalError(`KeySSI Factory for the ${keySSIType} type already registered`);
+        this.supportedTypes.push(keySSIType);
+        this.factories[keySSIType] = factory;
+    }
+}
+
+/**
+ * Registry class to hold the various KeySSI factory methods and properly apply validation to the received arguments
+ *
+ * @class KeySSIFactoryRegistry
+ */
+export class KeySSIFactoryRegistry extends FactoryRegistry&lt;KeySSIFactory>{
+    /**
+     * Creates a new KeySSI from the provided params
+     *
+     * @param {OpenDSURepository} repository
+     * @param {DSUModel} model
+     * @param {string} keySSIType
+     * @param {string} domain
+     * @param {string[] | undefined} specificKeyArgs
+     * @param {string[]} keyGenArgs
+     * @param {GenericCallback&lt;KeySSIFactoryResponse>} callback
+     */
+    build(repository: OpenDSURepository&lt;DSUModel>, model: DSUModel, keySSIType: string, domain: string, specificKeyArgs: string[] | undefined, keyGenArgs: string[], callback: KeySSIFactoryCallback): void {
+        const factory: KeySSIFactory | undefined = this.get(keySSIType);
+        if (!factory)
+            return criticalCallback(new Error(`Could not find a KeySSI Factory for ${keySSIType}`), callback);
+        factory.call(repository, model, domain, specificKeyArgs, keyGenArgs, callback);
+    }
+
+    /**
+     * @param {string} keySSIType
+     *
+     * @see FactoryRegistry#get
+     * @override
+     */
+    get(keySSIType: string): KeySSIFactory | undefined {
+        return super.get(keySSIType);
+    }
+
+    /**
+     * When dsuFactory is defined, with trigger a call to {@link DSUFactoryRegistry#register} with the dsuFactory and dsuPostProcess as arguments
+     *
+     * @param {KeySSIFactory} factory
+     * @param {string} keySSIType
+     * @param {DSUFactoryMethod} [dsuFactory]
+     * @param {DSUPostProcess} [dsuPostProcess]
+     *
+     * @see FactoryRegistry#register
+     * @override
+     */
+    register(factory: KeySSIFactory, keySSIType: string, dsuFactory: DSUFactoryMethod | undefined, dsuPostProcess?: DSUPostProcess) {
+        super.register(factory, keySSIType);
+        if (dsuFactory)
+            getDSUFactoryRegistry().register(dsuFactory, keySSIType, dsuPostProcess);
+    }
+}
+
+let keySSIFactoryRegistry: KeySSIFactoryRegistry;
+
+/**
+ *
+ * @function getKeySSIFactoryRegistry
+ * @memberOf dsu-blueprint.core.opendsu.factory
+ */
+export function getKeySSIFactoryRegistry(): KeySSIFactoryRegistry {
+    if (!keySSIFactoryRegistry)
+        keySSIFactoryRegistry = new KeySSIFactoryRegistry();
+    return keySSIFactoryRegistry;
+}
+
+/**
+ * Handles the various {@link DSUFactoryMethod}
+ *
+ * @class DSUFactoryRegistry
+ *
+ * @extends FactoryRegistry
+ */
+export class DSUFactoryRegistry extends FactoryRegistry&lt;DSUFactoryMethod>{
+    private postProcesses: {[indexer: string]: DSUPostProcess} = {};
+    /**
+     *
+     * When postProcess is true, will refer to {@link DSUPostProcess} if they exist
+     *
+     * @param {string} keySSIType
+     * @param {boolean} [postProcess] defaults to false
+     * @return {boolean}
+     */
+    isTypeAvailable(keySSIType: string, postProcess: boolean = false): boolean {
+        const typeAvailable = super.isTypeAvailable(keySSIType);
+        return postProcess ? typeAvailable &amp;&amp; !!this.postProcesses[keySSIType] : typeAvailable;
+    }
+    /**
+     * When postProcess is true, will refer to {@link DSUPostProcess}s if they exist
+     *
+     * @param {boolean} [postProcess] defaults to false
+     *
+     * @return {string[]}
+     */
+    getAvailableTypes(postProcess: boolean = false): string[] {
+        return postProcess ? super.getAvailableTypes().filter(type => !!this.postProcesses[type]) : super.getAvailableTypes();
+    }
+    /**
+     * When postProcess is true, will return a stored {@link DSUPostProcess} if it exists
+     *
+     * @param {string} keySSIType
+     * @param {boolean} [postProcess] defaults to false
+     *
+     * @return {DSUFactoryMethod | DSUPostProcess | undefined}
+     *
+     * @see FactoryRegistry#get
+     * @override
+     */
+    // @ts-ignore
+    get(keySSIType: string, postProcess: boolean = false): DSUFactoryMethod | DSUPostProcess | undefined {
+        return postProcess ? this.postProcesses[keySSIType] : super.get(keySSIType);
+    }
+
+    /**
+     * Builds a DSU from the provided {@link KeySSI}
+     *
+     * @param {KeySSI} keySSI
+     * @param {DSUAnchoringOptions} options
+     * @param {SimpleDSUCallback} callback
+     */
+    build(keySSI: KeySSI, options: DSUAnchoringOptions, callback: SimpleDSUCallback): void {
+        const keySSIType = keySSI.getTypeName();
+        const factory: DSUFactoryMethod | undefined = this.get(keySSIType) as DSUFactoryMethod;
+        if (!factory)
+            return criticalCallback(new Error(`Could not find a DSU Factory for ${keySSIType}`), callback);
+        factory(keySSI, options, callback);
+    }
+    /**
+     * When postProcess is defined, will also store the {@link DSUPostProcess}
+     *
+     * @param {DSUFactoryMethod} factory
+     * @param {string} keySSIType
+     * @param {DSUPostProcess} [postProcess]
+     *
+     * @see FactoryRegistry#register
+     * @override
+     */
+    register(factory: DSUFactoryMethod, keySSIType: string, postProcess?: DSUPostProcess) {
+        super.register(factory, keySSIType);
+        if (postProcess)
+            if (this.isTypeAvailable(keySSIType, true))
+                throw new CriticalError(`PostProcess Already Registered for KeySSIType ${keySSIType}`);
+            else
+                this.postProcesses[keySSIType] = postProcess;
+    }
+}
+
+let dsuFactoryRegistry: DSUFactoryRegistry;
+/**
+ *
+ * @function getDSUFactoryRegistry
+ *
+ * @memberOf dsu-blueprint.core.opendsu.factory
+ */
+export function getDSUFactoryRegistry(): DSUFactoryRegistry {
+    if (!dsuFactoryRegistry)
+        dsuFactoryRegistry = new DSUFactoryRegistry();
+    return dsuFactoryRegistry;
+}
+
+/**
+ * Util method to retrieve the proper {@link KeySSI} factory method according to the {@link KeySSIType}
+ *
+ * @param {KeySSIType} type
+ *
+ * @return {Function} KeySSI factory method
+ *
+ * @function getKeySSIfactoryFromType
+ *
+ * @memberOf dsu-blueprint.core.opendsu.factory
+ */
+export function getKeySSIFactoryFromType(type: KeySSIType): KeySSIFactory{
+    switch (type){
+        case KeySSIType.CONST:
+        case KeySSIType.ARRAY:
+            return function(this: OpenDSURepository&lt;DSUModel>, model: DSUModel, domain: string, specificKeyArgs: string[] | undefined, keyGenArgs: string[] | undefined, callback: KeySSIFactoryCallback){
+                if (!domain || !Array.isArray(keyGenArgs) || !keyGenArgs.length)
+                    return criticalCallback(new Error('Missing parameters'), callback);
+                let keySSI: ArraySSI;
+
+                const args: any[] = [domain, keyGenArgs, ...(specificKeyArgs || [])];
+
+                try{
+                    // @ts-ignore
+                    keySSI = getKeySSIApi().createArraySSI(...args) as ArraySSI;
+                } catch (e) {
+                    return criticalCallback(new Error(`Could not create ArraySSI with args: ${args.join(' | ')}`), callback);
+                }
+
+                callback(undefined, {
+                    keySSI: keySSI,
+                    options: undefined
+                });
+            }
+        case KeySSIType.WALLET:
+            return function(this: OpenDSURepository&lt;DSUModel>, model: DSUModel, domain: string, specificKeyArgs: string[] | undefined, keyGenArgs: string[] | undefined, callback: KeySSIFactoryCallback){
+                if (!domain || !Array.isArray(keyGenArgs) || !keyGenArgs.length)
+                    return criticalCallback(new Error('Missing parameters'), callback);
+
+                const codePath = getOpenDSU().constants.CODE_FOLDER;
+
+                const seed: string = model[codePath.startsWith('/') ? codePath.substring(1) : codePath];
+
+                if (!seed)
+                    return criticalCallback(new Error(`Could not find the necessary KeySSI value under the ${codePath} property for Wallet creation`), callback);
+
+                const args: any[] = [domain, keyGenArgs, ...(specificKeyArgs || [])];
+
+                let keySSI: WalletSSI;
+
+                try{
+                    // @ts-ignore
+                    keySSI = getKeySSIApi().createTemplateWalletSSI(...args) as WalletSSI;
+                } catch (e) {
+                    return criticalCallback(new Error(`Could not create WalletSSI with args: ${args.join(' | ')}`), callback);
+                }
+
+                callback(undefined, {
+                    keySSI: keySSI,
+                    options: {
+                        dsuTypeSSI: seed
+                    }
+                });
+            }
+        case KeySSIType.SEED:
+            return function(this: OpenDSURepository&lt;DSUModel>, model: DSUModel, domain: string, specificKeyArgs: string[] | undefined, keyGenArgs: string[] | undefined, callback: KeySSIFactoryCallback) {
+                if (!domain)
+                    return criticalCallback(new Error('Missing parameters'), callback);
+                if (keyGenArgs &amp;&amp; keyGenArgs.length)
+                    debug(`SeedSSi Factory function provided with KeyGen parameters. These will be discarded`);
+
+                let keySSI: SeedSSI;
+
+                const args: any[] = [domain, ...(specificKeyArgs || [])];
+
+                try{
+                    // @ts-ignore
+                    keySSI = getKeySSIApi().createTemplateSeedSSI(...args) as SeedSSI;
+                } catch (e) {
+                    return criticalCallback(new Error(`Could not create SeedSSI with args: ${args.join(' | ')}`), callback);
+                }
+
+                callback(undefined, {
+                    keySSI: keySSI,
+                    options: undefined
+                });
+            }
+        default:
+            throw new LoggedError(`Unsupported KeySSI Type ${type}`);
+    }
+}
+
+/**
+ * Util method to retrieve the proper {@link DSU} factory method according to the {@link KeySSI} type
+ *
+ * @param {KeySSIType} keySSIType
+ *
+ * @function getDSUFactoryFromType
+ *
+ * @memberOf dsu-blueprint.core.opendsu.factory
+ */
+export function getDSUFactoryFromType(keySSIType: KeySSIType): DSUFactoryMethod {
+    switch (keySSIType) {
+        case KeySSIType.ARRAY:
+        case KeySSIType.CONST:
+        case KeySSIType.WALLET:
+            return getResolverApi().createDSUForExistingSSI;
+        case KeySSIType.SEED:
+            return getResolverApi().createDSU;
+        default:
+            throw new LoggedError(`Unsupported DSU Factory ${keySSIType}`);
+    }
+}
+
+/**
+ * Util method to retrieve the proper {@link DSU} factory method according to the {@link KeySSI} type
+ *
+ * @param {KeySSIType} keySSIType
+ *
+ * @return {DSUPostProcess | undefined}
+ *
+ * @function getDSUPostProcess
+ *
+ * @memberOf dsu-blueprint.core.opendsu.factory
+ */
+export function getDSUPostProcess(keySSIType: KeySSIType): DSUPostProcess | undefined {
+    switch (keySSIType) {
+        case KeySSIType.WALLET:
+            return (dsu: DSU, callback: SimpleDSUCallback) => {
+                let writableDSU: DSU;
+                try{
+                    writableDSU = (dsu as WalletDsu).getWritableDSU();
+                } catch (e) {
+                    return criticalCallback(e as Error, callback)
+                }
+                callback(undefined, writableDSU);
+            }
+        default:
+            return undefined;
+    }
+}
+
+/**
+ * @enum DefaultSupportedKeySSIFactories
+ *
+ * @category Constants
+ */
+export const DefaultSupportedKeySSIFactories = {
+    ARRAY: KeySSIType.ARRAY,
+    SEED: KeySSIType.SEED,
+    WALLET: KeySSIType.WALLET,
+    CONST: KeySSIType.CONST
+}
+
+/**
+ * @function loadDefaultKeySSIFactories
+ *
+ * @memberOf dsu-blueprint.core.opendsu.factory
+ */
+export function loadDefaultKeySSIFactories(): void {
+    Object.values(DefaultSupportedKeySSIFactories).forEach(type =>
+        getKeySSIFactoryRegistry().register(getKeySSIFactoryFromType(type as KeySSIType), type, getDSUFactoryFromType(type), getDSUPostProcess(type)));
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+            </div>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+<script src="scripts/search.js"> </script>
+
+</body>
+</html>

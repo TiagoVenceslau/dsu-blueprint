@@ -1,0 +1,372 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Declarative OpenDSU creation and management API core/repository/repository.ts</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+             
+                <a href="index.html">
+                    <h1 class="navbar-item">OpenDSU Blueprint</h1>
+                </a>
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    API Documentation
+                </a>
+                
+                 
+                    
+                        <a
+                            class="link user-link "
+                            href="https://github.com/TiagoVenceslau/dsu-blueprint#readme"
+                        >
+                            Github Repository
+                        </a>
+                    
+                        <a
+                            class="link user-link "
+                            href="https://github.com/TiagoVenceslau"
+                        >
+                            Github Profile
+                        </a>
+                    
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+                <div class="search-wrapper">
+                    <input id="search" type="text" placeholder="Search docs..." class="input">
+                </div>
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-dsu-blueprint.html">dsu-blueprint</a></li></ul><h3>Namespaces</h3><ul><li><a href="dsu-blueprint.cli.html">cli</a></li><li><a href="dsu-blueprint.cli.toolkit.html">toolkit</a></li><li><a href="dsu-blueprint.core.html">core</a></li><li><a href="dsu-blueprint.core.model.html">model</a></li><li><a href="dsu-blueprint.core.opendsu.html">opendsu</a></li><li><a href="dsu-blueprint.core.opendsu.api.html">api</a></li><li><a href="dsu-blueprint.core.repository.html">repository</a></li><li><a href="dsu-blueprint.core.repository.cache.html">cache</a></li><li><a href="dsu-blueprint.core.repository.registry.html">registry</a></li><li><a href="dsu-blueprint.core.web.html">web</a></li><li><a href="dsu-blueprint.filesystem.html">filesystem</a></li><li><a href="dsu-blueprint.filesystem.constants.html">constants</a></li><li><a href="dsu-blueprint.filesystem.decorators.html">decorators</a></li><li><a href="dsu-blueprint.filesystem.utils.html">utils</a></li></ul><h3>Classes</h3><ul><li><a href="ArrayDSU.html">ArrayDSU</a></li><li><a href="DbDsuBlueprint.html">DbDsuBlueprint</a></li><li><a href="DSUCache.html">DSUCache</a></li><li><a href="DSUFactoryRegistry.html">DSUFactoryRegistry</a></li><li><a href="DSUModel.html">DSUModel</a></li><li><a href="DSUModelRegistryImp.html">DSUModelRegistryImp</a></li><li><a href="DSUOperationRegistry.html">DSUOperationRegistry</a></li><li><a href="FactoryRegistryImp.html">FactoryRegistryImp</a></li><li><a href="KeySSIFactoryRegistry.html">KeySSIFactoryRegistry</a></li><li><a href="OpenDSURepository.html">OpenDSURepository</a></li><li><a href="OpenDSURepository_OpenDSURepository.html">OpenDSURepository</a></li><li><a href="RepositoryRegistry.html">RepositoryRegistry</a></li><li><a href="SeedDSU.html">SeedDSU</a></li><li><a href="WalletDSU.html">WalletDSU</a></li><li><a href="WebServiceImp.html">WebServiceImp</a></li><li><a href="WebServiceImp_WebServiceImp.html">WebServiceImp</a></li></ul><h3>Interfaces</h3><ul><li><a href="DSU.html">DSU</a></li><li><a href="dsu-blueprint.core.opendsu.api.AnchoringApi.html">AnchoringApi</a></li><li><a href="dsu-blueprint.core.opendsu.api.AuthToken.html">AuthToken</a></li><li><a href="dsu-blueprint.core.opendsu.api.BdnsApi.html">BdnsApi</a></li><li><a href="dsu-blueprint.core.opendsu.api.BrickingApi.html">BrickingApi</a></li><li><a href="dsu-blueprint.core.opendsu.api.CacheApi.html">CacheApi</a></li><li><a href="dsu-blueprint.core.opendsu.api.ConfigApi.html">ConfigApi</a></li><li><a href="dsu-blueprint.core.opendsu.api.constants.ConstantsApi.html">ConstantsApi</a></li><li><a href="dsu-blueprint.core.opendsu.api.constants.EnvironmentTypes.html">EnvironmentTypes</a></li><li><a href="dsu-blueprint.core.opendsu.api.ContractsApi.html">ContractsApi</a></li><li><a href="dsu-blueprint.core.opendsu.api.CrypoApi.html">CrypoApi</a></li><li><a href="dsu-blueprint.core.opendsu.api.crypto.JWT.html">JWT</a></li><li><a href="dsu-blueprint.core.opendsu.api.db.DSUDatabase.html">DSUDatabase</a></li><li><a href="dsu-blueprint.core.opendsu.api.DBApi.html">DBApi</a></li><li><a href="dsu-blueprint.core.opendsu.api.DSUDid.html">DSUDid</a></li><li><a href="dsu-blueprint.core.opendsu.api.DSUEnclave.html">DSUEnclave</a></li><li><a href="dsu-blueprint.core.opendsu.api.DSUObservable.html">DSUObservable</a></li><li><a href="dsu-blueprint.core.opendsu.api.DSUSecurityContext.html">DSUSecurityContext</a></li><li><a href="dsu-blueprint.core.opendsu.api.DSUStorage.html">DSUStorage</a></li><li><a href="dsu-blueprint.core.opendsu.api.enclave.ApiHubSecurityProxy.html">ApiHubSecurityProxy</a></li><li><a href="dsu-blueprint.core.opendsu.api.enclave.HighSecurityProxy.html">HighSecurityProxy</a></li><li><a href="dsu-blueprint.core.opendsu.api.EnclaveApi.html">EnclaveApi</a></li><li><a href="dsu-blueprint.core.opendsu.api.ErrorApi.html">ErrorApi</a></li><li><a href="dsu-blueprint.core.opendsu.api.HttpApi.html">HttpApi</a></li><li><a href="dsu-blueprint.core.opendsu.api.KeySSI.html">KeySSI</a></li><li><a href="dsu-blueprint.core.opendsu.api.keyssi.ArraySSI.html">ArraySSI</a></li><li><a href="dsu-blueprint.core.opendsu.api.keyssi.ConstSSI.html">ConstSSI</a></li><li><a href="dsu-blueprint.core.opendsu.api.keyssi.SeedSSI.html">SeedSSI</a></li><li><a href="dsu-blueprint.core.opendsu.api.keyssi.sReadSSI.html">sReadSSI</a></li><li><a href="dsu-blueprint.core.opendsu.api.keyssi.WalletSSI.html">WalletSSI</a></li><li><a href="dsu-blueprint.core.opendsu.api.KeyssiApi.html">KeyssiApi</a></li><li><a href="dsu-blueprint.core.opendsu.api.m2dsu.ErrMap.html">ErrMap</a></li><li><a href="dsu-blueprint.core.opendsu.api.m2dsu.MessagePipe.html">MessagePipe</a></li><li><a href="dsu-blueprint.core.opendsu.api.M2DsuApi.html">M2DsuApi</a></li><li><a href="dsu-blueprint.core.opendsu.api.MappingEngine.html">MappingEngine</a></li><li><a href="dsu-blueprint.core.opendsu.api.MessageQueueApi.html">MessageQueueApi</a></li><li><a href="dsu-blueprint.core.opendsu.api.NotificationsApi.html">NotificationsApi</a></li><li><a href="dsu-blueprint.core.opendsu.api.oauth.DecodedToken.html">DecodedToken</a></li><li><a href="dsu-blueprint.core.opendsu.api.oauth.OIDC.html">OIDC</a></li><li><a href="dsu-blueprint.core.opendsu.api.OAuthApi.html">OAuthApi</a></li><li><a href="dsu-blueprint.core.opendsu.api.OAuthStorage.html">OAuthStorage</a></li><li><a href="dsu-blueprint.core.opendsu.api.OpenDSUCache.html">OpenDSUCache</a></li><li><a href="dsu-blueprint.core.opendsu.api.OpenDSUUtilsApi.html">OpenDSUUtilsApi</a></li><li><a href="dsu-blueprint.core.opendsu.api.OpenDSUWorkersApi.html">OpenDSUWorkersApi</a></li><li><a href="dsu-blueprint.core.opendsu.api.ResolverApi.html">ResolverApi</a></li><li><a href="dsu-blueprint.core.opendsu.api.SecurityContextApi.html">SecurityContextApi</a></li><li><a href="dsu-blueprint.core.opendsu.api.StorageApi.html">StorageApi</a></li><li><a href="dsu-blueprint.core.opendsu.api.SystemApi.html">SystemApi</a></li><li><a href="dsu-blueprint.core.opendsu.api.w3cdid.CryptographicSkillsApi.html">CryptographicSkillsApi</a></li><li><a href="dsu-blueprint.core.opendsu.api.W3cDIDApi.html">W3cDIDApi</a></li><li><a href="dsu-blueprint.core.opendsu.api.WorkerPool.html">WorkerPool</a></li><li><a href="dsu-blueprint.core.opendsu.DSUHandler.html">DSUHandler</a></li><li><a href="DSUFactory.html">DSUFactory</a></li><li><a href="fs.html">fs</a></li><li><a href="OpenDSU.html">OpenDSU</a></li><li><a href="path.html">path</a></li><li><a href="WalletDsu_.html">WalletDsu</a></li><li><a href="WebService.html">WebService</a></li></ul><h3>Global</h3><ul><li><a href="global.html#buildDSU">buildDSU</a></li><li><a href="global.html#mergeWebServiceOptions">mergeWebServiceOptions</a></li><li><a href="global.html#updateDSU">updateDSU</a></li></ul></div><div class="category"><h2>Constants</h2><h3>Global</h3><ul><li><a href="global.html#DefaultSupportedKeySSIFactories">DefaultSupportedKeySSIFactories</a></li><li><a href="global.html#DsuFsKeys">DsuFsKeys</a></li><li><a href="global.html#DsuKeys">DsuKeys</a></li><li><a href="global.html#DSUOperationPhase">DSUOperationPhase</a></li><li><a href="global.html#FSOptions">FSOptions</a></li></ul></div><div class="category"><h2>Decorators</h2><h3>Global</h3><ul><li><a href="global.html#addFileFS">addFileFS</a></li><li><a href="global.html#addFolderFS">addFolderFS</a></li><li><a href="global.html#DSUBlueprint">DSUBlueprint</a></li><li><a href="global.html#dsuFile">dsuFile</a></li><li><a href="global.html#dsuFS">dsuFS</a></li><li><a href="global.html#dsuRepository">dsuRepository</a></li><li><a href="global.html#environment">environment</a></li><li><a href="global.html#fromURL">fromURL</a></li><li><a href="global.html#fromWeb">fromWeb</a></li><li><a href="global.html#mount">mount</a></li><li><a href="global.html#wallet">wallet</a></li></ul></div><div class="category"><h2>Tests</h2><h3>Classes</h3><ul><li><a href="ArrayDSUModel.html">ArrayDSUModel</a></li><li><a href="BuildDsuBlueprint.html">BuildDsuBlueprint</a></li><li><a href="FSDSUModel.html">FSDSUModel</a></li><li><a href="IdDsuBlueprint.html">IdDsuBlueprint</a></li><li><a href="ParticipantDsuBlueprint.html">ParticipantDsuBlueprint</a></li><li><a href="SeedDSUBlueprint.html">SeedDSUBlueprint</a></li><li><a href="SSAppDsuBlueprint.html">SSAppDsuBlueprint</a></li><li><a href="SSAppWebDsuBlueprint.html">SSAppWebDsuBlueprint</a></li><li><a href="TestIdDsuBlueprint.html">TestIdDsuBlueprint</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Source</p>
+                    <h1>core/repository/repository.ts</h1>
+                </header>
+                
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import {DSUCreationMetadata, DSUEditMetadata, DSUModel} from "../model";
+import {
+    AsyncRepositoryImp, criticalCallback, CriticalError, debug,
+    Err,
+    errorCallback,
+    LoggedError
+} from "@tvenceslau/db-decorators/lib";
+import {DSU} from "../opendsu/types";
+import {createFromDecorators, readFromDecorators, safeParseKeySSI, updateFromDecorators} from "./utils";
+import DBModel from "@tvenceslau/db-decorators/lib/model/DBModel";
+import {getResolverApi} from "../opendsu";
+import {getModelRegistry, ModelErrorDefinition} from "@tvenceslau/decorator-validation/lib";
+import {DSUCache, isDSUCache} from "./cache";
+import {KeySSI} from "../opendsu/apis/keyssi";
+
+
+/**
+ * @typedef DSUKey
+ * @memberOf dsu-blueprint.core.repository
+ */
+export type DSUKey = string | KeySSI;
+
+/**
+ * @typedef T extends DBModel
+ * @typedef DSUCallback&lt;T>
+ * @memberOf dsu-blueprint.core.repository
+ */
+export type DSUCallback&lt;T extends DBModel> = (err?: Err, model?: T, dsu?: DSU, ...args: any[]) => void;
+
+/**
+ * @typedef ReadCallback
+ * @memberOf dsu-blueprint.core.repository
+ */
+export type ReadCallback = (err?: Err, model?: {[indexer: string]: any}, dsu?: DSU, keySSI?: KeySSI, ...args: any[]) => void;
+
+/**
+ * @typedef DSUMultipleCallback
+ * @memberOf dsu-blueprint.core.repository
+ */
+export type DSUMultipleCallback&lt;T extends DBModel> = (err?: Err, model?: T[], dsu?: DSU[], keySSI?: KeySSI[], ...args: any[]) => void;
+
+/**
+ * @typedef DSUDecorator Union of {@link DSUCreationDecorator} with {@link DSUEditDecorator}
+ * @memberOf dsu-blueprint.core.repository
+ */
+export type DSUDecorator = DSUCreationDecorator | DSUEditDecorator;
+
+/**
+ * @typedef DSUCreationDecorator
+ * @memberOf dsu-blueprint.core.repository
+ */
+export type DSUCreationDecorator = {
+    key: string,
+    prop: string,
+    props: DSUCreationMetadata
+}
+
+/**
+ * @typedef DSUEditDecorator
+ * @memberOf dsu-blueprint.core.repository
+ */
+export type DSUEditDecorator = {
+    key: string,
+    prop: string,
+    props: DSUEditMetadata
+}
+
+/**
+ * Provide the Base implementation to a global single OpenDSU Repository implementation
+ * capable of, via the decorated properties of {@link DSUModel}s, handle all of the OpenDSU API related to CRUD operations
+ * in a single, scalable, maintainable and declarative fashion, supporting:
+ *  - Automatic CRUD operations, just by updating its corresponding {@link DSUModel} instance and running it through the appropriate {@link OpenDSURepository};
+ *  - Automatic validations &amp;&amp; easily extendable for added validations;
+ *  - Controlled accesses: Ability easily to add business logic at key points of any CRUD operations
+ *
+ * @typedef T extends DSUModel
+ *
+ * @class OpenDSURepository
+ * @extends AsyncRepositoryImp
+ *
+ */
+export class OpenDSURepository&lt;T extends DSUModel> extends AsyncRepositoryImp&lt;T>{
+    protected fallbackDomain: string;
+    protected pathAdaptor: string;
+
+    /**
+     * @param {{new: T}} clazz the class the repository will instantiate
+     * @param {string} domain the anchoring domain
+     * @param {string} [pathAdaptor] only required for Filesystem operations and is meant to handle the relative path differences when necessary. Must point to the folder where './privatesky' is available
+     */
+    constructor(clazz: {new(...args: any[]): T}, domain: string = "default", pathAdaptor: string = './'){
+        super(clazz);
+        this.fallbackDomain = domain;
+        this.pathAdaptor = pathAdaptor;
+    }
+
+    /**
+     * Creates the corresponding {@link DSU} from the provided {@link DSUBlueprint} decorated {@link DSUModel}
+     *
+     * @param {T} model the {@link DSUModel}
+     * @param {DSUCache} [dsuCache] if building during a nested transaction, the dsuCache needs to be passed along
+     * @param {any[]} [args]
+     *
+     */
+    // @ts-ignore
+    create(model?: T, dsuCache?: DSUCache&lt;T> | any, ...args: any[]): void {
+        if (!isDSUCache(dsuCache)){
+            args.unshift(dsuCache);
+            dsuCache = undefined;
+        }
+
+        const callback: DSUCallback&lt;T> = args.pop();
+        if (!callback)
+            throw new LoggedError(`Missing callback`);
+        if (!model)
+            return criticalCallback(new Error(`Missing Model`), callback);
+
+        const errs: ModelErrorDefinition | undefined = model.hasErrors();
+        if (errs)
+            return callback(new Error(errs.toString()));
+
+        debug(`Creating {0} DSU from model {1}`, this.clazz.name, model.toString())
+
+        const instance = getModelRegistry().build(model);
+        createFromDecorators.call(this, instance, dsuCache, ...args, (err: Err, newModel: T | undefined, dsu: DSU | undefined, keySSI: KeySSI | undefined) => {
+            if (err || !newModel || !dsu || !keySSI)
+                return callback(err || new LoggedError(`Missing Arguments...`));
+            debug(`{0} DSU created. Resulting Model: {1}, KeySSI: {2}`, this.clazz.name, newModel.toString(), keySSI.getIdentifier());
+            callback(undefined, newModel, dsu, keySSI);
+        });
+    }
+
+    /**
+     * Override to disable the key param on {@link AsyncRepositoryImp#createPrefix} method
+     * @see AsyncRepositoryImp#createPrefix
+     * @override
+     *
+     */
+    createPrefix(model?: T, ...args: any[]){
+        super.createPrefix(undefined, model, ...args);
+    }
+
+    /**
+     * Deletes the corresponding {@link DSU} from the provided {@link DSUBlueprint} decorated {@link DSUModel}
+     *
+     * @param {DSUKey} key
+     * @param {any[]} args
+     *
+     */
+    delete(key?: DSUKey, ...args: any[]): void {
+        const callback: DSUCallback&lt;T> = args.pop();
+        if (!callback)
+            throw new LoggedError(`Missing callback`);
+
+        const self = this;
+        if (typeof key === 'string')
+            return safeParseKeySSI(key, err => err
+                ? errorCallback(err, callback)
+                : self.delete.call(self, key, ...args, callback));
+    }
+
+    /**
+     * Reads the corresponding {@link DSU} from the provided {@link DSUBlueprint} decorated {@link DSUModel}
+     *
+     * @param {DSUKey} key
+     * @param {any[]} args
+     *
+     */
+    read(key?: DSUKey, ...args: any[]): void {
+        const callback: DSUCallback&lt;T> = args.pop();
+        if (!callback)
+            throw new LoggedError(`Missing callback`);
+        if (!key)
+            return criticalCallback(`Missing Key`, callback);
+
+        const self = this;
+        if (typeof key === 'string')
+            return safeParseKeySSI(key, err => err
+                ? errorCallback(err, callback)
+                : self.read.call(self, key,  ...args, callback));
+
+        debug(`Reading {0} DSU with SSI {1}`, this.clazz.name, key.getIdentifier());
+
+        getResolverApi().loadDSU(key, (err, dsu) => {
+            if (err || !dsu)
+                return criticalCallback(err || new Error(`Missing DSU`), callback);
+            readFromDecorators.call(self, dsu, (err: Err, model?: T, dsu?: DSU) => {
+                if (err || !model || !dsu)
+                    return callback(err || new CriticalError(`Missing results`));
+                callback(undefined, model, dsu, key);
+            });
+        });
+    }
+
+    /**
+     * Updates the corresponding {@link DSU} from the provided {@link DSUBlueprint} decorated {@link DSUModel}
+     *
+     * @param {DSUKey} key
+     * @param {T} model the {@link DSUModel}
+     * @param {DSUCache} [dsuCache] if building during a nested transaction, the dsuCache needs to be passed along
+     * @param {any[]} [args]
+     *
+     */
+    update(key?: DSUKey, model?: T, dsuCache?: DSUCache&lt;T> | any, ...args: any[]): void {
+        if (!isDSUCache(dsuCache)){
+            args.unshift(dsuCache);
+            dsuCache = undefined;
+        }
+
+        const callback: DSUCallback&lt;T> = args.pop();
+        if (!callback)
+            throw new LoggedError(`Missing callback`);
+        if (!model)
+            return errorCallback(new Error(`Missing Model`), callback);
+
+        const self = this;
+
+        if (typeof key === 'string')
+            return safeParseKeySSI(key, err => err
+                ? errorCallback(err, callback)
+                : self.update.call(self, key, model, dsuCache, ...args, callback));
+
+        self.read(key, ...args, (err: Err, oldModel: T, dsu: DSU, keySSI: KeySSI) => {
+            if (err)
+                return criticalCallback(err, callback);
+
+            const errors: ModelErrorDefinition | undefined = model.hasErrors(oldModel);
+            if (errors)
+                return callback(new Error(errors.toString()));
+
+            debug(`Updating {0} DSU from model {1} to {2}`, this.clazz.name, oldModel.toString(), model.toString())
+            const instance = getModelRegistry().build(model);
+            updateFromDecorators.call(self, instance, oldModel, dsu, dsuCache, (err?: Err, updatedModel?: T, updatedDsu?: DSU) => {
+                if (err || !updatedModel || !updatedDsu)
+                    return callback(err || new CriticalError(`Missing Results`));
+                debug(`{0} DSU updated. Resulting Model: {1}, KeySSI: {2}`, this.clazz.name, updatedModel.toString(), keySSI.getIdentifier());
+                callback(undefined, updatedModel, updatedDsu, key);
+            });
+        });
+    }
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+            </div>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+<script src="scripts/search.js"> </script>
+
+</body>
+</html>
